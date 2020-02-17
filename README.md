@@ -94,8 +94,13 @@ Token削除
         "subject": "A",
         "room": "100"
       },
+      // 教室が未定
+      "2": {
+        "subject": "B",
+        "room": null
+      },
       // 空きコマ
-      "2": null,
+      "3": null,
       ...
       "5": {...}
     },

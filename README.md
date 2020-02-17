@@ -66,10 +66,7 @@ Token削除
         "room": "100"
       },
       // 空きコマ
-      "2": {
-        "subject": null,
-        "room": null
-      },
+      "2": null,
       ...
       "5": {...}
     },
@@ -97,10 +94,8 @@ Token削除
         "subject": "A",
         "room": "100"
       },
-      "2": {  // 空きコマ
-        "subject": null,
-        "room": null
-      },
+      // 空きコマ
+      "2": null,
       ...
       "5": {...}
     },

@@ -117,7 +117,7 @@ Token削除
   "token": "1234567890",
   "task": {
     "date": "2020-01-01",
-    "detail": "task"
+    "title": "task"
   }
 }
 ```
@@ -136,11 +136,11 @@ Token削除
   "tasks": [
     {
       "date": "2020-01-01",
-      "detail": "task1"
+      "title": "task1"
     },
     {
       "date": "2020-01-02",
-      "detail": "task2"
+      "title": "task2"
     },
     ...
   ]

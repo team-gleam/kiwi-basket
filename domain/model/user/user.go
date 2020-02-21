@@ -1,13 +1,15 @@
 package user
 
+import "github.com/the-gleam/kiwi-basket/domain/model/user/username"
+
 type User struct {
-	username Username
+	username username.Username
 }
 
-func NewUser(u Username) *User {
+func NewUser(u username.Username) *User {
 	return &User{u}
 }
 
-func (u *User) Username() Username {
+func (u *User) Username() username.Username {
 	return u.username
 }

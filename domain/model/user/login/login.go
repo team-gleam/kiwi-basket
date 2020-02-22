@@ -10,3 +10,11 @@ type Login struct {
 func NewLogin(u username.Username, p string) Login {
 	return Login{u, p}
 }
+
+func (l Login) Username() username.Username {
+	return l.username
+}
+
+func (l Login) HashedPassword() string {
+	return l.hashedPassword
+}

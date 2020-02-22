@@ -17,3 +17,11 @@ func NoClass() Class {
 func (c Class) IsNoClass() bool {
 	return c.noClass
 }
+
+func (c Class) Subject() string {
+	return c.subject
+}
+
+func (c Class) Room() string {
+	return c.room
+}

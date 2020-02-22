@@ -10,10 +10,10 @@ type Auth struct {
 	token    token.Token
 }
 
-func (a Auth) Token() token.Token {
-	return a.token
-}
-
 func (a Auth) Username() username.Username {
 	return a.username
+}
+
+func (a Auth) Token() token.Token {
+	return a.token
 }

@@ -1,13 +1,16 @@
 package auth
 
-import "github.com/the-gleam/kiwi-basket/domain/model/user/username"
+import (
+	"github.com/the-gleam/kiwi-basket/domain/model/user/token"
+	"github.com/the-gleam/kiwi-basket/domain/model/user/username"
+)
 
 type Auth struct {
 	username username.Username
-	token    string
+	token    token.Token
 }
 
-func (a Auth) Token() string {
+func (a Auth) Token() token.Token {
 	return a.token
 }
 

@@ -19,7 +19,7 @@ func TestNewUsername(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			v, e := NewUsername(tt.input)
 			if !tt.expectError && e != nil {
-				t.Fatalf("unexpected error: %v\n", e)
+				t.Fatalf("unexpected error: %v", e)
 			} else if tt.expectError && e == nil {
 				t.Fatalf("expected error but got nil")
 			}

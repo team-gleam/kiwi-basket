@@ -10,6 +10,10 @@ type Auth struct {
 	token    token.Token
 }
 
+func NewAuth(u username.Username, t token.Token) Auth {
+	return Auth{u, t}
+}
+
 func (a Auth) Username() username.Username {
 	return a.username
 }

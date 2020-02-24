@@ -24,7 +24,7 @@ func NewTask(date, title string) (Task, error) {
 	return Task{d, title}, nil
 }
 
-func (t Task) StringDate() string {
+func (t Task) TextDate() string {
 	return t.date.Format(layout)
 }
 

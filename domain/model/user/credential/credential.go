@@ -1,4 +1,4 @@
-package auth
+package credential
 
 import (
 	"github.com/the-gleam/kiwi-basket/domain/model/user/token"

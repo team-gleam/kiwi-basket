@@ -1,7 +1,9 @@
 package login
 
+import "github.com/the-gleam/kiwi-basket/domain/model/user/login"
+
 type ILoginRepository interface {
-	Create() error
-	Delete() error
-	Exists() bool
+	Create(login.Login) error
+	Delete(login.Login) error
+	Exists(login.Login) bool
 }

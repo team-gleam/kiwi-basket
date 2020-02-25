@@ -1,7 +1,9 @@
 package credential
 
+import "github.com/the-gleam/kiwi-basket/domain/model/user/credential"
+
 type ICredentialRepository interface {
-	Append() error
-	Delete() error
-	Exists() bool
+	Append(credential.Auth) error
+	Remove(credential.Auth) error
+	Exists(credential.Auth) bool
 }

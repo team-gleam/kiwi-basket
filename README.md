@@ -45,7 +45,6 @@ Token削除
 `DELETE`
 ```
 {  
-  "username": "gleam",
   "token": "1234567890"
 }
 ```

@@ -8,7 +8,7 @@
 ```
 {
   "username": "gleam",
-  "hashed_password": "abcdefg"
+  "password": "abcdefg"
 }
 ```
 
@@ -18,7 +18,7 @@
 ```
 {
   "username": "gleam",
-  "hashed_password": "abcdefg"
+  "password": "abcdefg"
 }
 ```
 
@@ -31,7 +31,7 @@ Token生成
 ```
 {
   "username": "gleam",
-  "hashed_password": "abcdefg"
+  "password": "abcdefg"
 }
 ```
 ```

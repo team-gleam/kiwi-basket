@@ -8,7 +8,7 @@
 ```
 {
   "username": "gleam",
-  "hashed_password": "abcdefg"
+  "password": "abcdefg"
 }
 ```
 
@@ -18,7 +18,7 @@
 ```
 {
   "username": "gleam",
-  "hashed_password": "abcdefg"
+  "password": "abcdefg"
 }
 ```
 
@@ -27,11 +27,11 @@
 
 Token生成
 
-`GET`
+`POST`
 ```
 {
   "username": "gleam",
-  "hashed_password": "abcdefg"
+  "password": "abcdefg"
 }
 ```
 ```
@@ -45,7 +45,6 @@ Token削除
 `DELETE`
 ```
 {  
-  "username": "gleam",
   "token": "1234567890"
 }
 ```
@@ -57,8 +56,6 @@ Token削除
 `POST`
 ```
 {
-  "username": "gleam",
-  "token": "1234567890".
   "timetable": {
     "mon": {
       "1": {
@@ -80,12 +77,6 @@ Token削除
 時間割の取得
 
 `GET`
-```
-{  
-  "username": "gleam",
-  "token": "1234567890"
-}
-```
 ```
 {
   "timetable": {
@@ -118,8 +109,6 @@ Token削除
 `POST`
 ```
 {
-  "username": "gleam",
-  "token": "1234567890",
   "task": {
     "date": "2020-01-01",
     "title": "task"
@@ -130,12 +119,6 @@ Token削除
 課題の取得
 
 `GET`
-```
-{
-  "username": "gleam",
-  "token": "1234567890"
-}
-```
 ```
 {
   "tasks": [

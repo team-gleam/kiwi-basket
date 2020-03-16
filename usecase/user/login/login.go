@@ -16,12 +16,15 @@ func NewLoginUsecase(r loginRepository.ILoginRepository) LoginUsecase {
 }
 
 func (u LoginUsecase) Add(l loginModel.Login) error {
-	exist := u.loginRepository.Exists(l)
+	exist, err := u.loginRepository.Exists(l)
+	if err != nil {
+		return err
+	}
 	if exist {
 		return fmt.Errorf("this username already exists")
 	}
 
-	err := u.loginRepository.Create(l)
+	err = u.loginRepository.Create(l)
 	if err != nil {
 		return err
 	}

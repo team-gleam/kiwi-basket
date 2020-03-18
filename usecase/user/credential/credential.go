@@ -45,3 +45,7 @@ func (u CredentialUsecase) Generate(login loginModel.Login) (token.Token, error)
 	a := credential.NewAuth(login.Username(), t)
 	return t, u.credentialRepository.Append(a)
 }
+
+func (u CredentialUsecase) IsCredentialed(t token.Token) (bool, error) {
+	return u.credentialRepository.Exists(t)
+}

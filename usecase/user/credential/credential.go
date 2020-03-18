@@ -6,6 +6,7 @@ import (
 	"github.com/the-gleam/kiwi-basket/domain/model/user/credential"
 	loginModel "github.com/the-gleam/kiwi-basket/domain/model/user/login"
 	"github.com/the-gleam/kiwi-basket/domain/model/user/token"
+	"github.com/the-gleam/kiwi-basket/domain/model/user/username"
 	credentialRepository "github.com/the-gleam/kiwi-basket/domain/repository/user/credential"
 	"github.com/the-gleam/kiwi-basket/domain/repository/user/login"
 	loginRepository "github.com/the-gleam/kiwi-basket/domain/repository/user/login"
@@ -48,4 +49,12 @@ func (u CredentialUsecase) Generate(login loginModel.Login) (token.Token, error)
 
 func (u CredentialUsecase) IsCredentialed(t token.Token) (bool, error) {
 	return u.credentialRepository.Exists(t)
+}
+
+func (u CredentialUsecase) Whose(t token.Token) (username.Username, error) {
+	a, err := u.credentialRepository.Get(t)
+	if err != nil {
+		return username.Username{}, err
+	}
+	return a.Username(), nil
 }

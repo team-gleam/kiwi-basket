@@ -40,15 +40,6 @@ Token生成
 }
 ```
 
-Token削除
-
-`DELETE`
-```
-{  
-  "token": "1234567890"
-}
-```
-
 - /timetables
 
 時間割の作成

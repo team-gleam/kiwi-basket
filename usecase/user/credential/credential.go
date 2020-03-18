@@ -33,7 +33,7 @@ func (u CredentialUsecase) Generate(login loginModel.Login) (token.Token, error)
 	if err != nil {
 		return token.NewToken(""), err
 	}
-	if l.HashedPassword() != login.HashedPassword() {
+	if l != login {
 		return token.NewToken(""), fmt.Errorf("username or password is invalid")
 	}
 
@@ -44,21 +44,4 @@ func (u CredentialUsecase) Generate(login loginModel.Login) (token.Token, error)
 
 	a := credential.NewAuth(login.Username(), t)
 	return t, u.credentialRepository.Append(a)
-}
-
-func (u CredentialUsecase) Delete(t token.Token) error {
-	exist, err := u.credentialRepository.Exists(t)
-	if err != nil {
-		return err
-	}
-	if !exist {
-		return fmt.Errorf("this token not exists")
-	}
-
-	a, err := u.credentialRepository.Get(t)
-	if err != nil {
-		return err
-	}
-
-	return u.credentialRepository.Remove(a)
 }

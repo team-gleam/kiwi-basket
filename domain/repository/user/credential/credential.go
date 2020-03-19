@@ -1,8 +1,8 @@
 package credential
 
 import (
-	"github.com/the-gleam/kiwi-basket/domain/model/user/credential"
-	"github.com/the-gleam/kiwi-basket/domain/model/user/token"
+	"github.com/team-gleam/kiwi-basket/domain/model/user/credential"
+	"github.com/team-gleam/kiwi-basket/domain/model/user/token"
 )
 
 type ICredentialRepository interface {

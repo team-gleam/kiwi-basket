@@ -3,8 +3,8 @@ package login
 import (
 	"fmt"
 
-	loginModel "github.com/the-gleam/kiwi-basket/domain/model/user/login"
-	loginRepository "github.com/the-gleam/kiwi-basket/domain/repository/user/login"
+	loginModel "github.com/team-gleam/kiwi-basket/domain/model/user/login"
+	loginRepository "github.com/team-gleam/kiwi-basket/domain/repository/user/login"
 )
 
 type LoginUsecase struct {

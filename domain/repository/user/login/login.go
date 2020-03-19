@@ -1,8 +1,8 @@
 package login
 
 import (
-	"github.com/the-gleam/kiwi-basket/domain/model/user/login"
-	"github.com/the-gleam/kiwi-basket/domain/model/user/username"
+	"github.com/team-gleam/kiwi-basket/domain/model/user/login"
+	"github.com/team-gleam/kiwi-basket/domain/model/user/username"
 )
 
 type ILoginRepository interface {

@@ -1,8 +1,8 @@
 package task
 
 import (
-	"github.com/the-gleam/kiwi-basket/domain/model/task"
-	"github.com/the-gleam/kiwi-basket/domain/model/user/username"
+	"github.com/team-gleam/kiwi-basket/domain/model/task"
+	"github.com/team-gleam/kiwi-basket/domain/model/user/username"
 )
 
 type ITaskRepository interface {

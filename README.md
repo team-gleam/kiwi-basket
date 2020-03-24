@@ -101,6 +101,7 @@ Token生成
 ```
 {
   "task": {
+    "id": "xxx", // random id
     "date": "2020-01-01",
     "title": "task"
   }
@@ -114,10 +115,12 @@ Token生成
 {
   "tasks": [
     {
+      "id": "1",
       "date": "2020-01-01",
       "title": "task1"
     },
     {
+      "id": "2",
       "date": "2020-01-02",
       "title": "task2"
     },

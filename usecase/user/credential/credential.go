@@ -3,12 +3,11 @@ package credential
 import (
 	"fmt"
 
-	"github.com/team-gleam/kiwi-basket/domain/model/user/credential"
+	credentialModel "github.com/team-gleam/kiwi-basket/domain/model/user/credential"
 	loginModel "github.com/team-gleam/kiwi-basket/domain/model/user/login"
 	"github.com/team-gleam/kiwi-basket/domain/model/user/token"
 	"github.com/team-gleam/kiwi-basket/domain/model/user/username"
 	credentialRepository "github.com/team-gleam/kiwi-basket/domain/repository/user/credential"
-	"github.com/team-gleam/kiwi-basket/domain/repository/user/login"
 	loginRepository "github.com/team-gleam/kiwi-basket/domain/repository/user/login"
 )
 
@@ -17,7 +16,7 @@ type CredentialUsecase struct {
 	loginRepository      loginRepository.ILoginRepository
 }
 
-func NewCredentialRepository(c credentialRepository.ICredentialRepository, l login.ILoginRepository) CredentialUsecase {
+func NewCredentialRepository(c credentialRepository.ICredentialRepository, l loginRepository.ILoginRepository) CredentialUsecase {
 	return CredentialUsecase{c, l}
 }
 
@@ -43,7 +42,7 @@ func (u CredentialUsecase) Generate(login loginModel.Login) (token.Token, error)
 		return token.NewToken(""), err
 	}
 
-	a := credential.NewAuth(login.Username(), t)
+	a := credentialModel.NewAuth(login.Username(), t)
 	return t, u.credentialRepository.Append(a)
 }
 

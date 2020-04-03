@@ -53,8 +53,5 @@ func (u CredentialUsecase) IsCredentialed(t token.Token) (bool, error) {
 
 func (u CredentialUsecase) Whose(t token.Token) (username.Username, error) {
 	a, err := u.credentialRepository.Get(t)
-	if err != nil {
-		return username.Username{}, err
-	}
-	return a.Username(), nil
+	return a.Username(), err
 }

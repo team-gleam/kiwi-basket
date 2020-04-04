@@ -1,3 +1,3 @@
-module github.com/the-gleam/kiwi-basket
+module github.com/team-gleam/kiwi-basket
 
 go 1.13

@@ -1,8 +1,12 @@
 package task
 
-import "github.com/the-gleam/kiwi-basket/domain/model/task"
+import (
+	"github.com/team-gleam/kiwi-basket/domain/model/task"
+	"github.com/team-gleam/kiwi-basket/domain/model/user/username"
+)
 
 type ITaskRepository interface {
-	Create(task.Task) error
-	GetAll() ([]task.Task, error)
+	Create(username.Username, task.Task) error
+	GetAll(username.Username) ([]task.Task, error)
+	Remove(username.Username, task.ID) error
 }

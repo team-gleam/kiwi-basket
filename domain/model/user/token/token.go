@@ -2,7 +2,6 @@ package token
 
 import (
 	"crypto/rand"
-	"fmt"
 	"math/big"
 )
 
@@ -15,18 +14,21 @@ func NewToken(t string) Token {
 }
 
 func GenToken() (Token, error) {
-	n, err := rand.Int(rand.Reader, max())
-	if err != nil {
-		return NewToken(""), err
-	}
-	return NewToken(fmt.Sprintf("%x", n)), nil
-}
+	str := "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
 
-func max() *big.Int {
-	x := big.NewInt(2)
-	y := big.NewInt(80)
-	n := new(big.Int).Exp(x, y, nil)
-	return n // 0x100000000000000000000
+	length := 32
+	token := make([]byte, length)
+
+	for i := range token {
+		n, err := rand.Int(rand.Reader, big.NewInt(int64(length)))
+		if err != nil {
+			return Token{}, err
+		}
+
+		token[i] = str[n.Int64()]
+	}
+
+	return NewToken(string(token)), nil
 }
 
 func (t Token) Token() string {

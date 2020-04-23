@@ -1,5 +1,5 @@
 package task
 
 type ID struct {
-	id int
+	ID int
 }

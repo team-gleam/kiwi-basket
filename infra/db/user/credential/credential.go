@@ -15,8 +15,7 @@ type CredentialRepository struct {
 }
 
 func NewCredentialRepository(h *handler.DbHandler) credentialRepository.ICredentialRepository {
-	credentialRepository := CredentialRepository{h}
-	return &credentialRepository
+	return &CredentialRepository{h}
 }
 
 type authDB struct {

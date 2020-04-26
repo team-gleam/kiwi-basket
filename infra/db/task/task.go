@@ -63,5 +63,5 @@ func (r *TaskRepository) GetAll(u username.Username) ([]taskModel.Task, error) {
 }
 
 func (r *TaskRepository) Remove(u username.Username, id int) error {
-	return r.dbHandler.Db.Where("username = ?", u.Name).Delete(taskDB{ID : uint(id)}).Error
+	return r.dbHandler.Db.Delete(taskDB{ID : uint(id)}).Error
 }

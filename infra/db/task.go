@@ -3,21 +3,21 @@ package task
 import (
 	"time"
 
-	taskModel "github.com/team-gleam/kiwi-basket/domain/model/task"
+	taskRepository "github.com/team-gleam/kiwi-basket/domain/repository/task"
+	"github.com/team-gleam/kiwi-basket/infra/db/handler"
 )
+
+type TaskRepository struct {
+	dbHandler *handler.DbHandler
+}
+
+func NewTaskRepository(h *handler.DbHandler) taskRepository.ITaskRepository {
+	return &TaskRepository{h}
+}
 
 type taskDB struct {
 	ID uint `gorm:"primary_key;auto_increment"`
 	username string
 	date time.Time
 	title string
-}
-
-func transformTaskForDB(t taskModel.Task, u string) taskDB {
-	return taskDB{uint(t.ID()), u, t.Date(), t.Title()}
-}
-
-func toTask(t taskDB) (taskModel.Task, string, error) {
-	task, err := taskModel.NewTask(int(t.ID), t.date.Format(taskModel.Layout), t.title)
-	return task, t.username, err
 }

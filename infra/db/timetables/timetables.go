@@ -34,14 +34,14 @@ func NewTimetablesDB(u string, mon, tue, wed, thu, fri uint) TimetablesDB {
 type TimetableDB struct {
 	ID                          uint `gorm:"primary_key;auto_increment"`
 	Day                         string
-	One, Twe, Three, Four, Five *uint
+	One, Two, Three, Four, Five *uint
 }
 
 func NewTimetableDB(d string, _1, _2, _3, _4, _5 *uint) TimetableDB {
 	return TimetableDB{
 		Day:   d,
 		One:   _1,
-		Twe:   _2,
+		Two:   _2,
 		Three: _3,
 		Four:  _4,
 		Five:  _5,

@@ -1,5 +1,18 @@
 package timetables
 
+import (
+	timetablesRepository "github.com/team-gleam/kiwi-basket/domain/repository/timetables"
+	"github.com/team-gleam/kiwi-basket/infra/db/handler"
+)
+
+type TimetablesRepository struct {
+	dbHandler *handler.DbHandler
+}
+
+func NewTimetablesRepository(h *handler.DbHandler) timetablesRepository.ITimetablesRepository {
+	return &TimetablesRepository{h}
+}
+
 type TimetablesDB struct {
 	Username                string `gorm:"primary_key"`
 	Mon, Tue, Wed, Thu, Fri uint

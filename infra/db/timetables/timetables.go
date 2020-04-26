@@ -1,6 +1,7 @@
 package timetables
 
 import (
+	timetablesModel "github.com/team-gleam/kiwi-basket/domain/model/timetables"
 	"github.com/team-gleam/kiwi-basket/domain/model/user/username"
 	timetablesRepository "github.com/team-gleam/kiwi-basket/domain/repository/timetables"
 	"github.com/team-gleam/kiwi-basket/infra/db/handler"
@@ -59,11 +60,58 @@ func NewClassDB(s, r string) ClassDB {
 	}
 }
 
-func (r TimetablesRepository) Delete(u username.Username) error {
+const (
+	NoClass = "no class"
+	Mon     = "mon"
+	Tue     = "tue"
+	Wed     = "wed"
+	Thu     = "thu"
+	Fri     = "fri"
+)
+
+func (r *TimetablesRepository) Create(u username.Username, t timetablesModel.Timetables) error {
+	mon, err := r.createTimetable(Mon, t.Mon())
+	tue, err := r.createTimetable(Tue, t.Tue())
+	wed, err := r.createTimetable(Wed, t.Wed())
+	thu, err := r.createTimetable(Thu, t.Thu())
+	fri, err := r.createTimetable(Fri, t.Fri())
+	if err != nil {
+		return err
+	}
+
+	return r.dbHandler.Db.Create(NewTimetablesDB(u.Name(), mon, tue, wed, thu, fri)).Error
+}
+
+func (r *TimetablesRepository) createTimetable(day string, timetable timetablesModel.Timetable) (uint, error) {
+	_1, err := r.createClass(timetable.First())
+	_2, err := r.createClass(timetable.Second())
+	_3, err := r.createClass(timetable.Third())
+	_4, err := r.createClass(timetable.Fourth())
+	_5, err := r.createClass(timetable.Fifth())
+	if err != nil {
+		return 0, err
+	}
+
+	t := NewTimetableDB(day, _1, _2, _3, _4, _5)
+	err = r.dbHandler.Db.Create(&t).Error
+	return t.ID, err
+}
+
+func (r *TimetablesRepository) createClass(class timetablesModel.Class) (*uint, error) {
+	if class.IsNoClass() {
+		return nil, nil
+	}
+
+	c := NewClassDB(class.Subject(), class.Room())
+	err := r.dbHandler.Db.Create(&c).Error
+	return &c.ID, err
+}
+
+func (r *TimetablesRepository) Delete(u username.Username) error {
 	return r.dbHandler.Db.Delete(TimetablesDB{Username: u.Name()}).Error
 }
 
-func (r TimetablesRepository) Exists(u username.Username) (bool, error) {
+func (r *TimetablesRepository) Exists(u username.Username) (bool, error) {
 	t := TimetablesDB{}
 	err := r.dbHandler.Db.Where("username = ?", u.Name()).First(&t).Error
 	if err != nil {

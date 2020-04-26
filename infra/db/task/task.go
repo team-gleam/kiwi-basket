@@ -19,9 +19,9 @@ func NewTaskRepository(h *handler.DbHandler) taskRepository.ITaskRepository {
 
 type taskDB struct {
 	ID uint `gorm:"primary_key;auto_increment"`
-	username string
-	date time.Time
-	title string
+	Username string
+	Date time.Time
+	Title string
 }
 
 func transformTaskForDB(t taskModel.Task, u username.Username) taskDB {
@@ -29,12 +29,12 @@ func transformTaskForDB(t taskModel.Task, u username.Username) taskDB {
 }
 
 func toTask(t taskDB) (taskModel.Task, username.Username, error) {
-	task, err := taskModel.NewTask(int(t.ID), t.date.Format(taskModel.Layout), t.title)
+	task, err := taskModel.NewTask(int(t.ID), t.Date.Format(taskModel.Layout), t.Title)
 	if err != nil {
 		return taskModel.Task{}, username.Username{}, err
 	}
 
-	u, err := username.NewUsername(t.username)
+	u, err := username.NewUsername(t.Username)
 	return task, u, err
 }
 

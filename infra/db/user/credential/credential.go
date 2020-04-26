@@ -19,8 +19,8 @@ func NewCredentialRepository(h *handler.DbHandler) credentialRepository.ICredent
 }
 
 type authDB struct {
-	username string `gorm:"primary_key"`
-	token    string `gorm:"primary_key"`
+	Username string `gorm:"primary_key"`
+	Token    string `gorm:"primary_key"`
 }
 
 func transformAuthForDB(a credentialModel.Auth) authDB {
@@ -28,8 +28,8 @@ func transformAuthForDB(a credentialModel.Auth) authDB {
 }
 
 func toAuth(a authDB) (credentialModel.Auth, error) {
-	u, err := username.NewUsername(a.username)
-	return credentialModel.NewAuth(u, token.NewToken(a.token)), err
+	u, err := username.NewUsername(a.Username)
+	return credentialModel.NewAuth(u, token.NewToken(a.Token)), err
 }
 
 func (r *CredentialRepository) Append(a credentialModel.Auth) error {

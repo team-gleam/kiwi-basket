@@ -37,3 +37,31 @@ func toTask(t taskDB) (taskModel.Task, username.Username, error) {
 	u, err := username.NewUsername(t.username)
 	return task, u, err
 }
+
+func (r *TaskRepository) Create(u username.Username, t taskModel.Task) error {
+	d := transformTaskForDB(t, u)
+	return r.dbHandler.Db.Create(d).Error
+}
+
+func (r *TaskRepository) GetAll(u username.Username) ([]taskModel.Task, error) {
+	ds := make([]taskDB, 0)
+	err := r.dbHandler.Db.Where("username = ?", u.Name).Find(&ds).Error
+	if err != nil {
+		return []taskModel.Task{}, err
+	}
+
+	tasks := make([]taskModel.Task, 0)
+	for _, d := range ds {
+		t, _, err := toTask(d)
+		if err != nil {
+			return tasks, err
+		}
+		tasks = append(tasks, t)
+	}
+
+	return tasks, nil
+}
+
+func (r *TaskRepository) Remove(u username.Username, id int) error {
+	return r.dbHandler.Db.Where("username = ?", u.Name).Delete(taskDB{ID : uint(id)}).Error
+}

@@ -71,9 +71,21 @@ const (
 
 func (r *TimetablesRepository) Create(u username.Username, t timetablesModel.Timetables) error {
 	mon, err := r.createTimetable(Mon, t.Mon())
+	if err != nil {
+		return err
+	}
 	tue, err := r.createTimetable(Tue, t.Tue())
+	if err != nil {
+		return err
+	}
 	wed, err := r.createTimetable(Wed, t.Wed())
+	if err != nil {
+		return err
+	}
 	thu, err := r.createTimetable(Thu, t.Thu())
+	if err != nil {
+		return err
+	}
 	fri, err := r.createTimetable(Fri, t.Fri())
 	if err != nil {
 		return err
@@ -84,9 +96,21 @@ func (r *TimetablesRepository) Create(u username.Username, t timetablesModel.Tim
 
 func (r *TimetablesRepository) createTimetable(day string, timetable timetablesModel.Timetable) (uint, error) {
 	_1, err := r.createClass(timetable.First())
+	if err != nil {
+		return 0, err
+	}
 	_2, err := r.createClass(timetable.Second())
+	if err != nil {
+		return 0, err
+	}
 	_3, err := r.createClass(timetable.Third())
+	if err != nil {
+		return 0, err
+	}
 	_4, err := r.createClass(timetable.Fourth())
+	if err != nil {
+		return 0, err
+	}
 	_5, err := r.createClass(timetable.Fifth())
 	if err != nil {
 		return 0, err
@@ -119,4 +143,80 @@ func (r *TimetablesRepository) Exists(u username.Username) (bool, error) {
 	}
 
 	return t != TimetablesDB{}, nil
+}
+
+func (r *TimetablesRepository) Get(u username.Username) (timetablesModel.Timetables, error) {
+	ts := TimetablesDB{}
+	err := r.dbHandler.Db.Where("username = ?", u.Name).First(&ts).Error
+	if err != nil {
+		return timetablesModel.Timetables{}, err
+	}
+
+	mon, err := r.getTimetable(ts.Mon)
+	if err != nil {
+		return timetablesModel.Timetables{}, err
+	}
+	tue, err := r.getTimetable(ts.Tue)
+	if err != nil {
+		return timetablesModel.Timetables{}, err
+	}
+	wed, err := r.getTimetable(ts.Wed)
+	if err != nil {
+		return timetablesModel.Timetables{}, err
+	}
+	thu, err := r.getTimetable(ts.Thu)
+	if err != nil {
+		return timetablesModel.Timetables{}, err
+	}
+	fri, err := r.getTimetable(ts.Fri)
+	if err != nil {
+		return timetablesModel.Timetables{}, err
+	}
+
+	return timetablesModel.NewTimetables(mon, tue, wed, thu, fri), nil
+}
+
+func (r *TimetablesRepository) getTimetable(id uint) (timetablesModel.Timetable, error) {
+	t := TimetableDB{}
+	err := r.dbHandler.Db.Where("id = ?", id).First(&t).Error
+	if err != nil {
+		return timetablesModel.Timetable{}, err
+	}
+
+	_1, err := r.getClass(t.One)
+	if err != nil {
+		return timetablesModel.Timetable{}, err
+	}
+	_2, err := r.getClass(t.Two)
+	if err != nil {
+		return timetablesModel.Timetable{}, err
+	}
+	_3, err := r.getClass(t.Three)
+	if err != nil {
+		return timetablesModel.Timetable{}, err
+	}
+	_4, err := r.getClass(t.Four)
+	if err != nil {
+		return timetablesModel.Timetable{}, err
+	}
+	_5, err := r.getClass(t.Five)
+	if err != nil {
+		return timetablesModel.Timetable{}, err
+	}
+
+	return timetablesModel.NewTimetable(_1, _2, _3, _4, _5), nil
+}
+
+func (r *TimetablesRepository) getClass(id *uint) (timetablesModel.Class, error) {
+	if id == nil {
+		return timetablesModel.NoClass(), nil
+	}
+
+	c := ClassDB{}
+	err := r.dbHandler.Db.Where("id = ?", id).First(&c).Error
+	if err != nil {
+		return timetablesModel.Class{}, err
+	}
+
+	return timetablesModel.NewClass(c.Subject, c.Room), nil
 }

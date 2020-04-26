@@ -1,6 +1,7 @@
 package timetables
 
 import (
+	"github.com/team-gleam/kiwi-basket/domain/model/user/username"
 	timetablesRepository "github.com/team-gleam/kiwi-basket/domain/repository/timetables"
 	"github.com/team-gleam/kiwi-basket/infra/db/handler"
 )
@@ -56,4 +57,18 @@ func NewClassDB(s, r string) ClassDB {
 		Subject: s,
 		Room:    r,
 	}
+}
+
+func (r TimetablesRepository) Delete(u username.Username) error {
+	return r.dbHandler.Db.Delete(TimetablesDB{Username: u.Name()}).Error
+}
+
+func (r TimetablesRepository) Exists(u username.Username) (bool, error) {
+	t := TimetablesDB{}
+	err := r.dbHandler.Db.Where("username = ?", u.Name()).First(&t).Error
+	if err != nil {
+		return false, err
+	}
+
+	return t != TimetablesDB{}, nil
 }

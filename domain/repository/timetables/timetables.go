@@ -8,6 +8,6 @@ import (
 type ITimetablesRepository interface {
 	Create(username.Username, timetables.Timetables) error
 	Delete(username.Username) error
-	Exist(username.Username) (bool, error)
+	Exists(username.Username) (bool, error)
 	Get(username.Username) (timetables.Timetables, error)
 }

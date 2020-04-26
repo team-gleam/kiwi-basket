@@ -35,7 +35,7 @@ func (u TaskUsecase) Add(token tokenModel.Token, task taskModel.Task) error {
 	return u.taskRepository.Create(user, task)
 }
 
-func (u TaskUsecase) Delete(token tokenModel.Token, id taskModel.ID) error {
+func (u TaskUsecase) Delete(token tokenModel.Token, id int) error {
 	credentialed, err := u.credentialUsecase.IsCredentialed(token)
 	if err != nil {
 		return err

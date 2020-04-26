@@ -18,10 +18,10 @@ func NewTaskRepository(h *handler.DbHandler) taskRepository.ITaskRepository {
 }
 
 type taskDB struct {
-	ID uint `gorm:"primary_key;auto_increment"`
+	ID       uint `gorm:"primary_key;auto_increment"`
 	Username string
-	Date time.Time
-	Title string
+	Date     time.Time
+	Title    string
 }
 
 func transformTaskForDB(t taskModel.Task, u username.Username) taskDB {
@@ -63,5 +63,5 @@ func (r *TaskRepository) GetAll(u username.Username) ([]taskModel.Task, error) {
 }
 
 func (r *TaskRepository) Remove(u username.Username, id int) error {
-	return r.dbHandler.Db.Delete(taskDB{ID : uint(id)}).Error
+	return r.dbHandler.Db.Delete(taskDB{ID: uint(id)}).Error
 }

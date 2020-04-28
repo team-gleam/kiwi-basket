@@ -9,7 +9,7 @@ type Timetables struct {
 }
 
 func NewTimetables(mon, tue, wed, thu, fri Timetable) Timetables {
-	return NewTimetables(mon, tue, wed, thu, fri)
+	return Timetables{mon, tue, wed, thu, fri}
 }
 
 func (t Timetables) Mon() Timetable {

@@ -32,7 +32,7 @@ func (u TimetablesUsecase) Register(token token.Token, timetables timetablesMode
 		return err
 	}
 
-	exist, err := u.timetablesRepository.Exist(user)
+	exist, err := u.timetablesRepository.Exists(user)
 	if err != nil {
 		return err
 	}
@@ -59,7 +59,7 @@ func (u TimetablesUsecase) Get(token token.Token) (timetablesModel.Timetables, e
 		return timetablesModel.Timetables{}, err
 	}
 
-	exist, err := u.timetablesRepository.Exist(user)
+	exist, err := u.timetablesRepository.Exists(user)
 	if err != nil {
 		return timetablesModel.Timetables{}, err
 	}

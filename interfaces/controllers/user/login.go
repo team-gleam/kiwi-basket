@@ -54,13 +54,17 @@ func hashPassword(p string) (string, error) {
 const (
 	InvalidUsernameOrPassword = "invalid username or password"
 	InternalServerError       = "internal server error"
+	InvalidJsonFormat         = "invalid JSON format"
 )
 
 func (c LoginController) SignUp(ctx echo.Context) error {
 	login := new(LoginResponse)
 	err := ctx.Bind(login)
 	if err != nil {
-		return ctx.JSON(http.StatusBadRequest, errorResponse.NewError(err))
+		return ctx.JSON(
+			http.StatusBadRequest,
+			errorResponse.NewError(fmt.Errorf(InvalidJsonFormat)),
+		)
 	}
 	if login.Username == "" || login.Password == "" {
 		return ctx.JSON(

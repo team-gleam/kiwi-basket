@@ -28,7 +28,7 @@ type LoginResponse struct {
 	Password string `json:"password"`
 }
 
-func (l LoginResponse) toLogin() (loginModel.Login, error) {
+func (l LoginResponse) ToLogin() (loginModel.Login, error) {
 	u, err := username.NewUsername(l.Username)
 	if err != nil {
 		return loginModel.Login{}, err
@@ -73,7 +73,7 @@ func (c LoginController) SignUp(ctx echo.Context) error {
 		)
 	}
 
-	l, err := login.toLogin()
+	l, err := login.ToLogin()
 	if err != nil {
 		return ctx.JSON(
 			http.StatusInternalServerError,
@@ -108,7 +108,7 @@ func (c LoginController) DeleteAccound(ctx echo.Context) error {
 		)
 	}
 
-	l, err := login.toLogin()
+	l, err := login.ToLogin()
 	if err != nil {
 		return ctx.JSON(
 			http.StatusInternalServerError,

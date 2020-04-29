@@ -97,3 +97,38 @@ func (c LoginController) SignUp(ctx echo.Context) error {
 
 	return ctx.NoContent(http.StatusOK)
 }
+
+func (c LoginController) DeleteAccound(ctx echo.Context) error {
+	login := new(LoginResponse)
+	err := ctx.Bind(login)
+	if err != nil {
+		return ctx.JSON(
+			http.StatusBadRequest,
+			errorResponse.NewError(fmt.Errorf(InvalidJsonFormat)),
+		)
+	}
+
+	l, err := login.toLogin()
+	if err != nil {
+		return ctx.JSON(
+			http.StatusInternalServerError,
+			errorResponse.NewError(fmt.Errorf(InternalServerError)),
+		)
+	}
+
+	err = c.loginUsecase.Delete(l)
+	if err.Error() == loginUsecase.UsernameNotFound {
+		return ctx.JSON(
+			http.StatusNotFound,
+			errorResponse.NewError(fmt.Errorf(loginUsecase.UsernameNotFound)),
+		)
+	}
+	if err != nil {
+		return ctx.JSON(
+			http.StatusInternalServerError,
+			errorResponse.NewError(fmt.Errorf(InternalServerError)),
+		)
+	}
+
+	return ctx.NoContent(http.StatusOK)
+}

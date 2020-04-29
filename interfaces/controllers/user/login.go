@@ -10,6 +10,7 @@ import (
 	loginRepository "github.com/team-gleam/kiwi-basket/domain/repository/user/login"
 	errorResponse "github.com/team-gleam/kiwi-basket/interfaces/controllers/error"
 	loginUsecase "github.com/team-gleam/kiwi-basket/usecase/user/login"
+	"golang.org/x/crypto/bcrypt"
 )
 
 type LoginController struct {
@@ -33,7 +34,21 @@ func (l LoginResponse) toLogin() (loginModel.Login, error) {
 		return loginModel.Login{}, err
 	}
 
-	return loginModel.NewLogin(u, l.Password), nil
+	hashed, err := hashPassword(l.Password)
+	if err != nil {
+		return loginModel.Login{}, err
+	}
+
+	return loginModel.NewLogin(u, hashed), nil
+}
+
+func hashPassword(p string) (string, error) {
+	hash, err := bcrypt.GenerateFromPassword([]byte(p), bcrypt.DefaultCost)
+	if err != nil {
+		return "", err
+	}
+
+	return string(hash), nil
 }
 
 const (
@@ -54,8 +69,13 @@ func (c LoginController) SignUp(ctx echo.Context) error {
 		)
 	}
 
-	// this error has been checked, so we ignore it here.
-	l, _ := login.toLogin()
+	l, err := login.toLogin()
+	if err != nil {
+		return ctx.JSON(
+			http.StatusInternalServerError,
+			errorResponse.NewError(fmt.Errorf(InternalServerError)),
+		)
+	}
 
 	err = c.loginUsecase.Add(l)
 	if err.Error() == loginUsecase.UsernameAlreadyExists {

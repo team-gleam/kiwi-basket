@@ -24,7 +24,7 @@ func (u TaskUsecase) Add(token tokenModel.Token, task taskModel.Task) error {
 		return err
 	}
 	if !credentialed {
-		return fmt.Errorf("this token is not credentialed")
+		return fmt.Errorf(credentialUsecase.InvalidToken)
 	}
 
 	user, err := u.credentialUsecase.Whose(token)
@@ -41,7 +41,7 @@ func (u TaskUsecase) Delete(token tokenModel.Token, id int) error {
 		return err
 	}
 	if !credentialed {
-		return fmt.Errorf("this token is not credentialed")
+		return fmt.Errorf(credentialUsecase.InvalidToken)
 	}
 
 	user, err := u.credentialUsecase.Whose(token)
@@ -58,7 +58,7 @@ func (u TaskUsecase) GetAll(token tokenModel.Token) ([]taskModel.Task, error) {
 		return nil, err
 	}
 	if !credentialed {
-		return nil, fmt.Errorf("this token is not credentialed")
+		return nil, fmt.Errorf(credentialUsecase.InvalidToken)
 	}
 
 	user, err := u.credentialUsecase.Whose(token)

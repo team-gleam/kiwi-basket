@@ -15,13 +15,18 @@ func NewLoginUsecase(r loginRepository.ILoginRepository) LoginUsecase {
 	return LoginUsecase{r}
 }
 
+const (
+	UsernameAlreadyExists = "username already exists"
+	UsernameNotFound      = "username not found"
+)
+
 func (u LoginUsecase) Add(l loginModel.Login) error {
 	exist, err := u.loginRepository.Exists(l.Username())
 	if err != nil {
 		return err
 	}
 	if exist {
-		return fmt.Errorf("this username already exists")
+		return fmt.Errorf(UsernameAlreadyExists)
 	}
 
 	return u.loginRepository.Create(l)
@@ -33,7 +38,7 @@ func (u LoginUsecase) Delete(l loginModel.Login) error {
 		return err
 	}
 	if !exist {
-		return fmt.Errorf("this username not exists")
+		return fmt.Errorf(UsernameNotFound)
 	}
 
 	return u.loginRepository.Delete(l)

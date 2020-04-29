@@ -18,13 +18,17 @@ func NewTimetablesUsecase(c credentialUsecase.CredentialUsecase, t timetablesRep
 	return TimetablesUsecase{c, t}
 }
 
+const (
+	TimetablesNotFound = "timetables not found"
+)
+
 func (u TimetablesUsecase) Register(token token.Token, timetables timetablesModel.Timetables) error {
 	credentialed, err := u.credentialUsecase.IsCredentialed(token)
 	if err != nil {
 		return err
 	}
 	if !credentialed {
-		return fmt.Errorf("this token is not credentialed")
+		return fmt.Errorf(credentialUsecase.InvalidToken)
 	}
 
 	user, err := u.credentialUsecase.Whose(token)
@@ -51,7 +55,7 @@ func (u TimetablesUsecase) Get(token token.Token) (timetablesModel.Timetables, e
 		return timetablesModel.Timetables{}, err
 	}
 	if !credentialed {
-		return timetablesModel.Timetables{}, fmt.Errorf("this token is not credentialed")
+		return timetablesModel.Timetables{}, fmt.Errorf(credentialUsecase.InvalidToken)
 	}
 
 	user, err := u.credentialUsecase.Whose(token)
@@ -65,7 +69,7 @@ func (u TimetablesUsecase) Get(token token.Token) (timetablesModel.Timetables, e
 	}
 
 	if !exist {
-		return timetablesModel.Timetables{}, fmt.Errorf("timetables not found")
+		return timetablesModel.Timetables{}, fmt.Errorf(TimetablesNotFound)
 	}
 
 	return u.timetablesRepository.Get(user)

@@ -53,7 +53,6 @@ func hashPassword(p string) (string, error) {
 
 const (
 	InvalidUsernameOrPassword = "invalid username or password"
-	InternalServerError       = "internal server error"
 	InvalidJsonFormat         = "invalid JSON format"
 )
 
@@ -77,7 +76,7 @@ func (c LoginController) SignUp(ctx echo.Context) error {
 	if err != nil {
 		return ctx.JSON(
 			http.StatusInternalServerError,
-			errorResponse.NewError(fmt.Errorf(InternalServerError)),
+			errorResponse.NewError(fmt.Errorf(errorResponse.InternalServerError)),
 		)
 	}
 
@@ -91,7 +90,7 @@ func (c LoginController) SignUp(ctx echo.Context) error {
 	if err != nil {
 		return ctx.JSON(
 			http.StatusInternalServerError,
-			errorResponse.NewError(fmt.Errorf(InternalServerError)),
+			errorResponse.NewError(fmt.Errorf(errorResponse.InternalServerError)),
 		)
 	}
 
@@ -112,7 +111,7 @@ func (c LoginController) DeleteAccound(ctx echo.Context) error {
 	if err != nil {
 		return ctx.JSON(
 			http.StatusInternalServerError,
-			errorResponse.NewError(fmt.Errorf(InternalServerError)),
+			errorResponse.NewError(fmt.Errorf(errorResponse.InternalServerError)),
 		)
 	}
 
@@ -126,7 +125,7 @@ func (c LoginController) DeleteAccound(ctx echo.Context) error {
 	if err != nil {
 		return ctx.JSON(
 			http.StatusInternalServerError,
-			errorResponse.NewError(fmt.Errorf(InternalServerError)),
+			errorResponse.NewError(fmt.Errorf(errorResponse.InternalServerError)),
 		)
 	}
 

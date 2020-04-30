@@ -12,7 +12,6 @@ import (
 	credentialRepository "github.com/team-gleam/kiwi-basket/domain/repository/user/credential"
 	loginRepository "github.com/team-gleam/kiwi-basket/domain/repository/user/login"
 	errorResponse "github.com/team-gleam/kiwi-basket/interfaces/controllers/error"
-	loginController "github.com/team-gleam/kiwi-basket/interfaces/controllers/user/login"
 	taskUsecase "github.com/team-gleam/kiwi-basket/usecase/task"
 	credentialUsecase "github.com/team-gleam/kiwi-basket/usecase/user/credential"
 )
@@ -93,7 +92,7 @@ func (c TaskController) Add(ctx echo.Context) error {
 	if err != nil {
 		return ctx.JSON(
 			http.StatusInternalServerError,
-			errorResponse.NewError(fmt.Errorf(loginController.InternalServerError)),
+			errorResponse.NewError(fmt.Errorf(errorResponse.InternalServerError)),
 		)
 	}
 
@@ -126,7 +125,7 @@ func (c TaskController) Delete(ctx echo.Context) error {
 	if err != nil {
 		return ctx.JSON(
 			http.StatusInternalServerError,
-			errorResponse.NewError(fmt.Errorf(loginController.InternalServerError)),
+			errorResponse.NewError(fmt.Errorf(errorResponse.InternalServerError)),
 		)
 	}
 
@@ -134,7 +133,7 @@ func (c TaskController) Delete(ctx echo.Context) error {
 	if err != nil {
 		return ctx.JSON(
 			http.StatusInternalServerError,
-			errorResponse.NewError(fmt.Errorf(loginController.InternalServerError)),
+			errorResponse.NewError(fmt.Errorf(errorResponse.InternalServerError)),
 		)
 	}
 
@@ -177,7 +176,7 @@ func (c TaskController) GetAll(ctx echo.Context) error {
 	if err != nil {
 		return ctx.JSON(
 			http.StatusInternalServerError,
-			errorResponse.NewError(fmt.Errorf(loginController.InternalServerError)),
+			errorResponse.NewError(fmt.Errorf(errorResponse.InternalServerError)),
 		)
 	}
 

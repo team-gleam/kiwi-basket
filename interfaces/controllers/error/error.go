@@ -7,3 +7,7 @@ type Error struct {
 func NewError(e error) Error {
 	return Error{e.Error()}
 }
+
+const (
+	InternalServerError = "internal server error"
+)

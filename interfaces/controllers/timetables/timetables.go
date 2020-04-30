@@ -148,7 +148,7 @@ func (c TimetablesController) Register(ctx echo.Context) error {
 	if err != nil {
 		return ctx.JSON(
 			http.StatusInternalServerError,
-			errorResponse.NewError(fmt.Errorf(loginController.InternalServerError)),
+			errorResponse.NewError(fmt.Errorf(errorResponse.InternalServerError)),
 		)
 	}
 
@@ -180,7 +180,7 @@ func (c TimetablesController) Get(ctx echo.Context) error {
 	if err != nil {
 		return ctx.JSON(
 			http.StatusInternalServerError,
-			errorResponse.NewError(fmt.Errorf(loginController.InternalServerError)),
+			errorResponse.NewError(fmt.Errorf(errorResponse.InternalServerError)),
 		)
 	}
 

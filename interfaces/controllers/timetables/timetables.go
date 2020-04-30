@@ -123,7 +123,7 @@ func (c TimetablesController) Register(ctx echo.Context) error {
 	if t == "" {
 		return ctx.JSON(
 			http.StatusUnauthorized,
-			errorResponse.NewError(fmt.Errorf(loginController.InvalidUsernameOrPassword)),
+			errorResponse.NewError(fmt.Errorf(credentialUsecase.InvalidToken)),
 		)
 	}
 
@@ -139,6 +139,12 @@ func (c TimetablesController) Register(ctx echo.Context) error {
 	timetables := res.toTimetables()
 
 	err = c.timetablesUsecase.Add(token.NewToken(t), timetables)
+	if err.Error() == credentialUsecase.InvalidToken {
+		return ctx.JSON(
+			http.StatusUnauthorized,
+			errorResponse.NewError(fmt.Errorf(credentialUsecase.InvalidToken)),
+		)
+	}
 	if err != nil {
 		return ctx.JSON(
 			http.StatusInternalServerError,
@@ -154,7 +160,7 @@ func (c TimetablesController) Get(ctx echo.Context) error {
 	if t == "" {
 		return ctx.JSON(
 			http.StatusUnauthorized,
-			errorResponse.NewError(fmt.Errorf(loginController.InvalidUsernameOrPassword)),
+			errorResponse.NewError(fmt.Errorf(credentialUsecase.InvalidToken)),
 		)
 	}
 
@@ -162,7 +168,7 @@ func (c TimetablesController) Get(ctx echo.Context) error {
 	if err.Error() == credentialUsecase.InvalidToken {
 		return ctx.JSON(
 			http.StatusUnauthorized,
-			errorResponse.NewError(fmt.Errorf(loginController.InvalidUsernameOrPassword)),
+			errorResponse.NewError(fmt.Errorf(credentialUsecase.InvalidToken)),
 		)
 	}
 	if err.Error() == timetablesUsecase.TimetablesNotFound {

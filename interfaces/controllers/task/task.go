@@ -140,3 +140,46 @@ func (c TaskController) Delete(ctx echo.Context) error {
 
 	return ctx.NoContent(http.StatusOK)
 }
+
+type TasksResponse struct {
+	Tasks []TaskJson `json:"tasks"`
+}
+
+func toTasksResponse(ts []TaskModel.Task) TasksResponse {
+	res := []TaskJson{}
+	for _, t := range ts {
+		res = append(res, TaskJson{
+			ID:    strconv.Itoa(t.ID()),
+			Date:  t.TextDate(),
+			Title: t.Title(),
+		})
+	}
+
+	return TasksResponse{res}
+}
+
+func (c TaskController) GetAll(ctx echo.Context) error {
+	t := ctx.Request().Header.Get("Token")
+	if t == "" {
+		return ctx.JSON(
+			http.StatusUnauthorized,
+			errorResponse.NewError(fmt.Errorf(credentialUsecase.InvalidToken)),
+		)
+	}
+
+	tasks, err := c.taskUsecase.GetAll(token.NewToken(t))
+	if err.Error() == credentialUsecase.InvalidToken {
+		return ctx.JSON(
+			http.StatusUnauthorized,
+			errorResponse.NewError(fmt.Errorf(credentialUsecase.InvalidToken)),
+		)
+	}
+	if err != nil {
+		return ctx.JSON(
+			http.StatusInternalServerError,
+			errorResponse.NewError(fmt.Errorf(loginController.InternalServerError)),
+		)
+	}
+
+	return ctx.JSON(http.StatusOK, toTasksResponse(tasks))
+}

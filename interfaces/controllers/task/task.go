@@ -86,7 +86,7 @@ func (c TaskController) Add(ctx echo.Context) error {
 	if err.Error() == credentialUsecase.InvalidToken {
 		return ctx.JSON(
 			http.StatusUnauthorized,
-			errorResponse.NewError(fmt.Errorf(credentialUsecase.InvalidToken)),
+			errorResponse.NewError(err),
 		)
 	}
 	if err != nil {
@@ -170,7 +170,7 @@ func (c TaskController) GetAll(ctx echo.Context) error {
 	if err.Error() == credentialUsecase.InvalidToken {
 		return ctx.JSON(
 			http.StatusUnauthorized,
-			errorResponse.NewError(fmt.Errorf(credentialUsecase.InvalidToken)),
+			errorResponse.NewError(err),
 		)
 	}
 	if err != nil {

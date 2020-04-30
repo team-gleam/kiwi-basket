@@ -61,13 +61,13 @@ func (c CredentialController) SignIn(ctx echo.Context) error {
 	if err.Error() == credentialUsecase.UserNotFound {
 		return ctx.JSON(
 			http.StatusNotFound,
-			errorResponse.NewError(fmt.Errorf(credentialUsecase.UserNotFound)),
+			errorResponse.NewError(err),
 		)
 	}
 	if err.Error() == credentialUsecase.InvalidUsernameOrPassword {
 		return ctx.JSON(
 			http.StatusUnauthorized,
-			errorResponse.NewError(fmt.Errorf(credentialUsecase.InvalidUsernameOrPassword)),
+			errorResponse.NewError(err),
 		)
 	}
 	if err != nil {

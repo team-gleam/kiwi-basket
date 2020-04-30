@@ -84,7 +84,7 @@ func (c LoginController) SignUp(ctx echo.Context) error {
 	if err.Error() == loginUsecase.UsernameAlreadyExists {
 		return ctx.JSON(
 			http.StatusConflict,
-			errorResponse.NewError(fmt.Errorf(loginUsecase.UsernameAlreadyExists)),
+			errorResponse.NewError(err),
 		)
 	}
 	if err != nil {
@@ -119,7 +119,7 @@ func (c LoginController) DeleteAccound(ctx echo.Context) error {
 	if err.Error() == loginUsecase.UsernameNotFound {
 		return ctx.JSON(
 			http.StatusNotFound,
-			errorResponse.NewError(fmt.Errorf(loginUsecase.UsernameNotFound)),
+			errorResponse.NewError(err),
 		)
 	}
 	if err != nil {

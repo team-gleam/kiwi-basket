@@ -22,7 +22,7 @@ const (
 	TimetablesNotFound = "timetables not found"
 )
 
-func (u TimetablesUsecase) Register(token token.Token, timetables timetablesModel.Timetables) error {
+func (u TimetablesUsecase) Add(token token.Token, timetables timetablesModel.Timetables) error {
 	credentialed, err := u.credentialUsecase.IsCredentialed(token)
 	if err != nil {
 		return err

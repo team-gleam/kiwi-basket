@@ -1,10 +1,17 @@
 package timetables
 
 import (
+	"fmt"
+	"net/http"
+
+	"github.com/labstack/echo/v4"
 	timetablesModel "github.com/team-gleam/kiwi-basket/domain/model/timetables"
+	"github.com/team-gleam/kiwi-basket/domain/model/user/token"
 	timetablesRepository "github.com/team-gleam/kiwi-basket/domain/repository/timetables"
 	credentialRepository "github.com/team-gleam/kiwi-basket/domain/repository/user/credential"
 	loginRepository "github.com/team-gleam/kiwi-basket/domain/repository/user/login"
+	errorResponse "github.com/team-gleam/kiwi-basket/interfaces/controllers/error"
+	loginController "github.com/team-gleam/kiwi-basket/interfaces/controllers/user/login"
 	timetablesUsecase "github.com/team-gleam/kiwi-basket/usecase/timetables"
 	credentialUsecase "github.com/team-gleam/kiwi-basket/usecase/user/credential"
 )
@@ -76,4 +83,35 @@ func (t *Class) toClass() timetablesModel.Class {
 		return timetablesModel.NoClass()
 	}
 	return timetablesModel.NewClass(t.Subject, t.Room)
+}
+
+func (c TimetablesController) Register(ctx echo.Context) error {
+	t := ctx.Request().Header.Get("Token")
+	if t == "" {
+		return ctx.JSON(
+			http.StatusUnauthorized,
+			errorResponse.NewError(fmt.Errorf(loginController.InvalidUsernameOrPassword)),
+		)
+	}
+
+	res := new(TimetablesResponse)
+	err := ctx.Bind(res)
+	if err != nil || res.Timetables.Mon.One == new(Class) {
+		return ctx.JSON(
+			http.StatusBadRequest,
+			errorResponse.NewError(fmt.Errorf(loginController.InvalidJsonFormat)),
+		)
+	}
+
+	timetables := res.toTimetables()
+
+	err = c.timetablesUsecase.Add(token.NewToken(t), timetables)
+	if err != nil {
+		return ctx.JSON(
+			http.StatusInternalServerError,
+			errorResponse.NewError(fmt.Errorf(loginController.InternalServerError)),
+		)
+	}
+
+	return ctx.NoContent(http.StatusOK)
 }

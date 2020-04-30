@@ -21,7 +21,7 @@ func NewCredentialController(
 	l loginRepository.ILoginRepository,
 ) *CredentialController {
 	return &CredentialController{
-		credentialUsecase.NewCredentialRepository(c, l),
+		credentialUsecase.NewCredentialUsecase(c, l),
 	}
 }
 

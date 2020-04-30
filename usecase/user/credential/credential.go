@@ -16,7 +16,10 @@ type CredentialUsecase struct {
 	loginRepository      loginRepository.ILoginRepository
 }
 
-func NewCredentialRepository(c credentialRepository.ICredentialRepository, l loginRepository.ILoginRepository) CredentialUsecase {
+func NewCredentialUsecase(
+	c credentialRepository.ICredentialRepository,
+	l loginRepository.ILoginRepository,
+) CredentialUsecase {
 	return CredentialUsecase{c, l}
 }
 

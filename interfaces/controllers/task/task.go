@@ -99,3 +99,44 @@ func (c TaskController) Add(ctx echo.Context) error {
 
 	return ctx.NoContent(http.StatusOK)
 }
+
+type ID struct {
+	ID string `json:"id"`
+}
+
+func (c TaskController) Delete(ctx echo.Context) error {
+	t := ctx.Request().Header.Get("Token")
+	if t == "" {
+		return ctx.JSON(
+			http.StatusUnauthorized,
+			errorResponse.NewError(fmt.Errorf(credentialUsecase.InvalidToken)),
+		)
+	}
+
+	res := new(ID)
+	err := ctx.Bind(res)
+	if err != nil || res.ID == "" {
+		return ctx.JSON(
+			http.StatusBadRequest,
+			errorResponse.NewError(fmt.Errorf(InvalidJSONFormat)),
+		)
+	}
+
+	id, err := strconv.Atoi(res.ID)
+	if err != nil {
+		return ctx.JSON(
+			http.StatusInternalServerError,
+			errorResponse.NewError(fmt.Errorf(loginController.InternalServerError)),
+		)
+	}
+
+	err = c.taskUsecase.Delete(token.NewToken(t), id)
+	if err != nil {
+		return ctx.JSON(
+			http.StatusInternalServerError,
+			errorResponse.NewError(fmt.Errorf(loginController.InternalServerError)),
+		)
+	}
+
+	return ctx.NoContent(http.StatusOK)
+}

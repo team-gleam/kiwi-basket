@@ -132,7 +132,7 @@ func (c TimetablesController) Register(ctx echo.Context) error {
 	if err != nil || res.Timetables.Mon.One == new(ClassJSON) {
 		return ctx.JSON(
 			http.StatusBadRequest,
-			errorResponse.NewError(fmt.Errorf(loginController.InvalidJsonFormat)),
+			errorResponse.NewError(fmt.Errorf(loginController.InvalidJSONFormat)),
 		)
 	}
 

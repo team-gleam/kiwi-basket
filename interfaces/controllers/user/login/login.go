@@ -53,7 +53,7 @@ func hashPassword(p string) (string, error) {
 
 const (
 	InvalidUsernameOrPassword = "invalid username or password"
-	InvalidJsonFormat         = "invalid JSON format"
+	InvalidJSONFormat         = "invalid JSON format"
 )
 
 func (c LoginController) SignUp(ctx echo.Context) error {
@@ -62,7 +62,7 @@ func (c LoginController) SignUp(ctx echo.Context) error {
 	if err != nil {
 		return ctx.JSON(
 			http.StatusBadRequest,
-			errorResponse.NewError(fmt.Errorf(InvalidJsonFormat)),
+			errorResponse.NewError(fmt.Errorf(InvalidJSONFormat)),
 		)
 	}
 	if login.Username == "" || login.Password == "" {
@@ -103,7 +103,7 @@ func (c LoginController) DeleteAccound(ctx echo.Context) error {
 	if err != nil {
 		return ctx.JSON(
 			http.StatusBadRequest,
-			errorResponse.NewError(fmt.Errorf(InvalidJsonFormat)),
+			errorResponse.NewError(fmt.Errorf(InvalidJSONFormat)),
 		)
 	}
 

@@ -38,10 +38,10 @@ const (
 )
 
 type TaskResponse struct {
-	Task TaskJson `json:"task"`
+	Task TaskJSON `json:"task"`
 }
 
-type TaskJson struct {
+type TaskJSON struct {
 	ID    string `json:"id"`
 	Date  string `json:"date"`
 	Title string `json:"title"`
@@ -141,13 +141,13 @@ func (c TaskController) Delete(ctx echo.Context) error {
 }
 
 type TasksResponse struct {
-	Tasks []TaskJson `json:"tasks"`
+	Tasks []TaskJSON `json:"tasks"`
 }
 
 func toTasksResponse(ts []TaskModel.Task) TasksResponse {
-	res := []TaskJson{}
+	res := []TaskJSON{}
 	for _, t := range ts {
-		res = append(res, TaskJson{
+		res = append(res, TaskJSON{
 			ID:    strconv.Itoa(t.ID()),
 			Date:  t.TextDate(),
 			Title: t.Title(),

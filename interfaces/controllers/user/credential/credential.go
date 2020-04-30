@@ -39,7 +39,7 @@ func (c CredentialController) SignIn(ctx echo.Context) error {
 	if err != nil {
 		return ctx.JSON(
 			http.StatusBadRequest,
-			errorResponse.NewError(fmt.Errorf(loginController.InvalidJsonFormat)),
+			errorResponse.NewError(fmt.Errorf(loginController.InvalidJSONFormat)),
 		)
 	}
 	if login.Username == "" || login.Password == "" {

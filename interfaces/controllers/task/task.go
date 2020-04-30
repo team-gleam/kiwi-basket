@@ -1,9 +1,18 @@
 package task
 
 import (
+	"fmt"
+	"net/http"
+	"strconv"
+
+	"github.com/labstack/echo/v4"
+	TaskModel "github.com/team-gleam/kiwi-basket/domain/model/task"
+	"github.com/team-gleam/kiwi-basket/domain/model/user/token"
 	taskRepository "github.com/team-gleam/kiwi-basket/domain/repository/task"
 	credentialRepository "github.com/team-gleam/kiwi-basket/domain/repository/user/credential"
 	loginRepository "github.com/team-gleam/kiwi-basket/domain/repository/user/login"
+	errorResponse "github.com/team-gleam/kiwi-basket/interfaces/controllers/error"
+	loginController "github.com/team-gleam/kiwi-basket/interfaces/controllers/user/login"
 	taskUsecase "github.com/team-gleam/kiwi-basket/usecase/task"
 	credentialUsecase "github.com/team-gleam/kiwi-basket/usecase/user/credential"
 )
@@ -23,4 +32,70 @@ func NewTaskController(
 			t,
 		),
 	}
+}
+
+const (
+	InvalidJSONFormat = "invalid JSON format"
+)
+
+type TaskResponse struct {
+	Task TaskJson `json:"task"`
+}
+
+type TaskJson struct {
+	ID    string `json:"id"`
+	Date  string `json:"date"`
+	Title string `json:"title"`
+}
+
+func (t TaskResponse) toTask() (TaskModel.Task, error) {
+	id, err := strconv.Atoi(t.Task.ID)
+	if err != nil {
+		return TaskModel.Task{}, err
+	}
+
+	return TaskModel.NewTask(id, t.Task.Date, t.Task.Title)
+}
+
+func (c TaskController) Add(ctx echo.Context) error {
+	t := ctx.Request().Header.Get("Token")
+	if t == "" {
+		return ctx.JSON(
+			http.StatusUnauthorized,
+			errorResponse.NewError(fmt.Errorf(credentialUsecase.InvalidToken)),
+		)
+	}
+
+	res := new(TaskResponse)
+	err := ctx.Bind(res)
+	if err != nil || res.Task.ID == "" {
+		return ctx.JSON(
+			http.StatusBadRequest,
+			errorResponse.NewError(fmt.Errorf(InvalidJSONFormat)),
+		)
+	}
+
+	task, err := res.toTask()
+	if err != nil {
+		return ctx.JSON(
+			http.StatusBadRequest,
+			errorResponse.NewError(fmt.Errorf(InvalidJSONFormat)),
+		)
+	}
+
+	err = c.taskUsecase.Add(token.NewToken(t), task)
+	if err.Error() == credentialUsecase.InvalidToken {
+		return ctx.JSON(
+			http.StatusUnauthorized,
+			errorResponse.NewError(fmt.Errorf(credentialUsecase.InvalidToken)),
+		)
+	}
+	if err != nil {
+		return ctx.JSON(
+			http.StatusInternalServerError,
+			errorResponse.NewError(fmt.Errorf(loginController.InternalServerError)),
+		)
+	}
+
+	return ctx.NoContent(http.StatusOK)
 }

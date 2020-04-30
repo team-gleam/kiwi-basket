@@ -49,6 +49,31 @@ func (u TimetablesUsecase) Add(token token.Token, timetables timetablesModel.Tim
 	return u.timetablesRepository.Create(user, timetables)
 }
 
+func (u TimetablesUsecase) Delete(token token.Token) error {
+	credentialed, err := u.credentialUsecase.IsCredentialed(token)
+	if err != nil {
+		return err
+	}
+	if !credentialed {
+		return fmt.Errorf(credentialUsecase.InvalidToken)
+	}
+
+	user, err := u.credentialUsecase.Whose(token)
+	if err != nil {
+		return err
+	}
+
+	exist, err := u.timetablesRepository.Exists(user)
+	if err != nil {
+		return err
+	}
+	if !exist {
+		return fmt.Errorf(TimetablesNotFound)
+	}
+
+	return u.timetablesRepository.Delete(user)
+}
+
 func (u TimetablesUsecase) Get(token token.Token) (timetablesModel.Timetables, error) {
 	credentialed, err := u.credentialUsecase.IsCredentialed(token)
 	if err != nil {

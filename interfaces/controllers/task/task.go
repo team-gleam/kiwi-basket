@@ -35,6 +35,7 @@ func NewTaskController(
 
 const (
 	InvalidJSONFormat = "invalid JSON format"
+	InvalidID         = "invalid ID"
 )
 
 type TaskResponse struct {
@@ -51,6 +52,9 @@ func (t TaskResponse) toTask() (TaskModel.Task, error) {
 	id, err := strconv.Atoi(t.Task.ID)
 	if err != nil {
 		return TaskModel.Task{}, err
+	}
+	if id == 0 {
+		return TaskModel.Task{}, fmt.Errorf(InvalidID)
 	}
 
 	return TaskModel.NewTask(id, t.Task.Date, t.Task.Title)

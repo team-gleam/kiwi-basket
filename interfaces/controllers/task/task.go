@@ -140,6 +140,13 @@ func (c TaskController) Delete(ctx echo.Context) error {
 			errorResponse.NewError(fmt.Errorf(credentialUsecase.InvalidToken)),
 		)
 	}
+	if err.Error() == taskUsecase.IDIsNotZero ||
+		err.Error() == taskUsecase.InvalidID {
+		return ctx.JSON(
+			http.StatusBadRequest,
+			errorResponse.NewError(err),
+		)
+	}
 	if err != nil {
 		return ctx.JSON(
 			http.StatusInternalServerError,

@@ -18,6 +18,11 @@ func NewTaskUsecase(c credentialUsecase.CredentialUsecase, t taskRepository.ITas
 	return TaskUsecase{c, t}
 }
 
+const (
+	IDIsNotZero = "ID is not zero"
+	InvalidID   = "Invalid ID"
+)
+
 func (u TaskUsecase) Add(token tokenModel.Token, task taskModel.Task) error {
 	credentialed, err := u.credentialUsecase.IsCredentialed(token)
 	if err != nil {
@@ -42,6 +47,13 @@ func (u TaskUsecase) Delete(token tokenModel.Token, id int) error {
 	}
 	if !credentialed {
 		return fmt.Errorf(credentialUsecase.InvalidToken)
+	}
+
+	if id == 0 {
+		return fmt.Errorf(IDIsNotZero)
+	}
+	if id < 0 {
+		return fmt.Errorf(InvalidID)
 	}
 
 	user, err := u.credentialUsecase.Whose(token)

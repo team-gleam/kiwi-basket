@@ -1,7 +1,6 @@
 package task
 
 import (
-	"fmt"
 	"time"
 
 	taskModel "github.com/team-gleam/kiwi-basket/domain/model/task"
@@ -17,11 +16,6 @@ type TaskRepository struct {
 func NewTaskRepository(h *handler.DbHandler) taskRepository.ITaskRepository {
 	return &TaskRepository{h}
 }
-
-const (
-	IDIsNotZero = "ID is not zero"
-	InvalidID   = "Invalid ID"
-)
 
 type taskDB struct {
 	ID       uint `gorm:"primary_key;auto_increment"`
@@ -73,12 +67,5 @@ func (r *TaskRepository) GetAll(u username.Username) ([]taskModel.Task, error) {
 }
 
 func (r *TaskRepository) Remove(u username.Username, id int) error {
-	if id == 0 {
-		return fmt.Errorf(IDIsNotZero)
-	}
-	if id < 0 {
-		return fmt.Errorf(InvalidID)
-	}
-
 	return r.dbHandler.Db.Delete(taskDB{ID: uint(id)}).Error
 }

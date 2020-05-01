@@ -51,14 +51,16 @@ Token生成
     "mon": {
       "1": {
         "subject": "A",
-        "room": "100"
+        "room": "100",
+        "memo": "https://....."
       },
       // 空きコマ
       "2": null,
       // 教室が未定
       "3": {
         "subject": "B",
-        "room": null
+        "room": null,
+        "memo": null,
       },
       ...
       "5": {...}
@@ -79,14 +81,16 @@ Token生成
     "mon": {
       "1": {
         "subject": "A",
-        "room": "100"
+        "room": "100",
+        "memo": "https://....."
       },
       // 空きコマ
       "2": null,
       // 教室が未定
       "3": {
         "subject": "B",
-        "room": null
+        "room": null,
+        "memo": null
       },
       ...
       "5": {...}

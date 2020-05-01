@@ -54,8 +54,8 @@ type TimetableJSON struct {
 }
 
 type ClassJSON struct {
-	Subject string `json:"subject"`
-	Room    string `json:"room"`
+	Subject string  `json:"subject"`
+	Room    *string `json:"room"`
 }
 
 func (t TimetablesResponse) toTimetables() timetablesModel.Timetables {
@@ -82,7 +82,12 @@ func (t *ClassJSON) toClass() timetablesModel.Class {
 	if t == nil {
 		return timetablesModel.NoClass()
 	}
-	return timetablesModel.NewClass(t.Subject, t.Room)
+
+	if t.Room == nil {
+		return timetablesModel.NoRoom(t.Subject)
+	}
+
+	return timetablesModel.NewClass(t.Subject, *t.Room)
 }
 
 func toTimetablesResponse(t timetablesModel.Timetables) TimetablesResponse {
@@ -112,9 +117,17 @@ func toClassJSON(c timetablesModel.Class) *ClassJSON {
 		return nil
 	}
 
+	if c.IsNoRoom() {
+		return &ClassJSON{
+			Subject: c.Subject(),
+			Room:    nil,
+		}
+	}
+
+	room := c.Room()
 	return &ClassJSON{
 		Subject: c.Subject(),
-		Room:    c.Room(),
+		Room:    &room,
 	}
 }
 

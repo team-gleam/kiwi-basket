@@ -6,42 +6,46 @@ import (
 	timetablesModel "github.com/team-gleam/kiwi-basket/domain/model/timetables"
 )
 
+func newClassJSON(r, s string) *ClassJSON {
+	return &ClassJSON{r, &s}
+}
+
 var noNullTimetablesResponse = TimetablesResponse{
 	Timetables: TimetablesJSON{
 		TimetableJSON{
-			One:   &ClassJSON{"A", "1"},
-			Two:   &ClassJSON{"B", "2"},
-			Three: &ClassJSON{"C", "3"},
-			Four:  &ClassJSON{"D", "4"},
-			Five:  &ClassJSON{"E", "5"},
+			One:   newClassJSON("A", "1"),
+			Two:   newClassJSON("B", "2"),
+			Three: newClassJSON("C", "3"),
+			Four:  newClassJSON("D", "4"),
+			Five:  newClassJSON("E", "5"),
 		},
 		TimetableJSON{
-			One:   &ClassJSON{"F", "6"},
-			Two:   &ClassJSON{"G", "7"},
-			Three: &ClassJSON{"H", "8"},
-			Four:  &ClassJSON{"I", "9"},
-			Five:  &ClassJSON{"J", "10"},
+			One:   newClassJSON("F", "6"),
+			Two:   newClassJSON("G", "7"),
+			Three: newClassJSON("H", "8"),
+			Four:  newClassJSON("I", "9"),
+			Five:  newClassJSON("J", "10"),
 		},
 		TimetableJSON{
-			One:   &ClassJSON{"K", "11"},
-			Two:   &ClassJSON{"L", "12"},
-			Three: &ClassJSON{"M", "13"},
-			Four:  &ClassJSON{"N", "14"},
-			Five:  &ClassJSON{"O", "15"},
+			One:   newClassJSON("K", "11"),
+			Two:   newClassJSON("L", "12"),
+			Three: newClassJSON("M", "13"),
+			Four:  newClassJSON("N", "14"),
+			Five:  newClassJSON("O", "15"),
 		},
 		TimetableJSON{
-			One:   &ClassJSON{"P", "16"},
-			Two:   &ClassJSON{"Q", "17"},
-			Three: &ClassJSON{"R", "18"},
-			Four:  &ClassJSON{"S", "19"},
-			Five:  &ClassJSON{"T", "20"},
+			One:   newClassJSON("P", "16"),
+			Two:   newClassJSON("Q", "17"),
+			Three: newClassJSON("R", "18"),
+			Four:  newClassJSON("S", "19"),
+			Five:  newClassJSON("T", "20"),
 		},
 		TimetableJSON{
-			One:   &ClassJSON{"U", "21"},
-			Two:   &ClassJSON{"V", "22"},
-			Three: &ClassJSON{"W", "23"},
-			Four:  &ClassJSON{"X", "24"},
-			Five:  &ClassJSON{"Y", "25"},
+			One:   newClassJSON("U", "21"),
+			Two:   newClassJSON("V", "22"),
+			Three: newClassJSON("W", "23"),
+			Four:  newClassJSON("X", "24"),
+			Five:  newClassJSON("Y", "25"),
 		},
 	},
 }
@@ -84,47 +88,47 @@ var noNullTimetables = timetablesModel.NewTimetables(
 	),
 )
 
-var hasNullTimetablesResponse = TimetablesResponse{
+var hasNullClassTimetablesResponse = TimetablesResponse{
 	Timetables: TimetablesJSON{
 		TimetableJSON{
 			One:   nil,
-			Two:   &ClassJSON{"B", "2"},
-			Three: &ClassJSON{"C", "3"},
-			Four:  &ClassJSON{"D", "4"},
-			Five:  &ClassJSON{"E", "5"},
+			Two:   newClassJSON("B", "2"),
+			Three: newClassJSON("C", "3"),
+			Four:  newClassJSON("D", "4"),
+			Five:  newClassJSON("E", "5"),
 		},
 		TimetableJSON{
-			One:   &ClassJSON{"F", "6"},
+			One:   newClassJSON("F", "6"),
 			Two:   nil,
-			Three: &ClassJSON{"H", "8"},
-			Four:  &ClassJSON{"I", "9"},
-			Five:  &ClassJSON{"J", "10"},
+			Three: newClassJSON("H", "8"),
+			Four:  newClassJSON("I", "9"),
+			Five:  newClassJSON("J", "10"),
 		},
 		TimetableJSON{
-			One:   &ClassJSON{"K", "11"},
-			Two:   &ClassJSON{"L", "12"},
+			One:   newClassJSON("K", "11"),
+			Two:   newClassJSON("L", "12"),
 			Three: nil,
-			Four:  &ClassJSON{"N", "14"},
-			Five:  &ClassJSON{"O", "15"},
+			Four:  newClassJSON("N", "14"),
+			Five:  newClassJSON("O", "15"),
 		},
 		TimetableJSON{
-			One:   &ClassJSON{"P", "16"},
-			Two:   &ClassJSON{"Q", "17"},
-			Three: &ClassJSON{"R", "18"},
+			One:   newClassJSON("P", "16"),
+			Two:   newClassJSON("Q", "17"),
+			Three: newClassJSON("R", "18"),
 			Four:  nil,
-			Five:  &ClassJSON{"T", "20"},
+			Five:  newClassJSON("T", "20"),
 		},
 		TimetableJSON{
-			One:   &ClassJSON{"U", "21"},
-			Two:   &ClassJSON{"V", "22"},
-			Three: &ClassJSON{"W", "23"},
-			Four:  &ClassJSON{"X", "24"},
+			One:   newClassJSON("U", "21"),
+			Two:   newClassJSON("V", "22"),
+			Three: newClassJSON("W", "23"),
+			Four:  newClassJSON("X", "24"),
 			Five:  nil,
 		},
 	},
 }
 
-var hasNullTimetables = timetablesModel.NewTimetables(
+var hasNullClassTimetables = timetablesModel.NewTimetables(
 	timetablesModel.NewTimetable(
 		timetablesModel.NoClass(),
 		timetablesModel.NewClass("B", "2"),
@@ -162,6 +166,84 @@ var hasNullTimetables = timetablesModel.NewTimetables(
 	),
 )
 
+var hasNullRoomTimetablesResponse = TimetablesResponse{
+	Timetables: TimetablesJSON{
+		TimetableJSON{
+			One:   &ClassJSON{"A", nil},
+			Two:   newClassJSON("B", "2"),
+			Three: newClassJSON("C", "3"),
+			Four:  newClassJSON("D", "4"),
+			Five:  newClassJSON("E", "5"),
+		},
+		TimetableJSON{
+			One:   newClassJSON("F", "6"),
+			Two:   &ClassJSON{"G", nil},
+			Three: newClassJSON("H", "8"),
+			Four:  newClassJSON("I", "9"),
+			Five:  newClassJSON("J", "10"),
+		},
+		TimetableJSON{
+			One:   newClassJSON("K", "11"),
+			Two:   newClassJSON("L", "12"),
+			Three: &ClassJSON{"M", nil},
+			Four:  newClassJSON("N", "14"),
+			Five:  newClassJSON("O", "15"),
+		},
+		TimetableJSON{
+			One:   newClassJSON("P", "16"),
+			Two:   newClassJSON("Q", "17"),
+			Three: newClassJSON("R", "18"),
+			Four:  &ClassJSON{"S", nil},
+			Five:  newClassJSON("T", "20"),
+		},
+		TimetableJSON{
+			One:   newClassJSON("U", "21"),
+			Two:   newClassJSON("V", "22"),
+			Three: newClassJSON("W", "23"),
+			Four:  newClassJSON("X", "24"),
+			Five:  &ClassJSON{"Y", nil},
+		},
+	},
+}
+
+var hasNullRoomTimetables = timetablesModel.NewTimetables(
+	timetablesModel.NewTimetable(
+		timetablesModel.NoRoom("A"),
+		timetablesModel.NewClass("B", "2"),
+		timetablesModel.NewClass("C", "3"),
+		timetablesModel.NewClass("D", "4"),
+		timetablesModel.NewClass("E", "5"),
+	),
+	timetablesModel.NewTimetable(
+		timetablesModel.NewClass("F", "6"),
+		timetablesModel.NoRoom("G"),
+		timetablesModel.NewClass("H", "8"),
+		timetablesModel.NewClass("I", "9"),
+		timetablesModel.NewClass("J", "10"),
+	),
+	timetablesModel.NewTimetable(
+		timetablesModel.NewClass("K", "11"),
+		timetablesModel.NewClass("L", "12"),
+		timetablesModel.NoRoom("M"),
+		timetablesModel.NewClass("N", "14"),
+		timetablesModel.NewClass("O", "15"),
+	),
+	timetablesModel.NewTimetable(
+		timetablesModel.NewClass("P", "16"),
+		timetablesModel.NewClass("Q", "17"),
+		timetablesModel.NewClass("R", "18"),
+		timetablesModel.NoRoom("S"),
+		timetablesModel.NewClass("T", "20"),
+	),
+	timetablesModel.NewTimetable(
+		timetablesModel.NewClass("U", "21"),
+		timetablesModel.NewClass("V", "22"),
+		timetablesModel.NewClass("W", "23"),
+		timetablesModel.NewClass("X", "24"),
+		timetablesModel.NoRoom("Y"),
+	),
+)
+
 type TimetablesResponseToTimetables struct {
 	Name     string
 	Input    TimetablesResponse
@@ -175,13 +257,23 @@ var tr2t1 = TimetablesResponseToTimetables{
 }
 
 var tr2t2 = TimetablesResponseToTimetables{
-	Name:     "has null",
-	Input:    hasNullTimetablesResponse,
-	Expected: hasNullTimetables,
+	Name:     "has null class",
+	Input:    hasNullClassTimetablesResponse,
+	Expected: hasNullClassTimetables,
+}
+
+var tr2t3 = TimetablesResponseToTimetables{
+	Name:     "has null room",
+	Input:    hasNullRoomTimetablesResponse,
+	Expected: hasNullRoomTimetables,
 }
 
 func TestTimetablesResponseToTimetables(t *testing.T) {
-	tcs := []TimetablesResponseToTimetables{tr2t1, tr2t2}
+	tcs := []TimetablesResponseToTimetables{
+		tr2t1,
+		tr2t2,
+		tr2t3,
+	}
 
 	for _, tc := range tcs {
 		t.Run(tc.Name, func(t *testing.T) {
@@ -206,13 +298,23 @@ var t2tr1 = TimetablesToTimetablesResponse{
 }
 
 var t2tr2 = TimetablesToTimetablesResponse{
-	Name:     "has null",
-	Input:    hasNullTimetables,
-	Expected: hasNullTimetablesResponse,
+	Name:     "has null class",
+	Input:    hasNullClassTimetables,
+	Expected: hasNullClassTimetablesResponse,
+}
+
+var t2tr3 = TimetablesToTimetablesResponse{
+	Name:     "has null room",
+	Input:    hasNullRoomTimetables,
+	Expected: hasNullRoomTimetablesResponse,
 }
 
 func TestTimetablesToTimetablesResponse(t *testing.T) {
-	tcs := []TimetablesToTimetablesResponse{t2tr1, t2tr2}
+	tcs := []TimetablesToTimetablesResponse{
+		t2tr1,
+		t2tr2,
+		t2tr3,
+	}
 
 	for _, tc := range tcs {
 		t.Run(tc.Name, func(t *testing.T) {

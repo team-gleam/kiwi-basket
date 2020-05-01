@@ -23,6 +23,11 @@ func NewLoginController(r loginRepository.ILoginRepository) *LoginController {
 	}
 }
 
+const (
+	InvalidUsernameOrPassword = "invalid username or password"
+	InvalidJSONFormat         = "invalid JSON format"
+)
+
 type LoginResponse struct {
 	Username string `json:"username"`
 	Password string `json:"password"`
@@ -50,11 +55,6 @@ func hashPassword(p string) (string, error) {
 
 	return string(hash), nil
 }
-
-const (
-	InvalidUsernameOrPassword = "invalid username or password"
-	InvalidJSONFormat         = "invalid JSON format"
-)
 
 func (c LoginController) SignUp(ctx echo.Context) error {
 	login := new(LoginResponse)

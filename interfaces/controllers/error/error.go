@@ -1,11 +1,11 @@
 package error
 
-type Error struct {
+type ErrorJSON struct {
 	Message string `json:"message"`
 }
 
-func NewError(e error) Error {
-	return Error{e.Error()}
+func NewError(e error) ErrorJSON {
+	return ErrorJSON{e.Error()}
 }
 
 const (

@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/labstack/echo/v4"
+	"github.com/team-gleam/kiwi-basket/domain/model/user/token"
 	credentialRepository "github.com/team-gleam/kiwi-basket/domain/repository/user/credential"
 	loginRepository "github.com/team-gleam/kiwi-basket/domain/repository/user/login"
 	errorResponse "github.com/team-gleam/kiwi-basket/interfaces/controllers/error"
@@ -25,12 +26,12 @@ func NewCredentialController(
 	}
 }
 
-type Token struct {
+type TokenResponse struct {
 	Token string `json:"token"`
 }
 
-func NewToken(t string) Token {
-	return Token{t}
+func toTokenResponse(t token.Token) TokenResponse {
+	return TokenResponse{t.Token()}
 }
 
 func (c CredentialController) SignIn(ctx echo.Context) error {
@@ -77,5 +78,5 @@ func (c CredentialController) SignIn(ctx echo.Context) error {
 		)
 	}
 
-	return ctx.JSON(http.StatusOK, NewToken(token.Token()))
+	return ctx.JSON(http.StatusOK, toTokenResponse(token))
 }

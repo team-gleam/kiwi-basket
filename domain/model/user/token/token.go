@@ -13,14 +13,17 @@ func NewToken(t string) Token {
 	return Token{t}
 }
 
+const (
+	Length = 32
+)
+
 func GenToken() (Token, error) {
 	str := "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
 
-	length := 32
-	token := make([]byte, length)
+	token := make([]byte, Length)
 
 	for i := range token {
-		n, err := rand.Int(rand.Reader, big.NewInt(int64(length)))
+		n, err := rand.Int(rand.Reader, big.NewInt(int64(Length)))
 		if err != nil {
 			return Token{}, err
 		}

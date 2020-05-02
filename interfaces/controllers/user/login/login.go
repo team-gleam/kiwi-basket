@@ -70,7 +70,8 @@ func (c LoginController) SignUp(ctx echo.Context) error {
 			errorResponse.NewError(fmt.Errorf(InvalidJSONFormat)),
 		)
 	}
-	if login.Username == "" || login.Password == "" {
+
+	if !login.IsValidated() {
 		return ctx.JSON(
 			http.StatusBadRequest,
 			errorResponse.NewError(fmt.Errorf(InvalidUsernameOrPassword)),
@@ -106,6 +107,13 @@ func (c LoginController) DeleteAccound(ctx echo.Context) error {
 	login := new(LoginResponse)
 	err := ctx.Bind(login)
 	if err != nil {
+		return ctx.JSON(
+			http.StatusBadRequest,
+			errorResponse.NewError(fmt.Errorf(InvalidJSONFormat)),
+		)
+	}
+
+	if !login.IsValidated() {
 		return ctx.JSON(
 			http.StatusBadRequest,
 			errorResponse.NewError(fmt.Errorf(InvalidJSONFormat)),

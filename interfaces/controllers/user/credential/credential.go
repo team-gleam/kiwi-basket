@@ -43,7 +43,8 @@ func (c CredentialController) SignIn(ctx echo.Context) error {
 			errorResponse.NewError(fmt.Errorf(loginController.InvalidJSONFormat)),
 		)
 	}
-	if login.Username == "" || login.Password == "" {
+
+	if !login.IsValidated() {
 		return ctx.JSON(
 			http.StatusUnauthorized,
 			errorResponse.NewError(fmt.Errorf(loginController.InvalidUsernameOrPassword)),

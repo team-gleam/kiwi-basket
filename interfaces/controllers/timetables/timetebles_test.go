@@ -1,6 +1,8 @@
 package timetables
 
 import (
+	"fmt"
+	"strings"
 	"testing"
 
 	timetablesModel "github.com/team-gleam/kiwi-basket/domain/model/timetables"
@@ -324,4 +326,131 @@ func TestTimetablesToTimetablesResponse(t *testing.T) {
 			}
 		})
 	}
+}
+
+type TimetablesResponseValidation struct {
+	Name     string
+	Input    TimetablesResponse
+	Expected bool
+}
+
+func (t TimetablesResponse) tooLongSubject() TimetablesResponse {
+	tr := t.copy()
+	tr.Timetables.Mon.One.Subject = strings.Repeat("A", 86)
+	return tr
+}
+
+func (t TimetablesResponse) maxLengthSubject() TimetablesResponse {
+	tr := t.copy()
+	tr.Timetables.Mon.One.Subject = strings.Repeat("A", 85)
+	return tr
+}
+
+func (t TimetablesResponse) tooLongRoom() TimetablesResponse {
+	tr := t.copy()
+	r := strings.Repeat("1", 86)
+	tr.Timetables.Mon.One.Room = &r
+	return tr
+}
+
+func (t TimetablesResponse) maxLengthRoom() TimetablesResponse {
+	tr := t.copy()
+	r := strings.Repeat("1", 85)
+	tr.Timetables.Mon.One.Room = &r
+	return tr
+}
+
+func TestIsValidated(t *testing.T) {
+	tcs := []TimetablesResponseValidation{
+		{
+			Name:     "valid timetables have no null",
+			Input:    noNullTimetablesResponse,
+			Expected: true,
+		},
+		{
+			Name:     "valid timetables have null classes",
+			Input:    hasNullClassTimetablesResponse,
+			Expected: true,
+		},
+		{
+			Name:     "valid timetables have null rooms",
+			Input:    hasNullRoomTimetablesResponse,
+			Expected: true,
+		},
+		{
+			Name:     "valid timetables have a max length subject",
+			Input:    noNullTimetablesResponse.maxLengthSubject(),
+			Expected: true,
+		},
+		{
+			Name:     "invalid timetables have a too long subject",
+			Input:    noNullTimetablesResponse.tooLongSubject(),
+			Expected: false,
+		},
+		{
+			Name:     "valid timetables have a max length room",
+			Input:    noNullTimetablesResponse.maxLengthRoom(),
+			Expected: true,
+		},
+		{
+			Name:     "invalid timetables have a too long room",
+			Input:    noNullTimetablesResponse.tooLongRoom(),
+			Expected: false,
+		},
+	}
+
+	for _, tc := range tcs {
+		t.Run(tc.Name, func(t *testing.T) {
+			b, err := tc.Input.IsValidated()
+			if err != nil {
+				fmt.Println(tc.Input.Timetables.Mon.One.Subject)
+				t.Errorf("unexpected error occured: %v", err)
+			}
+			if b != tc.Expected {
+				t.Errorf("Failed# expected: %v; got: %v\n", tc.Expected, b)
+			}
+		})
+	}
+}
+
+func (t TimetablesResponse) copy() TimetablesResponse {
+	return TimetablesResponse{
+		TimetablesJSON{
+			Mon: t.Timetables.Mon.copy(),
+			Tue: t.Timetables.Tue.copy(),
+			Wed: t.Timetables.Wed.copy(),
+			Thu: t.Timetables.Thu.copy(),
+			Fri: t.Timetables.Fri.copy(),
+		},
+	}
+}
+
+func (t TimetableJSON) copy() TimetableJSON {
+	_1 := t.One.copy()
+	_2 := t.Two.copy()
+	_3 := t.Three.copy()
+	_4 := t.Four.copy()
+	_5 := t.Five.copy()
+	return TimetableJSON{
+		One:   &_1,
+		Two:   &_2,
+		Three: &_3,
+		Four:  &_4,
+		Five:  &_5,
+	}
+}
+
+func (t ClassJSON) copy() ClassJSON {
+	var (
+		s string
+		r string
+	)
+	if t.Room != nil {
+		s = t.Subject
+		r = *t.Room
+		return ClassJSON{s, &r}
+	}
+
+	s = t.Subject
+	return ClassJSON{s, nil}
 }

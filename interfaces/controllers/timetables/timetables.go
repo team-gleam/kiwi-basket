@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/go-playground/validator"
 	"github.com/labstack/echo/v4"
 	timetablesModel "github.com/team-gleam/kiwi-basket/domain/model/timetables"
 	"github.com/team-gleam/kiwi-basket/domain/model/user/token"
@@ -34,15 +35,15 @@ func NewTimetablesController(
 }
 
 type TimetablesResponse struct {
-	Timetables TimetablesJSON `json:"timetable"`
+	Timetables TimetablesJSON `json:"timetable" validate:"required"`
 }
 
 type TimetablesJSON struct {
-	Mon TimetableJSON `json:"mon"`
-	Tue TimetableJSON `json:"tue"`
-	Wed TimetableJSON `json:"wed"`
-	Thu TimetableJSON `json:"thu"`
-	Fri TimetableJSON `json:"fri"`
+	Mon TimetableJSON `json:"mon" validate:"required"`
+	Tue TimetableJSON `json:"tue" validate:"required"`
+	Wed TimetableJSON `json:"wed" validate:"required"`
+	Thu TimetableJSON `json:"thu" validate:"required"`
+	Fri TimetableJSON `json:"fri" validate:"required"`
 }
 
 type TimetableJSON struct {
@@ -54,8 +55,22 @@ type TimetableJSON struct {
 }
 
 type ClassJSON struct {
-	Subject string  `json:"subject"`
-	Room    *string `json:"room"`
+	Subject string  `json:"subject" validate:"max=85"`
+	Room    *string `json:"room" validate:"omitempty,max_85_ptr|isdefault"`
+}
+
+func (t TimetablesResponse) IsValidated() (bool, error) {
+	v := validator.New()
+	err := v.RegisterValidation("max_85_ptr", Max85Ptr)
+	if err != nil {
+		return false, err
+	}
+
+	return v.Struct(t) == nil, nil
+}
+
+func Max85Ptr(validate validator.FieldLevel) bool {
+	return len(validate.Field().String()) < 86
 }
 
 func (t TimetablesResponse) toTimetables() timetablesModel.Timetables {

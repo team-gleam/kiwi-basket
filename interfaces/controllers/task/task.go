@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/go-playground/validator"
 	"github.com/labstack/echo/v4"
 	TaskModel "github.com/team-gleam/kiwi-basket/domain/model/task"
 	"github.com/team-gleam/kiwi-basket/domain/model/user/token"
@@ -43,9 +44,13 @@ type TaskResponse struct {
 }
 
 type TaskJSON struct {
-	ID    string `json:"id"`
-	Date  string `json:"date"`
-	Title string `json:"title"`
+	ID    string `json:"id" validate:"required,numeric,ne=0,min=-1"`
+	Date  string `json:"date" validate:"required"`
+	Title string `json:"title" validate:"required,max=85"`
+}
+
+func (t TaskResponse) IsValidated() bool {
+	return validator.New().Struct(t) == nil
 }
 
 func (t TaskResponse) toTask() (TaskModel.Task, error) {
@@ -71,7 +76,14 @@ func (c TaskController) Add(ctx echo.Context) error {
 
 	res := new(TaskResponse)
 	err := ctx.Bind(res)
-	if err != nil || res.Task.ID == "" {
+	if err != nil {
+		return ctx.JSON(
+			http.StatusBadRequest,
+			errorResponse.NewError(fmt.Errorf(InvalidJSONFormat)),
+		)
+	}
+
+	if !res.IsValidated() {
 		return ctx.JSON(
 			http.StatusBadRequest,
 			errorResponse.NewError(fmt.Errorf(InvalidJSONFormat)),
@@ -103,8 +115,12 @@ func (c TaskController) Add(ctx echo.Context) error {
 	return ctx.NoContent(http.StatusOK)
 }
 
-type ID struct {
-	ID string `json:"id"`
+type IDResponse struct {
+	ID string `json:"id" validate:"required,numeric,ne=0,min=-1"`
+}
+
+func (i IDResponse) IsValidated() bool {
+	return validator.New().Struct(i) == nil
 }
 
 func (c TaskController) Delete(ctx echo.Context) error {
@@ -116,9 +132,9 @@ func (c TaskController) Delete(ctx echo.Context) error {
 		)
 	}
 
-	res := new(ID)
+	res := new(IDResponse)
 	err := ctx.Bind(res)
-	if err != nil || res.ID == "" {
+	if err != nil || !res.IsValidated() {
 		return ctx.JSON(
 			http.StatusBadRequest,
 			errorResponse.NewError(fmt.Errorf(InvalidJSONFormat)),

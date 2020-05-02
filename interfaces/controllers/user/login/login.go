@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/go-playground/validator/v10"
 	"github.com/labstack/echo/v4"
 	loginModel "github.com/team-gleam/kiwi-basket/domain/model/user/login"
 	"github.com/team-gleam/kiwi-basket/domain/model/user/username"
@@ -29,8 +30,12 @@ const (
 )
 
 type LoginResponse struct {
-	Username string `json:"username"`
-	Password string `json:"password"`
+	Username string `json:"username" validate:"required,alphanum,max=255"`
+	Password string `json:"password" validate:"required,alphanum,min=8,max=72"`
+}
+
+func (l LoginResponse) IsValidated() bool {
+	return validator.New().Struct(l) == nil
 }
 
 func (l LoginResponse) ToLogin() (loginModel.Login, error) {

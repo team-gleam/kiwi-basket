@@ -5,6 +5,7 @@ import (
 
 	taskModel "github.com/team-gleam/kiwi-basket/domain/model/task"
 	tokenModel "github.com/team-gleam/kiwi-basket/domain/model/user/token"
+	"github.com/team-gleam/kiwi-basket/domain/model/user/username"
 	taskRepository "github.com/team-gleam/kiwi-basket/domain/repository/task"
 	credentialUsecase "github.com/team-gleam/kiwi-basket/usecase/user/credential"
 )
@@ -61,7 +62,26 @@ func (u TaskUsecase) Delete(token tokenModel.Token, id int) error {
 		return err
 	}
 
+	tasks, err := u.taskRepository.GetAll(user)
+	if err != nil {
+		return err
+	}
+
+	if !isValidID(user, id, tasks) {
+		return fmt.Errorf(InvalidID)
+	}
+
 	return u.taskRepository.Remove(user, id)
+}
+
+func isValidID(username username.Username, id int, tasks []taskModel.Task) bool {
+	for _, task := range tasks {
+		if task.ID() == id {
+			return true
+		}
+	}
+
+	return false
 }
 
 func (u TaskUsecase) GetAll(token tokenModel.Token) ([]taskModel.Task, error) {

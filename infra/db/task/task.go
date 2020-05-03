@@ -1,6 +1,7 @@
 package task
 
 import (
+	"fmt"
 	"time"
 
 	taskModel "github.com/team-gleam/kiwi-basket/domain/model/task"
@@ -67,5 +68,9 @@ func (r *TaskRepository) GetAll(u username.Username) ([]taskModel.Task, error) {
 }
 
 func (r *TaskRepository) Remove(u username.Username, id int) error {
+	if id < 1 {
+		return fmt.Errorf("invalid id")
+	}
+
 	return r.dbHandler.Db.Delete(taskDB{ID: uint(id)}).Error
 }

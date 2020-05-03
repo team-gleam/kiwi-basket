@@ -3,6 +3,7 @@ package timetables
 import (
 	"fmt"
 	"net/http"
+	"unicode/utf8"
 
 	"github.com/go-playground/validator"
 	"github.com/labstack/echo/v4"
@@ -70,7 +71,7 @@ func (t TimetablesResponse) IsValidated() (bool, error) {
 }
 
 func Max85Ptr(validate validator.FieldLevel) bool {
-	return len(validate.Field().String()) < 86
+	return utf8.RuneCountInString(validate.Field().String()) < 86
 }
 
 func (t TimetablesResponse) toTimetables() timetablesModel.Timetables {

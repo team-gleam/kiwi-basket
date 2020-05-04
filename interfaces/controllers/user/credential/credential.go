@@ -44,7 +44,7 @@ func (c CredentialController) SignIn(ctx echo.Context) error {
 		)
 	}
 
-	if !login.IsValidated() {
+	if !login.Validates() {
 		return ctx.JSON(
 			http.StatusUnauthorized,
 			errorResponse.NewError(fmt.Errorf(loginController.InvalidUsernameOrPassword)),

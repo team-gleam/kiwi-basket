@@ -60,7 +60,7 @@ type ClassJSON struct {
 	Room    *string `json:"room" validate:"omitempty,max_85_ptr|isdefault"`
 }
 
-func (t TimetablesResponse) IsValidated() (bool, error) {
+func (t TimetablesResponse) Validates() (bool, error) {
 	v := validator.New()
 	err := v.RegisterValidation("max_85_ptr", Max85Ptr)
 	if err != nil {

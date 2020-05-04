@@ -34,7 +34,7 @@ type LoginResponse struct {
 	Password string `json:"password" validate:"required,alphanum,min=8,max=72"`
 }
 
-func (l LoginResponse) IsValidated() bool {
+func (l LoginResponse) Validates() bool {
 	return validator.New().Struct(l) == nil
 }
 
@@ -71,7 +71,7 @@ func (c LoginController) SignUp(ctx echo.Context) error {
 		)
 	}
 
-	if !login.IsValidated() {
+	if !login.Validates() {
 		return ctx.JSON(
 			http.StatusBadRequest,
 			errorResponse.NewError(fmt.Errorf(InvalidUsernameOrPassword)),
@@ -113,7 +113,7 @@ func (c LoginController) DeleteAccound(ctx echo.Context) error {
 		)
 	}
 
-	if !login.IsValidated() {
+	if !login.Validates() {
 		return ctx.JSON(
 			http.StatusBadRequest,
 			errorResponse.NewError(fmt.Errorf(InvalidJSONFormat)),

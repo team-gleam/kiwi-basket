@@ -360,7 +360,7 @@ func (t TimetablesResponse) maxLengthRoom() TimetablesResponse {
 	return tr
 }
 
-func TestIsValidated(t *testing.T) {
+func TestValidates(t *testing.T) {
 	tcs := []TimetablesResponseValidation{
 		{
 			Name:     "valid timetables have no null",
@@ -401,7 +401,7 @@ func TestIsValidated(t *testing.T) {
 
 	for _, tc := range tcs {
 		t.Run(tc.Name, func(t *testing.T) {
-			b, err := tc.Input.IsValidated()
+			b, err := tc.Input.Validates()
 			if err != nil {
 				fmt.Println(tc.Input.Timetables.Mon.One.Subject)
 				t.Errorf("unexpected error occured: %v", err)

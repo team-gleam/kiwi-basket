@@ -49,7 +49,7 @@ type TaskJSON struct {
 	Title string `json:"title" validate:"required,max=85"`
 }
 
-func (t TaskResponse) IsValidated() bool {
+func (t TaskResponse) Validates() bool {
 	return validator.New().Struct(t) == nil
 }
 
@@ -83,7 +83,7 @@ func (c TaskController) Add(ctx echo.Context) error {
 		)
 	}
 
-	if !res.IsValidated() {
+	if !res.Validates() {
 		return ctx.JSON(
 			http.StatusBadRequest,
 			errorResponse.NewError(fmt.Errorf(InvalidJSONFormat)),
@@ -119,7 +119,7 @@ type IDResponse struct {
 	ID string `json:"id" validate:"required,numeric,ne=0,min=-1"`
 }
 
-func (i IDResponse) IsValidated() bool {
+func (i IDResponse) Validates() bool {
 	return validator.New().Struct(i) == nil
 }
 
@@ -134,7 +134,7 @@ func (c TaskController) Delete(ctx echo.Context) error {
 
 	res := new(IDResponse)
 	err := ctx.Bind(res)
-	if err != nil || !res.IsValidated() {
+	if err != nil || !res.Validates() {
 		return ctx.JSON(
 			http.StatusBadRequest,
 			errorResponse.NewError(fmt.Errorf(InvalidJSONFormat)),

@@ -1,6 +1,8 @@
 package timetables
 
 import (
+	"database/sql"
+
 	timetablesModel "github.com/team-gleam/kiwi-basket/domain/model/timetables"
 	"github.com/team-gleam/kiwi-basket/domain/model/user/username"
 	timetablesRepository "github.com/team-gleam/kiwi-basket/domain/repository/timetables"
@@ -49,14 +51,27 @@ func NewTimetableDB(d string, _1, _2, _3, _4, _5 *uint) TimetableDB {
 }
 
 type ClassDB struct {
-	ID            uint `gorm:"primary_key;auto_increment"`
-	Subject, Room string
+	ID      uint `gorm:"primary_key;auto_increment"`
+	Subject string
+	Room    sql.NullString
 }
 
 func NewClassDB(s, r string) ClassDB {
 	return ClassDB{
 		Subject: s,
-		Room:    r,
+		Room: sql.NullString{
+			String: r,
+			Valid:  true,
+		},
+	}
+}
+
+func NewNoRoomClassDB(s string) ClassDB {
+	return ClassDB{
+		Subject: s,
+		Room: sql.NullString{
+			Valid: false,
+		},
 	}
 }
 
@@ -126,13 +141,70 @@ func (r *TimetablesRepository) createClass(class timetablesModel.Class) (*uint, 
 		return nil, nil
 	}
 
-	c := NewClassDB(class.Subject(), class.Room())
+	var c ClassDB
+	if !class.IsNoRoom() {
+		c = NewClassDB(class.Subject(), class.Room())
+	} else {
+		c = NewNoRoomClassDB(class.Subject())
+	}
+
 	err := r.dbHandler.Db.Create(&c).Error
 	return &c.ID, err
 }
 
 func (r *TimetablesRepository) Delete(u username.Username) error {
+	ts := new(TimetablesDB)
+	err := r.dbHandler.Db.Where("username = ?", u.Name).First(&ts).Error
+	if err != nil {
+		return err
+	}
+
+	err = r.deleteTimetable(TimetableDB{ID: ts.Mon})
+	if err != nil {
+		return err
+	}
+	err = r.deleteTimetable(TimetableDB{ID: ts.Tue})
+	if err != nil {
+		return err
+	}
+	err = r.deleteTimetable(TimetableDB{ID: ts.Wed})
+	if err != nil {
+		return err
+	}
+	err = r.deleteTimetable(TimetableDB{ID: ts.Thu})
+	if err != nil {
+		return err
+	}
+	err = r.deleteTimetable(TimetableDB{ID: ts.Fri})
+	if err != nil {
+		return err
+	}
+
 	return r.dbHandler.Db.Delete(TimetablesDB{Username: u.Name()}).Error
+}
+
+func (r *TimetablesRepository) deleteTimetable(t TimetableDB) error {
+	err := r.deleteClass(ClassDB{ID: *t.One})
+	if err != nil {
+		return err
+	}
+	err = r.deleteClass(ClassDB{ID: *t.Two})
+	if err != nil {
+		return err
+	}
+	err = r.deleteClass(ClassDB{ID: *t.Three})
+	if err != nil {
+		return err
+	}
+	err = r.deleteClass(ClassDB{ID: *t.Four})
+	if err != nil {
+		return err
+	}
+	return r.deleteClass(ClassDB{ID: *t.Five})
+}
+
+func (r *TimetablesRepository) deleteClass(c ClassDB) error {
+	return r.dbHandler.Db.Delete(c).Error
 }
 
 func (r *TimetablesRepository) Exists(u username.Username) (bool, error) {
@@ -218,5 +290,9 @@ func (r *TimetablesRepository) getClass(id *uint) (timetablesModel.Class, error)
 		return timetablesModel.Class{}, err
 	}
 
-	return timetablesModel.NewClass(c.Subject, c.Room), nil
+	if !c.Room.Valid {
+		return timetablesModel.NoRoom(c.Subject), nil
+	}
+
+	return timetablesModel.NewClass(c.Subject, c.Room.String), nil
 }

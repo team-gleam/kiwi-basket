@@ -5,6 +5,7 @@ import (
 
 	taskModel "github.com/team-gleam/kiwi-basket/domain/model/task"
 	tokenModel "github.com/team-gleam/kiwi-basket/domain/model/user/token"
+	"github.com/team-gleam/kiwi-basket/domain/model/user/username"
 	taskRepository "github.com/team-gleam/kiwi-basket/domain/repository/task"
 	credentialUsecase "github.com/team-gleam/kiwi-basket/usecase/user/credential"
 )
@@ -18,13 +19,18 @@ func NewTaskUsecase(c credentialUsecase.CredentialUsecase, t taskRepository.ITas
 	return TaskUsecase{c, t}
 }
 
+const (
+	IDIsNotZero = "ID is not zero"
+	InvalidID   = "Invalid ID"
+)
+
 func (u TaskUsecase) Add(token tokenModel.Token, task taskModel.Task) error {
 	credentialed, err := u.credentialUsecase.IsCredentialed(token)
 	if err != nil {
 		return err
 	}
 	if !credentialed {
-		return fmt.Errorf("this token is not credentialed")
+		return fmt.Errorf(credentialUsecase.InvalidToken)
 	}
 
 	user, err := u.credentialUsecase.Whose(token)
@@ -41,7 +47,14 @@ func (u TaskUsecase) Delete(token tokenModel.Token, id int) error {
 		return err
 	}
 	if !credentialed {
-		return fmt.Errorf("this token is not credentialed")
+		return fmt.Errorf(credentialUsecase.InvalidToken)
+	}
+
+	if id == 0 {
+		return fmt.Errorf(IDIsNotZero)
+	}
+	if id < 0 {
+		return fmt.Errorf(InvalidID)
 	}
 
 	user, err := u.credentialUsecase.Whose(token)
@@ -49,7 +62,26 @@ func (u TaskUsecase) Delete(token tokenModel.Token, id int) error {
 		return err
 	}
 
+	tasks, err := u.taskRepository.GetAll(user)
+	if err != nil {
+		return err
+	}
+
+	if !isValidID(user, id, tasks) {
+		return fmt.Errorf(InvalidID)
+	}
+
 	return u.taskRepository.Remove(user, id)
+}
+
+func isValidID(username username.Username, id int, tasks []taskModel.Task) bool {
+	for _, task := range tasks {
+		if task.ID() == id {
+			return true
+		}
+	}
+
+	return false
 }
 
 func (u TaskUsecase) GetAll(token tokenModel.Token) ([]taskModel.Task, error) {
@@ -58,7 +90,7 @@ func (u TaskUsecase) GetAll(token tokenModel.Token) ([]taskModel.Task, error) {
 		return nil, err
 	}
 	if !credentialed {
-		return nil, fmt.Errorf("this token is not credentialed")
+		return nil, fmt.Errorf(credentialUsecase.InvalidToken)
 	}
 
 	user, err := u.credentialUsecase.Whose(token)

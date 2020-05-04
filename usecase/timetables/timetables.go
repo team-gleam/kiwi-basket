@@ -18,13 +18,17 @@ func NewTimetablesUsecase(c credentialUsecase.CredentialUsecase, t timetablesRep
 	return TimetablesUsecase{c, t}
 }
 
-func (u TimetablesUsecase) Register(token token.Token, timetables timetablesModel.Timetables) error {
+const (
+	TimetablesNotFound = "timetables not found"
+)
+
+func (u TimetablesUsecase) Add(token token.Token, timetables timetablesModel.Timetables) error {
 	credentialed, err := u.credentialUsecase.IsCredentialed(token)
 	if err != nil {
 		return err
 	}
 	if !credentialed {
-		return fmt.Errorf("this token is not credentialed")
+		return fmt.Errorf(credentialUsecase.InvalidToken)
 	}
 
 	user, err := u.credentialUsecase.Whose(token)
@@ -37,12 +41,37 @@ func (u TimetablesUsecase) Register(token token.Token, timetables timetablesMode
 		return err
 	}
 	if exist {
-		if err = u.timetablesRepository.Delete(user); err != nil {
+		if err = u.delete(token); err != nil {
 			return err
 		}
 	}
 
 	return u.timetablesRepository.Create(user, timetables)
+}
+
+func (u TimetablesUsecase) delete(token token.Token) error {
+	credentialed, err := u.credentialUsecase.IsCredentialed(token)
+	if err != nil {
+		return err
+	}
+	if !credentialed {
+		return fmt.Errorf(credentialUsecase.InvalidToken)
+	}
+
+	user, err := u.credentialUsecase.Whose(token)
+	if err != nil {
+		return err
+	}
+
+	exist, err := u.timetablesRepository.Exists(user)
+	if err != nil {
+		return err
+	}
+	if !exist {
+		return fmt.Errorf(TimetablesNotFound)
+	}
+
+	return u.timetablesRepository.Delete(user)
 }
 
 func (u TimetablesUsecase) Get(token token.Token) (timetablesModel.Timetables, error) {
@@ -51,7 +80,7 @@ func (u TimetablesUsecase) Get(token token.Token) (timetablesModel.Timetables, e
 		return timetablesModel.Timetables{}, err
 	}
 	if !credentialed {
-		return timetablesModel.Timetables{}, fmt.Errorf("this token is not credentialed")
+		return timetablesModel.Timetables{}, fmt.Errorf(credentialUsecase.InvalidToken)
 	}
 
 	user, err := u.credentialUsecase.Whose(token)
@@ -65,7 +94,7 @@ func (u TimetablesUsecase) Get(token token.Token) (timetablesModel.Timetables, e
 	}
 
 	if !exist {
-		return timetablesModel.Timetables{}, fmt.Errorf("timetables not found")
+		return timetablesModel.Timetables{}, fmt.Errorf(TimetablesNotFound)
 	}
 
 	return u.timetablesRepository.Get(user)

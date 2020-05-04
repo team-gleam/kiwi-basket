@@ -16,9 +16,18 @@ type CredentialUsecase struct {
 	loginRepository      loginRepository.ILoginRepository
 }
 
-func NewCredentialRepository(c credentialRepository.ICredentialRepository, l loginRepository.ILoginRepository) CredentialUsecase {
+func NewCredentialUsecase(
+	c credentialRepository.ICredentialRepository,
+	l loginRepository.ILoginRepository,
+) CredentialUsecase {
 	return CredentialUsecase{c, l}
 }
+
+const (
+	UserNotFound              = "user not found"
+	InvalidUsernameOrPassword = "invalid username or password"
+	InvalidToken              = "invalid token"
+)
 
 func (u CredentialUsecase) Generate(login loginModel.Login) (token.Token, error) {
 	exist, err := u.loginRepository.Exists(login.Username())
@@ -26,7 +35,7 @@ func (u CredentialUsecase) Generate(login loginModel.Login) (token.Token, error)
 		return token.NewToken(""), err
 	}
 	if !exist {
-		return token.NewToken(""), fmt.Errorf("this user not exists")
+		return token.NewToken(""), fmt.Errorf(UserNotFound)
 	}
 
 	l, err := u.loginRepository.Get(login.Username())
@@ -34,7 +43,7 @@ func (u CredentialUsecase) Generate(login loginModel.Login) (token.Token, error)
 		return token.NewToken(""), err
 	}
 	if l != login {
-		return token.NewToken(""), fmt.Errorf("username or password is invalid")
+		return token.NewToken(""), fmt.Errorf(InvalidUsernameOrPassword)
 	}
 
 	t, err := token.GenToken()

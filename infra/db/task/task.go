@@ -46,12 +46,12 @@ func toTask(t TaskDB) (taskModel.Task, username.Username, error) {
 
 func (r *TaskRepository) Create(u username.Username, t taskModel.Task) error {
 	d := transformTaskForDB(t, u)
-	return r.dbHandler.Db.Create(d).Error
+	return r.dbHandler.Db.Create(&d).Error
 }
 
 func (r *TaskRepository) GetAll(u username.Username) ([]taskModel.Task, error) {
 	ds := make([]TaskDB, 0)
-	err := r.dbHandler.Db.Where("username = ?", u.Name).Find(&ds).Error
+	err := r.dbHandler.Db.Where("username = ?", u.Name()).Find(&ds).Error
 	if err != nil {
 		return []taskModel.Task{}, err
 	}
@@ -73,5 +73,5 @@ func (r *TaskRepository) Remove(u username.Username, id int) error {
 		return fmt.Errorf("invalid id")
 	}
 
-	return r.dbHandler.Db.Delete(TaskDB{ID: uint(id)}).Error
+	return r.dbHandler.Db.Where("id = ?", uint(id)).Delete(TaskDB{}).Error
 }

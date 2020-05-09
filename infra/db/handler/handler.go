@@ -5,12 +5,19 @@ import (
 	"github.com/jinzhu/gorm"
 )
 
+type Config struct {
+	DBMS     string `yaml:"dbms"`
+	User     string `yaml:"user"`
+	Password string `yaml:"password"`
+	DBName   string `yaml:"dbname"`
+}
+
 type DbHandler struct {
 	Db *gorm.DB
 }
 
-func NewDbHandler(dbms, user, password, dbname string) (*DbHandler, error) {
-	connect := user + ":" + password + "@/" + dbname
-	db, err := gorm.Open(dbms, connect)
+func NewDbHandler(c Config) (*DbHandler, error) {
+	connect := c.User + ":" + c.Password + "@/" + c.DBName
+	db, err := gorm.Open(c.DBMS, connect)
 	return &DbHandler{db}, err
 }

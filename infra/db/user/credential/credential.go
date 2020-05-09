@@ -46,7 +46,7 @@ func (r *CredentialRepository) Remove(a credentialModel.Auth) error {
 
 func (r *CredentialRepository) Exists(t token.Token) (bool, error) {
 	a := new(CredentialDB)
-	err := r.dbHandler.Db.Where("token = ?", t.Token).First(&a).Error
+	err := r.dbHandler.Db.Where("token = ?", t.Token).Take(&a).Error
 	if gorm.IsRecordNotFoundError(err) {
 		return false, nil
 	}
@@ -58,7 +58,7 @@ func (r *CredentialRepository) Exists(t token.Token) (bool, error) {
 
 func (r *CredentialRepository) Get(t token.Token) (credentialModel.Auth, error) {
 	auth := new(CredentialDB)
-	err := r.dbHandler.Db.Where("token = ?", t.Token).First(&auth).Error
+	err := r.dbHandler.Db.Where("token = ?", t.Token).Take(&auth).Error
 	if err != nil {
 		return credentialModel.Auth{}, err
 	}

@@ -160,7 +160,7 @@ func (r *TimetablesRepository) createClass(class timetablesModel.Class) (*uint, 
 
 func (r *TimetablesRepository) Delete(u username.Username) error {
 	ts := new(TimetablesDB)
-	err := r.dbHandler.Db.Where("username = ?", u.Name).First(&ts).Error
+	err := r.dbHandler.Db.Where("username = ?", u.Name).Take(&ts).Error
 	if err != nil {
 		return err
 	}
@@ -215,7 +215,7 @@ func (r *TimetablesRepository) deleteClass(c ClassDB) error {
 
 func (r *TimetablesRepository) Exists(u username.Username) (bool, error) {
 	t := TimetablesDB{}
-	err := r.dbHandler.Db.Where("username = ?", u.Name()).First(&t).Error
+	err := r.dbHandler.Db.Where("username = ?", u.Name()).Take(&t).Error
 	if gorm.IsRecordNotFoundError(err) {
 		return false, nil
 	}
@@ -228,7 +228,7 @@ func (r *TimetablesRepository) Exists(u username.Username) (bool, error) {
 
 func (r *TimetablesRepository) Get(u username.Username) (timetablesModel.Timetables, error) {
 	ts := TimetablesDB{}
-	err := r.dbHandler.Db.Where("username = ?", u.Name).First(&ts).Error
+	err := r.dbHandler.Db.Where("username = ?", u.Name).Take(&ts).Error
 	if err != nil {
 		return timetablesModel.Timetables{}, err
 	}
@@ -259,7 +259,7 @@ func (r *TimetablesRepository) Get(u username.Username) (timetablesModel.Timetab
 
 func (r *TimetablesRepository) getTimetable(id uint) (timetablesModel.Timetable, error) {
 	t := TimetableDB{}
-	err := r.dbHandler.Db.Where("id = ?", id).First(&t).Error
+	err := r.dbHandler.Db.Where("id = ?", id).Take(&t).Error
 	if err != nil {
 		return timetablesModel.Timetable{}, err
 	}
@@ -294,7 +294,7 @@ func (r *TimetablesRepository) getClass(id *uint) (timetablesModel.Class, error)
 	}
 
 	c := ClassDB{}
-	err := r.dbHandler.Db.Where("id = ?", id).First(&c).Error
+	err := r.dbHandler.Db.Where("id = ?", id).Take(&c).Error
 	if err != nil {
 		return timetablesModel.Class{}, err
 	}

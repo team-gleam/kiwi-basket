@@ -3,6 +3,7 @@ package login
 import (
 	"fmt"
 
+	"github.com/jinzhu/gorm"
 	loginModel "github.com/team-gleam/kiwi-basket/domain/model/user/login"
 	"github.com/team-gleam/kiwi-basket/domain/model/user/username"
 	loginRepository "github.com/team-gleam/kiwi-basket/domain/repository/user/login"
@@ -34,7 +35,7 @@ func toLogin(l LoginDB) (loginModel.Login, error) {
 
 func (r *LoginRepository) Create(l loginModel.Login) error {
 	login := transformLoginForDB(l)
-	return r.dbHandler.Db.Create(login).Error
+	return r.dbHandler.Db.Create(&login).Error
 }
 
 func (r *LoginRepository) Delete(l loginModel.Login) error {
@@ -44,23 +45,26 @@ func (r *LoginRepository) Delete(l loginModel.Login) error {
 
 func (r *LoginRepository) Exists(u username.Username) (bool, error) {
 	l := new(LoginDB)
-	err := r.dbHandler.Db.Where("username = ?", l.Username).First(&l).Error
+	err := r.dbHandler.Db.Where("username = ?", u.Name()).Take(l).Error
+	if gorm.IsRecordNotFoundError(err) {
+		return false, nil
+	}
 	if err != nil {
 		return false, err
 	}
 
-	return new(LoginDB) != l, nil
+	return l.Username != "", nil
 }
 
 func (r *LoginRepository) Get(u username.Username) (loginModel.Login, error) {
 	login := new(LoginDB)
-	err := r.dbHandler.Db.Where("username = ?", login.Username).First(&login).Error
+	err := r.dbHandler.Db.Where("username = ?", u.Name()).Take(login).Error
 	if err != nil {
 		return loginModel.Login{}, err
 	}
 
 	l, err := toLogin(*login)
-	if err.Error() == username.InvalidUsername {
+	if err != nil && err.Error() == username.InvalidUsername {
 		return loginModel.Login{}, fmt.Errorf("user not found")
 	}
 

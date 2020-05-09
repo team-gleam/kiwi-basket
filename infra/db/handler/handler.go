@@ -17,7 +17,7 @@ type DbHandler struct {
 }
 
 func NewDbHandler(c Config) (*DbHandler, error) {
-	connect := c.User + ":" + c.Password + "@/" + c.DBName + "?charset=utf8mb4"
+	connect := c.User + ":" + c.Password + "@/" + c.DBName + "?charset=utf8mb4" + "&parseTime=true"
 	db, err := gorm.Open(c.DBMS, connect)
 	return &DbHandler{db}, err
 }

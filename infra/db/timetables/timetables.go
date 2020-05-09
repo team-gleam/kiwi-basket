@@ -14,6 +14,11 @@ type TimetablesRepository struct {
 }
 
 func NewTimetablesRepository(h *handler.DbHandler) timetablesRepository.ITimetablesRepository {
+	h.Db.AutoMigrate(
+		TimetablesDB{},
+		TimetableDB{},
+		ClassDB{},
+	)
 	return &TimetablesRepository{h}
 }
 

@@ -15,19 +15,20 @@ type CredentialRepository struct {
 }
 
 func NewCredentialRepository(h *handler.DbHandler) credentialRepository.ICredentialRepository {
+	h.Db.AutoMigrate(CredentialDB{})
 	return &CredentialRepository{h}
 }
 
-type authDB struct {
+type CredentialDB struct {
 	Username string `gorm:"primary_key"`
 	Token    string `gorm:"primary_key"`
 }
 
-func transformAuthForDB(a credentialModel.Auth) authDB {
-	return authDB{a.Username().Name(), a.Token().Token()}
+func transformAuthForDB(a credentialModel.Auth) CredentialDB {
+	return CredentialDB{a.Username().Name(), a.Token().Token()}
 }
 
-func toAuth(a authDB) (credentialModel.Auth, error) {
+func toAuth(a CredentialDB) (credentialModel.Auth, error) {
 	u, err := username.NewUsername(a.Username)
 	return credentialModel.NewAuth(u, token.NewToken(a.Token)), err
 }
@@ -43,16 +44,16 @@ func (r *CredentialRepository) Remove(a credentialModel.Auth) error {
 }
 
 func (r *CredentialRepository) Exists(t token.Token) (bool, error) {
-	a := new(authDB)
+	a := new(CredentialDB)
 	err := r.dbHandler.Db.Where("token = ?", t.Token).First(&a).Error
 	if err != nil {
 		return false, err
 	}
-	return new(authDB) != a, nil
+	return new(CredentialDB) != a, nil
 }
 
 func (r *CredentialRepository) Get(t token.Token) (credentialModel.Auth, error) {
-	auth := new(authDB)
+	auth := new(CredentialDB)
 	err := r.dbHandler.Db.Where("token = ?", t.Token).First(&auth).Error
 	if err != nil {
 		return credentialModel.Auth{}, err

@@ -150,7 +150,7 @@ func (c TaskController) Delete(ctx echo.Context) error {
 	}
 
 	err = c.taskUsecase.Delete(token.NewToken(t), id)
-	if err.Error() == credentialUsecase.InvalidToken {
+	if err != nil && err.Error() == credentialUsecase.InvalidToken {
 		return ctx.JSON(
 			http.StatusUnauthorized,
 			errorResponse.NewError(fmt.Errorf(credentialUsecase.InvalidToken)),

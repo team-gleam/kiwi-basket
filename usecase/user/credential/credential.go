@@ -52,6 +52,12 @@ func (u CredentialUsecase) Generate(login loginModel.Login) (token.Token, error)
 	}
 
 	a := credentialModel.NewAuth(login.Username(), t)
+
+	err = u.credentialRepository.Remove(a)
+	if err != nil {
+		return token.NewToken(""), err
+	}
+
 	return t, u.credentialRepository.Append(a)
 }
 

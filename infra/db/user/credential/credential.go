@@ -41,7 +41,12 @@ func (r *CredentialRepository) Append(a credentialModel.Auth) error {
 
 func (r *CredentialRepository) Remove(a credentialModel.Auth) error {
 	d := transformAuthForDB(a)
-	return r.dbHandler.Db.Delete(&d).Error
+	err := r.dbHandler.Db.Where("username = ?", d.Username).Delete(AuthDB{}).Error
+	if gorm.IsRecordNotFoundError(err) {
+		return nil
+	}
+	fmt.Println(err)
+	return err
 }
 
 func (r *CredentialRepository) Exists(t token.Token) (bool, error) {

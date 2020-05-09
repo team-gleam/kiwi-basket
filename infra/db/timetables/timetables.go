@@ -160,57 +160,72 @@ func (r *TimetablesRepository) createClass(class timetablesModel.Class) (*uint, 
 
 func (r *TimetablesRepository) Delete(u username.Username) error {
 	ts := new(TimetablesDB)
-	err := r.dbHandler.Db.Where("username = ?", u.Name).Take(&ts).Error
+	err := r.dbHandler.Db.Where("username = ?", u.Name()).Take(ts).Error
 	if err != nil {
 		return err
 	}
 
-	err = r.deleteTimetable(TimetableDB{ID: ts.Mon})
+	err = r.deleteTimetable(ts.Mon)
 	if err != nil {
 		return err
 	}
-	err = r.deleteTimetable(TimetableDB{ID: ts.Tue})
+	err = r.deleteTimetable(ts.Tue)
 	if err != nil {
 		return err
 	}
-	err = r.deleteTimetable(TimetableDB{ID: ts.Wed})
+	err = r.deleteTimetable(ts.Wed)
 	if err != nil {
 		return err
 	}
-	err = r.deleteTimetable(TimetableDB{ID: ts.Thu})
+	err = r.deleteTimetable(ts.Thu)
 	if err != nil {
 		return err
 	}
-	err = r.deleteTimetable(TimetableDB{ID: ts.Fri})
+	err = r.deleteTimetable(ts.Fri)
 	if err != nil {
 		return err
 	}
 
-	return r.dbHandler.Db.Delete(TimetablesDB{Username: u.Name()}).Error
+	return r.dbHandler.Db.Where("username = ?", u.Name()).Delete(TimetablesDB{}).Error
 }
 
-func (r *TimetablesRepository) deleteTimetable(t TimetableDB) error {
-	err := r.deleteClass(ClassDB{ID: *t.One})
+func (r *TimetablesRepository) deleteTimetable(id uint) error {
+	td := new(TimetableDB)
+	err := r.dbHandler.Db.Where("id = ?", id).Take(td).Error
 	if err != nil {
 		return err
 	}
-	err = r.deleteClass(ClassDB{ID: *t.Two})
+
+	err = r.deleteClass(td.One)
 	if err != nil {
 		return err
 	}
-	err = r.deleteClass(ClassDB{ID: *t.Three})
+	err = r.deleteClass(td.Two)
 	if err != nil {
 		return err
 	}
-	err = r.deleteClass(ClassDB{ID: *t.Four})
+	err = r.deleteClass(td.Three)
 	if err != nil {
 		return err
 	}
-	return r.deleteClass(ClassDB{ID: *t.Five})
+	err = r.deleteClass(td.Four)
+	if err != nil {
+		return err
+	}
+	err = r.deleteClass(td.Five)
+	if err != nil {
+		return err
+	}
+
+	return r.dbHandler.Db.Where("id = ?", id).Delete(TimetableDB{}).Error
 }
 
-func (r *TimetablesRepository) deleteClass(c ClassDB) error {
-	return r.dbHandler.Db.Delete(c).Error
+func (r *TimetablesRepository) deleteClass(id *uint) error {
+	if id != nil {
+		return r.dbHandler.Db.Where("id = ?", *id).Delete(ClassDB{}).Error
+	}
+
+	return nil
 }
 
 func (r *TimetablesRepository) Exists(u username.Username) (bool, error) {
@@ -228,7 +243,7 @@ func (r *TimetablesRepository) Exists(u username.Username) (bool, error) {
 
 func (r *TimetablesRepository) Get(u username.Username) (timetablesModel.Timetables, error) {
 	ts := TimetablesDB{}
-	err := r.dbHandler.Db.Where("username = ?", u.Name).Take(&ts).Error
+	err := r.dbHandler.Db.Where("username = ?", u.Name()).Take(&ts).Error
 	if err != nil {
 		return timetablesModel.Timetables{}, err
 	}

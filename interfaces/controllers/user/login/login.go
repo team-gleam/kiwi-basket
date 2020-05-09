@@ -1,6 +1,8 @@
 package login
 
 import (
+	"crypto/sha256"
+	"encoding/hex"
 	"fmt"
 	"net/http"
 
@@ -11,7 +13,6 @@ import (
 	loginRepository "github.com/team-gleam/kiwi-basket/domain/repository/user/login"
 	errorResponse "github.com/team-gleam/kiwi-basket/interfaces/controllers/error"
 	loginUsecase "github.com/team-gleam/kiwi-basket/usecase/user/login"
-	"golang.org/x/crypto/bcrypt"
 )
 
 type LoginController struct {
@@ -44,21 +45,14 @@ func (l LoginResponse) ToLogin() (loginModel.Login, error) {
 		return loginModel.Login{}, err
 	}
 
-	hashed, err := hashPassword(l.Password)
-	if err != nil {
-		return loginModel.Login{}, err
-	}
+	hashed := hashPassword(l.Password)
 
 	return loginModel.NewLogin(u, hashed), nil
 }
 
-func hashPassword(p string) (string, error) {
-	hash, err := bcrypt.GenerateFromPassword([]byte(p), bcrypt.DefaultCost)
-	if err != nil {
-		return "", err
-	}
-
-	return string(hash), nil
+func hashPassword(p string) string {
+	b := sha256.Sum256([]byte(p))
+	return hex.EncodeToString(b[:])
 }
 
 func (c LoginController) SignUp(ctx echo.Context) error {

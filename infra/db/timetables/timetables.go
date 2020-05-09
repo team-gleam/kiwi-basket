@@ -3,6 +3,7 @@ package timetables
 import (
 	"database/sql"
 
+	"github.com/jinzhu/gorm"
 	timetablesModel "github.com/team-gleam/kiwi-basket/domain/model/timetables"
 	"github.com/team-gleam/kiwi-basket/domain/model/user/username"
 	timetablesRepository "github.com/team-gleam/kiwi-basket/domain/repository/timetables"
@@ -215,6 +216,9 @@ func (r *TimetablesRepository) deleteClass(c ClassDB) error {
 func (r *TimetablesRepository) Exists(u username.Username) (bool, error) {
 	t := TimetablesDB{}
 	err := r.dbHandler.Db.Where("username = ?", u.Name()).First(&t).Error
+	if gorm.IsRecordNotFoundError(err) {
+		return false, nil
+	}
 	if err != nil {
 		return false, err
 	}

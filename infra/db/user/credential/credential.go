@@ -3,6 +3,7 @@ package credential
 import (
 	"fmt"
 
+	"github.com/jinzhu/gorm"
 	credentialModel "github.com/team-gleam/kiwi-basket/domain/model/user/credential"
 	"github.com/team-gleam/kiwi-basket/domain/model/user/token"
 	"github.com/team-gleam/kiwi-basket/domain/model/user/username"
@@ -35,17 +36,20 @@ func toAuth(a CredentialDB) (credentialModel.Auth, error) {
 
 func (r *CredentialRepository) Append(a credentialModel.Auth) error {
 	d := transformAuthForDB(a)
-	return r.dbHandler.Db.Create(d).Error
+	return r.dbHandler.Db.Create(&d).Error
 }
 
 func (r *CredentialRepository) Remove(a credentialModel.Auth) error {
 	d := transformAuthForDB(a)
-	return r.dbHandler.Db.Delete(d).Error
+	return r.dbHandler.Db.Delete(&d).Error
 }
 
 func (r *CredentialRepository) Exists(t token.Token) (bool, error) {
 	a := new(CredentialDB)
 	err := r.dbHandler.Db.Where("token = ?", t.Token).First(&a).Error
+	if gorm.IsRecordNotFoundError(err) {
+		return false, nil
+	}
 	if err != nil {
 		return false, err
 	}

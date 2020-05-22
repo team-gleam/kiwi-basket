@@ -74,6 +74,23 @@ func (u TaskUsecase) Delete(token tokenModel.Token, id int) error {
 	return u.taskRepository.Remove(user, id)
 }
 
+func (u TaskUsecase) DeleteAll(token tokenModel.Token) error {
+	credentialed, err := u.credentialUsecase.IsCredentialed(token)
+	if err != nil {
+		return err
+	}
+	if !credentialed {
+		return fmt.Errorf(credentialUsecase.InvalidToken)
+	}
+
+	user, err := u.credentialUsecase.Whose(token)
+	if err != nil {
+		return err
+	}
+
+	return u.taskRepository.RemoveAll(user)
+}
+
 func isValidID(username username.Username, id int, tasks []taskModel.Task) bool {
 	for _, task := range tasks {
 		if task.ID() == id {

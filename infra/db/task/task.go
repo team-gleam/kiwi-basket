@@ -75,3 +75,7 @@ func (r *TaskRepository) Remove(u username.Username, id int) error {
 
 	return r.dbHandler.Db.Where("id = ?", uint(id)).Delete(TaskDB{}).Error
 }
+
+func (r *TaskRepository) RemoveAll(u username.Username) error {
+	return r.dbHandler.Db.Where("username = ?", u.Name()).Delete(TaskDB{}).Error
+}

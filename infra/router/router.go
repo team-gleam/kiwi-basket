@@ -65,5 +65,5 @@ func Run(c handler.Config) {
 	e.GET("/tasks", task.GetAll)
 	e.DELETE("/tasks", task.Delete)
 
-	e.Logger.Fatal(e.Start(":23450"))
+	e.Logger.Fatal(e.Start(":443"))
 }

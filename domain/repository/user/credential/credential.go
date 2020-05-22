@@ -10,5 +10,6 @@ type ICredentialRepository interface {
 	Append(credential.Auth) error
 	Remove(username.Username) error
 	Exists(token.Token) (bool, error)
-	Get(token.Token) (credential.Auth, error)
+	GetByToken(token.Token) (credential.Auth, error)
+	GetByUsername(username.Username) (credential.Auth, error)
 }

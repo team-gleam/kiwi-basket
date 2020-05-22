@@ -59,9 +59,24 @@ func (r *CredentialRepository) Exists(t token.Token) (bool, error) {
 	return a.Token != "", nil
 }
 
-func (r *CredentialRepository) Get(t token.Token) (credentialModel.Auth, error) {
+func (r *CredentialRepository) GetByToken(t token.Token) (credentialModel.Auth, error) {
 	auth := new(AuthDB)
 	err := r.dbHandler.Db.Where("token = ?", t.Token()).Take(auth).Error
+	if err != nil {
+		return credentialModel.Auth{}, err
+	}
+
+	a, err := toAuth(*auth)
+	if err != nil && err.Error() == username.InvalidUsername {
+		return credentialModel.Auth{}, fmt.Errorf("user not found")
+	}
+
+	return a, nil
+}
+
+func (r *CredentialRepository) GetByUsername(u username.Username) (credentialModel.Auth, error) {
+	auth := new(AuthDB)
+	err := r.dbHandler.Db.Where("username = ?", u.Name()).Take(auth).Error
 	if err != nil {
 		return credentialModel.Auth{}, err
 	}

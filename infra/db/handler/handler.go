@@ -9,6 +9,7 @@ type Config struct {
 	DBMS     string `yaml:"dbms"`
 	User     string `yaml:"user"`
 	Password string `yaml:"password"`
+	Protocol string `yaml:"protocol"`
 	DBName   string `yaml:"dbname"`
 }
 
@@ -17,7 +18,7 @@ type DbHandler struct {
 }
 
 func NewDbHandler(c Config) (*DbHandler, error) {
-	connect := c.User + ":" + c.Password + "@/" + c.DBName + "?charset=utf8mb4" + "&parseTime=true"
+	connect := c.User + ":" + c.Password + "@" + c.Protocol + "/" + c.DBName + "?charset=utf8mb4" + "&parseTime=true"
 	db, err := gorm.Open(c.DBMS, connect)
 	return &DbHandler{db}, err
 }

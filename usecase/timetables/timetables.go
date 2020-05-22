@@ -49,7 +49,7 @@ func (u TimetablesUsecase) Add(token token.Token, timetables timetablesModel.Tim
 		return err
 	}
 	if exist {
-		if err = u.delete(token); err != nil {
+		if err = u.Delete(token); err != nil {
 			return err
 		}
 	}
@@ -57,7 +57,7 @@ func (u TimetablesUsecase) Add(token token.Token, timetables timetablesModel.Tim
 	return u.timetablesRepository.Create(user, timetables)
 }
 
-func (u TimetablesUsecase) delete(token token.Token) error {
+func (u TimetablesUsecase) Delete(token token.Token) error {
 	credentialed, err := u.credentialUsecase.IsCredentialed(token)
 	if err != nil {
 		return err

@@ -10,18 +10,35 @@ import (
 	"github.com/labstack/echo/v4"
 	loginModel "github.com/team-gleam/kiwi-basket/domain/model/user/login"
 	"github.com/team-gleam/kiwi-basket/domain/model/user/username"
+	taskRepository "github.com/team-gleam/kiwi-basket/domain/repository/task"
+	timetablesRepository "github.com/team-gleam/kiwi-basket/domain/repository/timetables"
+	credentialRepository "github.com/team-gleam/kiwi-basket/domain/repository/user/credential"
 	loginRepository "github.com/team-gleam/kiwi-basket/domain/repository/user/login"
 	errorResponse "github.com/team-gleam/kiwi-basket/interfaces/controllers/error"
+	taskUsecase "github.com/team-gleam/kiwi-basket/usecase/task"
+	timetablesUsecase "github.com/team-gleam/kiwi-basket/usecase/timetables"
+	credentialUsecase "github.com/team-gleam/kiwi-basket/usecase/user/credential"
 	loginUsecase "github.com/team-gleam/kiwi-basket/usecase/user/login"
 )
 
 type LoginController struct {
-	loginUsecase loginUsecase.LoginUsecase
+	loginUsecase      loginUsecase.LoginUsecase
+	credentialUsecase credentialUsecase.CredentialUsecase
+	taskUsecase       taskUsecase.TaskUsecase
+	timetablesUsecase timetablesUsecase.TimetablesUsecase
 }
 
-func NewLoginController(r loginRepository.ILoginRepository) *LoginController {
+func NewLoginController(
+	l loginRepository.ILoginRepository,
+	c credentialRepository.ICredentialRepository,
+	t taskRepository.ITaskRepository,
+	tt timetablesRepository.ITimetablesRepository,
+) *LoginController {
 	return &LoginController{
-		loginUsecase.NewLoginUsecase(r),
+		loginUsecase.NewLoginUsecase(l),
+		credentialUsecase.NewCredentialUsecase(c, l),
+		taskUsecase.NewTaskUsecase(c, l, t),
+		timetablesUsecase.NewTimetablesUsecase(c, l, tt),
 	}
 }
 

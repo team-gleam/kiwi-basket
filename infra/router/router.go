@@ -43,6 +43,9 @@ func Run(c handler.Config) {
 
 	login := loginController.NewLoginController(
 		loginRepo,
+		credentialRepo,
+		taskRepo,
+		timetablesRepo,
 	)
 
 	credential := credentialController.NewCredentialController(

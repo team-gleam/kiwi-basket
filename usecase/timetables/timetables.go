@@ -6,6 +6,8 @@ import (
 	timetablesModel "github.com/team-gleam/kiwi-basket/domain/model/timetables"
 	"github.com/team-gleam/kiwi-basket/domain/model/user/token"
 	timetablesRepository "github.com/team-gleam/kiwi-basket/domain/repository/timetables"
+	credentialRepository "github.com/team-gleam/kiwi-basket/domain/repository/user/credential"
+	loginRepository "github.com/team-gleam/kiwi-basket/domain/repository/user/login"
 	credentialUsecase "github.com/team-gleam/kiwi-basket/usecase/user/credential"
 )
 
@@ -14,8 +16,14 @@ type TimetablesUsecase struct {
 	timetablesRepository timetablesRepository.ITimetablesRepository
 }
 
-func NewTimetablesUsecase(c credentialUsecase.CredentialUsecase, t timetablesRepository.ITimetablesRepository) TimetablesUsecase {
-	return TimetablesUsecase{c, t}
+func NewTimetablesUsecase(c credentialRepository.ICredentialRepository,
+	l loginRepository.ILoginRepository,
+	t timetablesRepository.ITimetablesRepository,
+) TimetablesUsecase {
+	return TimetablesUsecase{
+		credentialUsecase.NewCredentialUsecase(c, l),
+		t,
+	}
 }
 
 const (

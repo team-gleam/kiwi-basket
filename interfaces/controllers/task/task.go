@@ -27,10 +27,7 @@ func NewTaskController(
 	t taskRepository.ITaskRepository,
 ) *TaskController {
 	return &TaskController{
-		taskUsecase.NewTaskUsecase(
-			credentialUsecase.NewCredentialUsecase(c, l),
-			t,
-		),
+		taskUsecase.NewTaskUsecase(c, l, t),
 	}
 }
 

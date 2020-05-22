@@ -7,6 +7,8 @@ import (
 	tokenModel "github.com/team-gleam/kiwi-basket/domain/model/user/token"
 	"github.com/team-gleam/kiwi-basket/domain/model/user/username"
 	taskRepository "github.com/team-gleam/kiwi-basket/domain/repository/task"
+	credentialRepository "github.com/team-gleam/kiwi-basket/domain/repository/user/credential"
+	loginRepository "github.com/team-gleam/kiwi-basket/domain/repository/user/login"
 	credentialUsecase "github.com/team-gleam/kiwi-basket/usecase/user/credential"
 )
 
@@ -15,8 +17,14 @@ type TaskUsecase struct {
 	taskRepository    taskRepository.ITaskRepository
 }
 
-func NewTaskUsecase(c credentialUsecase.CredentialUsecase, t taskRepository.ITaskRepository) TaskUsecase {
-	return TaskUsecase{c, t}
+func NewTaskUsecase(c credentialRepository.ICredentialRepository,
+	l loginRepository.ILoginRepository,
+	t taskRepository.ITaskRepository,
+) TaskUsecase {
+	return TaskUsecase{
+		credentialUsecase.NewCredentialUsecase(c, l),
+		t,
+	}
 }
 
 const (

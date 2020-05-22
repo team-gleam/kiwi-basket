@@ -28,10 +28,7 @@ func NewTimetablesController(
 	t timetablesRepository.ITimetablesRepository,
 ) *TimetablesController {
 	return &TimetablesController{
-		timetablesUsecase.NewTimetablesUsecase(
-			credentialUsecase.NewCredentialUsecase(c, l),
-			t,
-		),
+		timetablesUsecase.NewTimetablesUsecase(c, l, t),
 	}
 }
 

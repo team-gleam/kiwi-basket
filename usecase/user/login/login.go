@@ -43,3 +43,23 @@ func (u LoginUsecase) Delete(l loginModel.Login) error {
 
 	return u.loginRepository.Delete(l)
 }
+
+func (u LoginUsecase) Verify(login loginModel.Login) (bool, error) {
+	exist, err := u.loginRepository.Exists(login.Username())
+	if err != nil {
+		return false, err
+	}
+	if !exist {
+		return false, fmt.Errorf(UsernameNotFound)
+	}
+
+	l, err := u.loginRepository.Get(login.Username())
+	if err != nil {
+		return false, err
+	}
+	if !(login.HashedPassword() == l.HashedPassword()) {
+		return false, nil
+	}
+
+	return true, nil
+}

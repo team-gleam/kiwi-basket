@@ -139,6 +139,51 @@ func (c LoginController) DeleteAccound(ctx echo.Context) error {
 		)
 	}
 
+	verified, err := c.loginUsecase.Verify(l)
+	if err != nil {
+		return ctx.JSON(
+			http.StatusInternalServerError,
+			errorResponse.NewError(fmt.Errorf(errorResponse.InternalServerError)),
+		)
+	}
+	if !verified {
+		return ctx.JSON(
+			http.StatusBadRequest,
+			errorResponse.NewError(fmt.Errorf(InvalidUsernameOrPassword)),
+		)
+	}
+
+	auth, err := c.credentialUsecase.Get(l)
+	if err != nil {
+		return ctx.JSON(
+			http.StatusInternalServerError,
+			errorResponse.NewError(fmt.Errorf(errorResponse.InternalServerError)),
+		)
+	}
+
+	token := auth.Token()
+
+	if err = c.taskUsecase.DeleteAll(token); err != nil {
+		return ctx.JSON(
+			http.StatusInternalServerError,
+			errorResponse.NewError(fmt.Errorf(errorResponse.InternalServerError)),
+		)
+	}
+
+	if err = c.timetablesUsecase.Delete(token); err != nil {
+		return ctx.JSON(
+			http.StatusInternalServerError,
+			errorResponse.NewError(fmt.Errorf(errorResponse.InternalServerError)),
+		)
+	}
+
+	if err = c.credentialUsecase.Delete(l); err != nil {
+		return ctx.JSON(
+			http.StatusInternalServerError,
+			errorResponse.NewError(fmt.Errorf(errorResponse.InternalServerError)),
+		)
+	}
+
 	err = c.loginUsecase.Delete(l)
 	if err != nil && err.Error() == loginUsecase.UsernameNotFound {
 		return ctx.JSON(

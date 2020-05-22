@@ -69,11 +69,23 @@ func (u CredentialUsecase) Delete(login loginModel.Login) error {
 	return u.credentialRepository.Remove(login.Username())
 }
 
+func (u CredentialUsecase) Get(login loginModel.Login) (credentialModel.Auth, error) {
+	verified, err := u.loginUsecase.Verify(login)
+	if err != nil {
+		return credentialModel.Auth{}, err
+	}
+	if !verified {
+		return credentialModel.Auth{}, fmt.Errorf(InvalidUsernameOrPassword)
+	}
+
+	return u.credentialRepository.GetByUsername(login.Username())
+}
+
 func (u CredentialUsecase) IsCredentialed(t token.Token) (bool, error) {
 	return u.credentialRepository.Exists(t)
 }
 
 func (u CredentialUsecase) Whose(t token.Token) (username.Username, error) {
-	a, err := u.credentialRepository.Get(t)
+	a, err := u.credentialRepository.GetByToken(t)
 	return a.Username(), err
 }

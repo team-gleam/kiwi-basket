@@ -9,18 +9,22 @@ import (
 	"github.com/team-gleam/kiwi-basket/domain/model/user/username"
 	credentialRepository "github.com/team-gleam/kiwi-basket/domain/repository/user/credential"
 	loginRepository "github.com/team-gleam/kiwi-basket/domain/repository/user/login"
+	loginUsecase "github.com/team-gleam/kiwi-basket/usecase/user/login"
 )
 
 type CredentialUsecase struct {
 	credentialRepository credentialRepository.ICredentialRepository
-	loginRepository      loginRepository.ILoginRepository
+	loginUsecase         loginUsecase.LoginUsecase
 }
 
 func NewCredentialUsecase(
 	c credentialRepository.ICredentialRepository,
 	l loginRepository.ILoginRepository,
 ) CredentialUsecase {
-	return CredentialUsecase{c, l}
+	return CredentialUsecase{
+		c,
+		loginUsecase.NewLoginUsecase(l),
+	}
 }
 
 const (
@@ -30,19 +34,11 @@ const (
 )
 
 func (u CredentialUsecase) Generate(login loginModel.Login) (token.Token, error) {
-	exist, err := u.loginRepository.Exists(login.Username())
+	verified, err := u.loginUsecase.Verify(login)
 	if err != nil {
 		return token.NewToken(""), err
 	}
-	if !exist {
-		return token.NewToken(""), fmt.Errorf(UserNotFound)
-	}
-
-	l, err := u.loginRepository.Get(login.Username())
-	if err != nil {
-		return token.NewToken(""), err
-	}
-	if l != login {
+	if !verified {
 		return token.NewToken(""), fmt.Errorf(InvalidUsernameOrPassword)
 	}
 
@@ -53,12 +49,24 @@ func (u CredentialUsecase) Generate(login loginModel.Login) (token.Token, error)
 
 	a := credentialModel.NewAuth(login.Username(), t)
 
-	err = u.credentialRepository.Remove(a)
+	err = u.credentialRepository.Remove(a.Username())
 	if err != nil {
 		return token.NewToken(""), err
 	}
 
 	return t, u.credentialRepository.Append(a)
+}
+
+func (u CredentialUsecase) Delete(login loginModel.Login) error {
+	verified, err := u.loginUsecase.Verify(login)
+	if err != nil {
+		return err
+	}
+	if !verified {
+		return fmt.Errorf(InvalidUsernameOrPassword)
+	}
+
+	return u.credentialRepository.Remove(login.Username())
 }
 
 func (u CredentialUsecase) IsCredentialed(t token.Token) (bool, error) {

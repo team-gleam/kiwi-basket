@@ -39,13 +39,11 @@ func (r *CredentialRepository) Append(a credentialModel.Auth) error {
 	return r.dbHandler.Db.Create(&d).Error
 }
 
-func (r *CredentialRepository) Remove(a credentialModel.Auth) error {
-	d := transformAuthForDB(a)
-	err := r.dbHandler.Db.Where("username = ?", d.Username).Delete(AuthDB{}).Error
+func (r *CredentialRepository) Remove(u username.Username) error {
+	err := r.dbHandler.Db.Where("username = ?", u.Name()).Delete(AuthDB{}).Error
 	if gorm.IsRecordNotFoundError(err) {
 		return nil
 	}
-	fmt.Println(err)
 	return err
 }
 

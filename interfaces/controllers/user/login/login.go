@@ -148,7 +148,7 @@ func (c LoginController) DeleteAccound(ctx echo.Context) error {
 	}
 	if !verified {
 		return ctx.JSON(
-			http.StatusBadRequest,
+			http.StatusUnauthorized,
 			errorResponse.NewError(fmt.Errorf(InvalidUsernameOrPassword)),
 		)
 	}
@@ -187,8 +187,8 @@ func (c LoginController) DeleteAccound(ctx echo.Context) error {
 	err = c.loginUsecase.Delete(l)
 	if err != nil && err.Error() == loginUsecase.UsernameNotFound {
 		return ctx.JSON(
-			http.StatusNotFound,
-			errorResponse.NewError(err),
+			http.StatusUnauthorized,
+			errorResponse.NewError(fmt.Errorf(InvalidUsernameOrPassword)),
 		)
 	}
 	if err != nil {

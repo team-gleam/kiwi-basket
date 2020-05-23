@@ -170,7 +170,7 @@ func (c LoginController) DeleteAccound(ctx echo.Context) error {
 		)
 	}
 
-	if err = c.timetablesUsecase.Delete(token); err != nil {
+	if err = c.timetablesUsecase.Delete(token); err != nil && err.Error() != timetablesUsecase.TimetablesNotFound {
 		return ctx.JSON(
 			http.StatusInternalServerError,
 			errorResponse.NewError(fmt.Errorf(errorResponse.InternalServerError)),

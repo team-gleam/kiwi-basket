@@ -26,7 +26,7 @@ type Task struct {
 	Title    string
 }
 
-func transformTaskForDB(t taskModel.Task, u username.Username) Task {
+func toRecord(t taskModel.Task, u username.Username) Task {
 	if t.ID() == -1 {
 		return Task{0, u.Name(), t.Date(), t.Title()}
 	}
@@ -34,7 +34,7 @@ func transformTaskForDB(t taskModel.Task, u username.Username) Task {
 	return Task{uint(t.ID()), u.Name(), t.Date(), t.Title()}
 }
 
-func toTask(t Task) (taskModel.Task, username.Username, error) {
+func FromRecord(t Task) (taskModel.Task, username.Username, error) {
 	task, err := taskModel.NewTask(int(t.ID), t.Date.Format(taskModel.Layout), t.Title)
 	if err != nil {
 		return taskModel.Task{}, username.Username{}, err
@@ -45,7 +45,7 @@ func toTask(t Task) (taskModel.Task, username.Username, error) {
 }
 
 func (r *TaskRepository) Create(u username.Username, t taskModel.Task) error {
-	d := transformTaskForDB(t, u)
+	d := toRecord(t, u)
 	return r.dbHandler.Db.Create(&d).Error
 }
 
@@ -58,7 +58,7 @@ func (r *TaskRepository) GetAll(u username.Username) ([]taskModel.Task, error) {
 
 	tasks := make([]taskModel.Task, 0)
 	for _, d := range ds {
-		t, _, err := toTask(d)
+		t, _, err := FromRecord(d)
 		if err != nil {
 			return tasks, err
 		}

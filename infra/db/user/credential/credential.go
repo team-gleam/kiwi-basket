@@ -25,17 +25,17 @@ type Auth struct {
 	Token    string `gorm:"primary_key"`
 }
 
-func transformAuthForDB(a credentialModel.Auth) Auth {
+func toRecord(a credentialModel.Auth) Auth {
 	return Auth{a.Username().Name(), a.Token().Token()}
 }
 
-func toAuth(a Auth) (credentialModel.Auth, error) {
+func FromRecord(a Auth) (credentialModel.Auth, error) {
 	u, err := username.NewUsername(a.Username)
 	return credentialModel.NewAuth(u, token.NewToken(a.Token)), err
 }
 
 func (r *CredentialRepository) Append(a credentialModel.Auth) error {
-	d := transformAuthForDB(a)
+	d := toRecord(a)
 	return r.dbHandler.Db.Create(&d).Error
 }
 
@@ -66,7 +66,7 @@ func (r *CredentialRepository) GetByToken(t token.Token) (credentialModel.Auth, 
 		return credentialModel.Auth{}, err
 	}
 
-	a, err := toAuth(*auth)
+	a, err := FromRecord(*auth)
 	if err != nil && err.Error() == username.InvalidUsername {
 		return credentialModel.Auth{}, fmt.Errorf("user not found")
 	}
@@ -81,7 +81,7 @@ func (r *CredentialRepository) GetByUsername(u username.Username) (credentialMod
 		return credentialModel.Auth{}, err
 	}
 
-	a, err := toAuth(*auth)
+	a, err := FromRecord(*auth)
 	if err != nil && err.Error() == username.InvalidUsername {
 		return credentialModel.Auth{}, fmt.Errorf("user not found")
 	}

@@ -24,22 +24,22 @@ type Login struct {
 	Password string
 }
 
-func transformLoginForDB(l loginModel.Login) Login {
+func toRecord(l loginModel.Login) Login {
 	return Login{l.Username().Name(), l.HashedPassword()}
 }
 
-func toLogin(l Login) (loginModel.Login, error) {
+func FromRecord(l Login) (loginModel.Login, error) {
 	u, err := username.NewUsername(l.Username)
 	return loginModel.NewLogin(u, l.Password), err
 }
 
 func (r *LoginRepository) Create(l loginModel.Login) error {
-	login := transformLoginForDB(l)
+	login := toRecord(l)
 	return r.dbHandler.Db.Create(&login).Error
 }
 
 func (r *LoginRepository) Delete(l loginModel.Login) error {
-	login := transformLoginForDB(l)
+	login := toRecord(l)
 	return r.dbHandler.Db.Delete(login).Error
 }
 
@@ -63,7 +63,7 @@ func (r *LoginRepository) Get(u username.Username) (loginModel.Login, error) {
 		return loginModel.Login{}, err
 	}
 
-	l, err := toLogin(*login)
+	l, err := FromRecord(*login)
 	if err != nil && err.Error() == username.InvalidUsername {
 		return loginModel.Login{}, fmt.Errorf("user not found")
 	}

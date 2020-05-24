@@ -28,7 +28,7 @@ func toRecord(l loginModel.Login) Login {
 	return Login{l.Username().Name(), l.HashedPassword()}
 }
 
-func FromRecord(l Login) (loginModel.Login, error) {
+func fromRecord(l Login) (loginModel.Login, error) {
 	u, err := username.NewUsername(l.Username)
 	return loginModel.NewLogin(u, l.Password), err
 }
@@ -63,7 +63,7 @@ func (r *LoginRepository) Get(u username.Username) (loginModel.Login, error) {
 		return loginModel.Login{}, err
 	}
 
-	l, err := FromRecord(*login)
+	l, err := fromRecord(*login)
 	if err != nil && err.Error() == username.InvalidUsername {
 		return loginModel.Login{}, fmt.Errorf("user not found")
 	}

@@ -34,7 +34,7 @@ func toRecord(t taskModel.Task, u username.Username) Task {
 	return Task{uint(t.ID()), u.Name(), t.Date(), t.Title()}
 }
 
-func FromRecord(t Task) (taskModel.Task, username.Username, error) {
+func fromRecord(t Task) (taskModel.Task, username.Username, error) {
 	task, err := taskModel.NewTask(int(t.ID), t.Date.Format(taskModel.Layout), t.Title)
 	if err != nil {
 		return taskModel.Task{}, username.Username{}, err
@@ -58,7 +58,7 @@ func (r *TaskRepository) GetAll(u username.Username) ([]taskModel.Task, error) {
 
 	tasks := make([]taskModel.Task, 0)
 	for _, d := range ds {
-		t, _, err := FromRecord(d)
+		t, _, err := fromRecord(d)
 		if err != nil {
 			return tasks, err
 		}

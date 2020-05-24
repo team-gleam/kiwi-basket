@@ -29,7 +29,7 @@ func toRecord(a credentialModel.Auth) Auth {
 	return Auth{a.Username().Name(), a.Token().Token()}
 }
 
-func FromRecord(a Auth) (credentialModel.Auth, error) {
+func fromRecord(a Auth) (credentialModel.Auth, error) {
 	u, err := username.NewUsername(a.Username)
 	return credentialModel.NewAuth(u, token.NewToken(a.Token)), err
 }
@@ -66,7 +66,7 @@ func (r *CredentialRepository) GetByToken(t token.Token) (credentialModel.Auth, 
 		return credentialModel.Auth{}, err
 	}
 
-	a, err := FromRecord(*auth)
+	a, err := fromRecord(*auth)
 	if err != nil && err.Error() == username.InvalidUsername {
 		return credentialModel.Auth{}, fmt.Errorf("user not found")
 	}
@@ -81,7 +81,7 @@ func (r *CredentialRepository) GetByUsername(u username.Username) (credentialMod
 		return credentialModel.Auth{}, err
 	}
 
-	a, err := FromRecord(*auth)
+	a, err := fromRecord(*auth)
 	if err != nil && err.Error() == username.InvalidUsername {
 		return credentialModel.Auth{}, fmt.Errorf("user not found")
 	}

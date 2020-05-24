@@ -15,26 +15,26 @@ type TaskRepository struct {
 }
 
 func NewTaskRepository(h *handler.DbHandler) taskRepository.ITaskRepository {
-	h.Db.AutoMigrate(TaskDB{})
+	h.Db.AutoMigrate(Task{})
 	return &TaskRepository{h}
 }
 
-type TaskDB struct {
+type Task struct {
 	ID       uint `gorm:"primary_key;auto_increment"`
 	Username string
 	Date     time.Time
 	Title    string
 }
 
-func transformTaskForDB(t taskModel.Task, u username.Username) TaskDB {
+func transformTaskForDB(t taskModel.Task, u username.Username) Task {
 	if t.ID() == -1 {
-		return TaskDB{0, u.Name(), t.Date(), t.Title()}
+		return Task{0, u.Name(), t.Date(), t.Title()}
 	}
 
-	return TaskDB{uint(t.ID()), u.Name(), t.Date(), t.Title()}
+	return Task{uint(t.ID()), u.Name(), t.Date(), t.Title()}
 }
 
-func toTask(t TaskDB) (taskModel.Task, username.Username, error) {
+func toTask(t Task) (taskModel.Task, username.Username, error) {
 	task, err := taskModel.NewTask(int(t.ID), t.Date.Format(taskModel.Layout), t.Title)
 	if err != nil {
 		return taskModel.Task{}, username.Username{}, err
@@ -50,7 +50,7 @@ func (r *TaskRepository) Create(u username.Username, t taskModel.Task) error {
 }
 
 func (r *TaskRepository) GetAll(u username.Username) ([]taskModel.Task, error) {
-	ds := make([]TaskDB, 0)
+	ds := make([]Task, 0)
 	err := r.dbHandler.Db.Where("username = ?", u.Name()).Find(&ds).Error
 	if err != nil {
 		return []taskModel.Task{}, err
@@ -73,9 +73,9 @@ func (r *TaskRepository) Remove(u username.Username, id int) error {
 		return fmt.Errorf("invalid id")
 	}
 
-	return r.dbHandler.Db.Where("id = ?", uint(id)).Delete(TaskDB{}).Error
+	return r.dbHandler.Db.Where("id = ?", uint(id)).Delete(Task{}).Error
 }
 
 func (r *TaskRepository) RemoveAll(u username.Username) error {
-	return r.dbHandler.Db.Where("username = ?", u.Name()).Delete(TaskDB{}).Error
+	return r.dbHandler.Db.Where("username = ?", u.Name()).Delete(Task{}).Error
 }

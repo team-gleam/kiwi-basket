@@ -16,20 +16,20 @@ type CredentialRepository struct {
 }
 
 func NewCredentialRepository(h *handler.DbHandler) credentialRepository.ICredentialRepository {
-	h.Db.AutoMigrate(AuthDB{})
+	h.Db.AutoMigrate(Auth{})
 	return &CredentialRepository{h}
 }
 
-type AuthDB struct {
+type Auth struct {
 	Username string `gorm:"primary_key"`
 	Token    string `gorm:"primary_key"`
 }
 
-func transformAuthForDB(a credentialModel.Auth) AuthDB {
-	return AuthDB{a.Username().Name(), a.Token().Token()}
+func transformAuthForDB(a credentialModel.Auth) Auth {
+	return Auth{a.Username().Name(), a.Token().Token()}
 }
 
-func toAuth(a AuthDB) (credentialModel.Auth, error) {
+func toAuth(a Auth) (credentialModel.Auth, error) {
 	u, err := username.NewUsername(a.Username)
 	return credentialModel.NewAuth(u, token.NewToken(a.Token)), err
 }
@@ -40,7 +40,7 @@ func (r *CredentialRepository) Append(a credentialModel.Auth) error {
 }
 
 func (r *CredentialRepository) Remove(u username.Username) error {
-	err := r.dbHandler.Db.Where("username = ?", u.Name()).Delete(AuthDB{}).Error
+	err := r.dbHandler.Db.Where("username = ?", u.Name()).Delete(Auth{}).Error
 	if gorm.IsRecordNotFoundError(err) {
 		return nil
 	}
@@ -48,7 +48,7 @@ func (r *CredentialRepository) Remove(u username.Username) error {
 }
 
 func (r *CredentialRepository) Exists(t token.Token) (bool, error) {
-	a := new(AuthDB)
+	a := new(Auth)
 	err := r.dbHandler.Db.Where("token = ?", t.Token()).Take(a).Error
 	if gorm.IsRecordNotFoundError(err) {
 		return false, nil
@@ -60,7 +60,7 @@ func (r *CredentialRepository) Exists(t token.Token) (bool, error) {
 }
 
 func (r *CredentialRepository) GetByToken(t token.Token) (credentialModel.Auth, error) {
-	auth := new(AuthDB)
+	auth := new(Auth)
 	err := r.dbHandler.Db.Where("token = ?", t.Token()).Take(auth).Error
 	if err != nil {
 		return credentialModel.Auth{}, err
@@ -75,7 +75,7 @@ func (r *CredentialRepository) GetByToken(t token.Token) (credentialModel.Auth, 
 }
 
 func (r *CredentialRepository) GetByUsername(u username.Username) (credentialModel.Auth, error) {
-	auth := new(AuthDB)
+	auth := new(Auth)
 	err := r.dbHandler.Db.Where("username = ?", u.Name()).Take(auth).Error
 	if err != nil {
 		return credentialModel.Auth{}, err

@@ -31,7 +31,7 @@ const (
 )
 
 func (u TimetablesUsecase) Add(token token.Token, timetables timetablesModel.Timetables) error {
-	credentialed, err := u.credentialUsecase.IsCredentialed(token)
+	credentialed, err := u.credentialUsecase.HasCredential(token)
 	if err != nil {
 		return err
 	}
@@ -58,7 +58,7 @@ func (u TimetablesUsecase) Add(token token.Token, timetables timetablesModel.Tim
 }
 
 func (u TimetablesUsecase) Delete(token token.Token) error {
-	credentialed, err := u.credentialUsecase.IsCredentialed(token)
+	credentialed, err := u.credentialUsecase.HasCredential(token)
 	if err != nil {
 		return err
 	}
@@ -83,7 +83,7 @@ func (u TimetablesUsecase) Delete(token token.Token) error {
 }
 
 func (u TimetablesUsecase) Get(token token.Token) (timetablesModel.Timetables, error) {
-	credentialed, err := u.credentialUsecase.IsCredentialed(token)
+	credentialed, err := u.credentialUsecase.HasCredential(token)
 	if err != nil {
 		return timetablesModel.Timetables{}, err
 	}

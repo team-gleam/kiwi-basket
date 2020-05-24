@@ -33,7 +33,7 @@ const (
 )
 
 func (u TaskUsecase) Add(token tokenModel.Token, task taskModel.Task) error {
-	credentialed, err := u.credentialUsecase.IsCredentialed(token)
+	credentialed, err := u.credentialUsecase.HasCredential(token)
 	if err != nil {
 		return err
 	}
@@ -50,7 +50,7 @@ func (u TaskUsecase) Add(token tokenModel.Token, task taskModel.Task) error {
 }
 
 func (u TaskUsecase) Delete(token tokenModel.Token, id int) error {
-	credentialed, err := u.credentialUsecase.IsCredentialed(token)
+	credentialed, err := u.credentialUsecase.HasCredential(token)
 	if err != nil {
 		return err
 	}
@@ -83,7 +83,7 @@ func (u TaskUsecase) Delete(token tokenModel.Token, id int) error {
 }
 
 func (u TaskUsecase) DeleteAll(token tokenModel.Token) error {
-	credentialed, err := u.credentialUsecase.IsCredentialed(token)
+	credentialed, err := u.credentialUsecase.HasCredential(token)
 	if err != nil {
 		return err
 	}
@@ -110,7 +110,7 @@ func isValidID(username username.Username, id int, tasks []taskModel.Task) bool 
 }
 
 func (u TaskUsecase) GetAll(token tokenModel.Token) ([]taskModel.Task, error) {
-	credentialed, err := u.credentialUsecase.IsCredentialed(token)
+	credentialed, err := u.credentialUsecase.HasCredential(token)
 	if err != nil {
 		return nil, err
 	}

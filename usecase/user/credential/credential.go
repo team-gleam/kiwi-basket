@@ -81,7 +81,7 @@ func (u CredentialUsecase) Get(login loginModel.Login) (credentialModel.Auth, er
 	return u.credentialRepository.GetByUsername(login.Username())
 }
 
-func (u CredentialUsecase) IsCredentialed(t token.Token) (bool, error) {
+func (u CredentialUsecase) HasCredential(t token.Token) (bool, error) {
 	return u.credentialRepository.Exists(t)
 }
 

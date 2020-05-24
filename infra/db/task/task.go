@@ -15,25 +15,26 @@ type TaskRepository struct {
 }
 
 func NewTaskRepository(h *handler.DbHandler) taskRepository.ITaskRepository {
+	h.Db.AutoMigrate(Task{})
 	return &TaskRepository{h}
 }
 
-type taskDB struct {
+type Task struct {
 	ID       uint `gorm:"primary_key;auto_increment"`
 	Username string
 	Date     time.Time
 	Title    string
 }
 
-func transformTaskForDB(t taskModel.Task, u username.Username) taskDB {
+func toRecord(t taskModel.Task, u username.Username) Task {
 	if t.ID() == -1 {
-		return taskDB{0, u.Name(), t.Date(), t.Title()}
+		return Task{0, u.Name(), t.Date(), t.Title()}
 	}
 
-	return taskDB{uint(t.ID()), u.Name(), t.Date(), t.Title()}
+	return Task{uint(t.ID()), u.Name(), t.Date(), t.Title()}
 }
 
-func toTask(t taskDB) (taskModel.Task, username.Username, error) {
+func fromRecord(t Task) (taskModel.Task, username.Username, error) {
 	task, err := taskModel.NewTask(int(t.ID), t.Date.Format(taskModel.Layout), t.Title)
 	if err != nil {
 		return taskModel.Task{}, username.Username{}, err
@@ -44,20 +45,20 @@ func toTask(t taskDB) (taskModel.Task, username.Username, error) {
 }
 
 func (r *TaskRepository) Create(u username.Username, t taskModel.Task) error {
-	d := transformTaskForDB(t, u)
-	return r.dbHandler.Db.Create(d).Error
+	d := toRecord(t, u)
+	return r.dbHandler.Db.Create(&d).Error
 }
 
 func (r *TaskRepository) GetAll(u username.Username) ([]taskModel.Task, error) {
-	ds := make([]taskDB, 0)
-	err := r.dbHandler.Db.Where("username = ?", u.Name).Find(&ds).Error
+	ds := make([]Task, 0)
+	err := r.dbHandler.Db.Where("username = ?", u.Name()).Find(&ds).Error
 	if err != nil {
 		return []taskModel.Task{}, err
 	}
 
 	tasks := make([]taskModel.Task, 0)
 	for _, d := range ds {
-		t, _, err := toTask(d)
+		t, _, err := fromRecord(d)
 		if err != nil {
 			return tasks, err
 		}
@@ -72,5 +73,9 @@ func (r *TaskRepository) Remove(u username.Username, id int) error {
 		return fmt.Errorf("invalid id")
 	}
 
-	return r.dbHandler.Db.Delete(taskDB{ID: uint(id)}).Error
+	return r.dbHandler.Db.Where("id = ?", uint(id)).Delete(Task{}).Error
+}
+
+func (r *TaskRepository) RemoveAll(u username.Username) error {
+	return r.dbHandler.Db.Where("username = ?", u.Name()).Delete(Task{}).Error
 }

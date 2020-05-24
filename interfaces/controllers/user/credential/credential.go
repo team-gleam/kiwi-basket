@@ -60,13 +60,13 @@ func (c CredentialController) SignIn(ctx echo.Context) error {
 	}
 
 	token, err := c.credentialUsecase.Generate(l)
-	if err.Error() == credentialUsecase.UserNotFound {
+	if err != nil && err.Error() == credentialUsecase.UserNotFound {
 		return ctx.JSON(
 			http.StatusNotFound,
 			errorResponse.NewError(err),
 		)
 	}
-	if err.Error() == credentialUsecase.InvalidUsernameOrPassword {
+	if err != nil && err.Error() == credentialUsecase.InvalidUsernameOrPassword {
 		return ctx.JSON(
 			http.StatusUnauthorized,
 			errorResponse.NewError(err),

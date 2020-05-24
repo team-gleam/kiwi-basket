@@ -28,10 +28,7 @@ func NewTimetablesController(
 	t timetablesRepository.ITimetablesRepository,
 ) *TimetablesController {
 	return &TimetablesController{
-		timetablesUsecase.NewTimetablesUsecase(
-			credentialUsecase.NewCredentialUsecase(c, l),
-			t,
-		),
+		timetablesUsecase.NewTimetablesUsecase(c, l, t),
 	}
 }
 
@@ -168,7 +165,7 @@ func (c TimetablesController) Register(ctx echo.Context) error {
 	timetables := res.toTimetables()
 
 	err = c.timetablesUsecase.Add(token.NewToken(t), timetables)
-	if err.Error() == credentialUsecase.InvalidToken {
+	if err != nil && err.Error() == credentialUsecase.InvalidToken {
 		return ctx.JSON(
 			http.StatusUnauthorized,
 			errorResponse.NewError(err),
@@ -194,13 +191,13 @@ func (c TimetablesController) Get(ctx echo.Context) error {
 	}
 
 	timetables, err := c.timetablesUsecase.Get(token.NewToken(t))
-	if err.Error() == credentialUsecase.InvalidToken {
+	if err != nil && err.Error() == credentialUsecase.InvalidToken {
 		return ctx.JSON(
 			http.StatusUnauthorized,
 			errorResponse.NewError(err),
 		)
 	}
-	if err.Error() == timetablesUsecase.TimetablesNotFound {
+	if err != nil && err.Error() == timetablesUsecase.TimetablesNotFound {
 		return ctx.JSON(
 			http.StatusNotFound,
 			errorResponse.NewError(err),

@@ -3,6 +3,7 @@ package credential
 import (
 	"fmt"
 
+	"github.com/jinzhu/gorm"
 	credentialModel "github.com/team-gleam/kiwi-basket/domain/model/user/credential"
 	"github.com/team-gleam/kiwi-basket/domain/model/user/token"
 	"github.com/team-gleam/kiwi-basket/domain/model/user/username"
@@ -15,51 +16,73 @@ type CredentialRepository struct {
 }
 
 func NewCredentialRepository(h *handler.DbHandler) credentialRepository.ICredentialRepository {
+	h.Db.AutoMigrate(Auth{})
 	return &CredentialRepository{h}
 }
 
-type authDB struct {
+type Auth struct {
 	Username string `gorm:"primary_key"`
 	Token    string `gorm:"primary_key"`
 }
 
-func transformAuthForDB(a credentialModel.Auth) authDB {
-	return authDB{a.Username().Name(), a.Token().Token()}
+func toRecord(a credentialModel.Auth) Auth {
+	return Auth{a.Username().Name(), a.Token().Token()}
 }
 
-func toAuth(a authDB) (credentialModel.Auth, error) {
+func fromRecord(a Auth) (credentialModel.Auth, error) {
 	u, err := username.NewUsername(a.Username)
 	return credentialModel.NewAuth(u, token.NewToken(a.Token)), err
 }
 
 func (r *CredentialRepository) Append(a credentialModel.Auth) error {
-	d := transformAuthForDB(a)
-	return r.dbHandler.Db.Create(d).Error
+	d := toRecord(a)
+	return r.dbHandler.Db.Create(&d).Error
 }
 
-func (r *CredentialRepository) Remove(a credentialModel.Auth) error {
-	d := transformAuthForDB(a)
-	return r.dbHandler.Db.Delete(d).Error
+func (r *CredentialRepository) Remove(u username.Username) error {
+	err := r.dbHandler.Db.Where("username = ?", u.Name()).Delete(Auth{}).Error
+	if gorm.IsRecordNotFoundError(err) {
+		return nil
+	}
+	return err
 }
 
 func (r *CredentialRepository) Exists(t token.Token) (bool, error) {
-	a := new(authDB)
-	err := r.dbHandler.Db.Where("token = ?", t.Token).First(&a).Error
+	a := new(Auth)
+	err := r.dbHandler.Db.Where("token = ?", t.Token()).Take(a).Error
+	if gorm.IsRecordNotFoundError(err) {
+		return false, nil
+	}
 	if err != nil {
 		return false, err
 	}
-	return new(authDB) != a, nil
+	return a.Token != "", nil
 }
 
-func (r *CredentialRepository) Get(t token.Token) (credentialModel.Auth, error) {
-	auth := new(authDB)
-	err := r.dbHandler.Db.Where("token = ?", t.Token).First(&auth).Error
+func (r *CredentialRepository) GetByToken(t token.Token) (credentialModel.Auth, error) {
+	auth := new(Auth)
+	err := r.dbHandler.Db.Where("token = ?", t.Token()).Take(auth).Error
 	if err != nil {
 		return credentialModel.Auth{}, err
 	}
 
-	a, err := toAuth(*auth)
-	if err.Error() == username.InvalidUsername {
+	a, err := fromRecord(*auth)
+	if err != nil && err.Error() == username.InvalidUsername {
+		return credentialModel.Auth{}, fmt.Errorf("user not found")
+	}
+
+	return a, nil
+}
+
+func (r *CredentialRepository) GetByUsername(u username.Username) (credentialModel.Auth, error) {
+	auth := new(Auth)
+	err := r.dbHandler.Db.Where("username = ?", u.Name()).Take(auth).Error
+	if err != nil {
+		return credentialModel.Auth{}, err
+	}
+
+	a, err := fromRecord(*auth)
+	if err != nil && err.Error() == username.InvalidUsername {
 		return credentialModel.Auth{}, fmt.Errorf("user not found")
 	}
 

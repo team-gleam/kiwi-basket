@@ -6,6 +6,8 @@ import (
 	timetablesModel "github.com/team-gleam/kiwi-basket/domain/model/timetables"
 	"github.com/team-gleam/kiwi-basket/domain/model/user/token"
 	timetablesRepository "github.com/team-gleam/kiwi-basket/domain/repository/timetables"
+	credentialRepository "github.com/team-gleam/kiwi-basket/domain/repository/user/credential"
+	loginRepository "github.com/team-gleam/kiwi-basket/domain/repository/user/login"
 	credentialUsecase "github.com/team-gleam/kiwi-basket/usecase/user/credential"
 )
 
@@ -14,8 +16,14 @@ type TimetablesUsecase struct {
 	timetablesRepository timetablesRepository.ITimetablesRepository
 }
 
-func NewTimetablesUsecase(c credentialUsecase.CredentialUsecase, t timetablesRepository.ITimetablesRepository) TimetablesUsecase {
-	return TimetablesUsecase{c, t}
+func NewTimetablesUsecase(c credentialRepository.ICredentialRepository,
+	l loginRepository.ILoginRepository,
+	t timetablesRepository.ITimetablesRepository,
+) TimetablesUsecase {
+	return TimetablesUsecase{
+		credentialUsecase.NewCredentialUsecase(c, l),
+		t,
+	}
 }
 
 const (
@@ -23,7 +31,7 @@ const (
 )
 
 func (u TimetablesUsecase) Add(token token.Token, timetables timetablesModel.Timetables) error {
-	credentialed, err := u.credentialUsecase.IsCredentialed(token)
+	credentialed, err := u.credentialUsecase.HasCredential(token)
 	if err != nil {
 		return err
 	}
@@ -41,7 +49,7 @@ func (u TimetablesUsecase) Add(token token.Token, timetables timetablesModel.Tim
 		return err
 	}
 	if exist {
-		if err = u.delete(token); err != nil {
+		if err = u.Delete(token); err != nil {
 			return err
 		}
 	}
@@ -49,8 +57,8 @@ func (u TimetablesUsecase) Add(token token.Token, timetables timetablesModel.Tim
 	return u.timetablesRepository.Create(user, timetables)
 }
 
-func (u TimetablesUsecase) delete(token token.Token) error {
-	credentialed, err := u.credentialUsecase.IsCredentialed(token)
+func (u TimetablesUsecase) Delete(token token.Token) error {
+	credentialed, err := u.credentialUsecase.HasCredential(token)
 	if err != nil {
 		return err
 	}
@@ -75,7 +83,7 @@ func (u TimetablesUsecase) delete(token token.Token) error {
 }
 
 func (u TimetablesUsecase) Get(token token.Token) (timetablesModel.Timetables, error) {
-	credentialed, err := u.credentialUsecase.IsCredentialed(token)
+	credentialed, err := u.credentialUsecase.HasCredential(token)
 	if err != nil {
 		return timetablesModel.Timetables{}, err
 	}

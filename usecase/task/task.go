@@ -7,6 +7,8 @@ import (
 	tokenModel "github.com/team-gleam/kiwi-basket/domain/model/user/token"
 	"github.com/team-gleam/kiwi-basket/domain/model/user/username"
 	taskRepository "github.com/team-gleam/kiwi-basket/domain/repository/task"
+	credentialRepository "github.com/team-gleam/kiwi-basket/domain/repository/user/credential"
+	loginRepository "github.com/team-gleam/kiwi-basket/domain/repository/user/login"
 	credentialUsecase "github.com/team-gleam/kiwi-basket/usecase/user/credential"
 )
 
@@ -15,8 +17,14 @@ type TaskUsecase struct {
 	taskRepository    taskRepository.ITaskRepository
 }
 
-func NewTaskUsecase(c credentialUsecase.CredentialUsecase, t taskRepository.ITaskRepository) TaskUsecase {
-	return TaskUsecase{c, t}
+func NewTaskUsecase(c credentialRepository.ICredentialRepository,
+	l loginRepository.ILoginRepository,
+	t taskRepository.ITaskRepository,
+) TaskUsecase {
+	return TaskUsecase{
+		credentialUsecase.NewCredentialUsecase(c, l),
+		t,
+	}
 }
 
 const (
@@ -25,7 +33,7 @@ const (
 )
 
 func (u TaskUsecase) Add(token tokenModel.Token, task taskModel.Task) error {
-	credentialed, err := u.credentialUsecase.IsCredentialed(token)
+	credentialed, err := u.credentialUsecase.HasCredential(token)
 	if err != nil {
 		return err
 	}
@@ -42,7 +50,7 @@ func (u TaskUsecase) Add(token tokenModel.Token, task taskModel.Task) error {
 }
 
 func (u TaskUsecase) Delete(token tokenModel.Token, id int) error {
-	credentialed, err := u.credentialUsecase.IsCredentialed(token)
+	credentialed, err := u.credentialUsecase.HasCredential(token)
 	if err != nil {
 		return err
 	}
@@ -74,6 +82,23 @@ func (u TaskUsecase) Delete(token tokenModel.Token, id int) error {
 	return u.taskRepository.Remove(user, id)
 }
 
+func (u TaskUsecase) DeleteAll(token tokenModel.Token) error {
+	credentialed, err := u.credentialUsecase.HasCredential(token)
+	if err != nil {
+		return err
+	}
+	if !credentialed {
+		return fmt.Errorf(credentialUsecase.InvalidToken)
+	}
+
+	user, err := u.credentialUsecase.Whose(token)
+	if err != nil {
+		return err
+	}
+
+	return u.taskRepository.RemoveAll(user)
+}
+
 func isValidID(username username.Username, id int, tasks []taskModel.Task) bool {
 	for _, task := range tasks {
 		if task.ID() == id {
@@ -85,7 +110,7 @@ func isValidID(username username.Username, id int, tasks []taskModel.Task) bool 
 }
 
 func (u TaskUsecase) GetAll(token tokenModel.Token) ([]taskModel.Task, error) {
-	credentialed, err := u.credentialUsecase.IsCredentialed(token)
+	credentialed, err := u.credentialUsecase.HasCredential(token)
 	if err != nil {
 		return nil, err
 	}

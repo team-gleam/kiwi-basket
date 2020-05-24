@@ -1,6 +1,8 @@
 package login
 
 import (
+	"crypto/sha256"
+	"encoding/hex"
 	"fmt"
 	"net/http"
 
@@ -8,19 +10,35 @@ import (
 	"github.com/labstack/echo/v4"
 	loginModel "github.com/team-gleam/kiwi-basket/domain/model/user/login"
 	"github.com/team-gleam/kiwi-basket/domain/model/user/username"
+	taskRepository "github.com/team-gleam/kiwi-basket/domain/repository/task"
+	timetablesRepository "github.com/team-gleam/kiwi-basket/domain/repository/timetables"
+	credentialRepository "github.com/team-gleam/kiwi-basket/domain/repository/user/credential"
 	loginRepository "github.com/team-gleam/kiwi-basket/domain/repository/user/login"
 	errorResponse "github.com/team-gleam/kiwi-basket/interfaces/controllers/error"
+	taskUsecase "github.com/team-gleam/kiwi-basket/usecase/task"
+	timetablesUsecase "github.com/team-gleam/kiwi-basket/usecase/timetables"
+	credentialUsecase "github.com/team-gleam/kiwi-basket/usecase/user/credential"
 	loginUsecase "github.com/team-gleam/kiwi-basket/usecase/user/login"
-	"golang.org/x/crypto/bcrypt"
 )
 
 type LoginController struct {
-	loginUsecase loginUsecase.LoginUsecase
+	loginUsecase      loginUsecase.LoginUsecase
+	credentialUsecase credentialUsecase.CredentialUsecase
+	taskUsecase       taskUsecase.TaskUsecase
+	timetablesUsecase timetablesUsecase.TimetablesUsecase
 }
 
-func NewLoginController(r loginRepository.ILoginRepository) *LoginController {
+func NewLoginController(
+	l loginRepository.ILoginRepository,
+	c credentialRepository.ICredentialRepository,
+	t taskRepository.ITaskRepository,
+	tt timetablesRepository.ITimetablesRepository,
+) *LoginController {
 	return &LoginController{
-		loginUsecase.NewLoginUsecase(r),
+		loginUsecase.NewLoginUsecase(l),
+		credentialUsecase.NewCredentialUsecase(c, l),
+		taskUsecase.NewTaskUsecase(c, l, t),
+		timetablesUsecase.NewTimetablesUsecase(c, l, tt),
 	}
 }
 
@@ -44,21 +62,14 @@ func (l LoginResponse) ToLogin() (loginModel.Login, error) {
 		return loginModel.Login{}, err
 	}
 
-	hashed, err := hashPassword(l.Password)
-	if err != nil {
-		return loginModel.Login{}, err
-	}
+	hashed := hashPassword(l.Password)
 
 	return loginModel.NewLogin(u, hashed), nil
 }
 
-func hashPassword(p string) (string, error) {
-	hash, err := bcrypt.GenerateFromPassword([]byte(p), bcrypt.DefaultCost)
-	if err != nil {
-		return "", err
-	}
-
-	return string(hash), nil
+func hashPassword(p string) string {
+	b := sha256.Sum256([]byte(p))
+	return hex.EncodeToString(b[:])
 }
 
 func (c LoginController) SignUp(ctx echo.Context) error {
@@ -87,7 +98,7 @@ func (c LoginController) SignUp(ctx echo.Context) error {
 	}
 
 	err = c.loginUsecase.Add(l)
-	if err.Error() == loginUsecase.UsernameAlreadyExists {
+	if err != nil && err.Error() == loginUsecase.UsernameAlreadyExists {
 		return ctx.JSON(
 			http.StatusConflict,
 			errorResponse.NewError(err),
@@ -128,11 +139,56 @@ func (c LoginController) DeleteAccound(ctx echo.Context) error {
 		)
 	}
 
-	err = c.loginUsecase.Delete(l)
-	if err.Error() == loginUsecase.UsernameNotFound {
+	verified, err := c.loginUsecase.Verify(l)
+	if err != nil {
 		return ctx.JSON(
-			http.StatusNotFound,
-			errorResponse.NewError(err),
+			http.StatusInternalServerError,
+			errorResponse.NewError(fmt.Errorf(errorResponse.InternalServerError)),
+		)
+	}
+	if !verified {
+		return ctx.JSON(
+			http.StatusUnauthorized,
+			errorResponse.NewError(fmt.Errorf(InvalidUsernameOrPassword)),
+		)
+	}
+
+	auth, err := c.credentialUsecase.Get(l)
+	if err != nil {
+		return ctx.JSON(
+			http.StatusInternalServerError,
+			errorResponse.NewError(fmt.Errorf(errorResponse.InternalServerError)),
+		)
+	}
+
+	token := auth.Token()
+
+	if err = c.taskUsecase.DeleteAll(token); err != nil {
+		return ctx.JSON(
+			http.StatusInternalServerError,
+			errorResponse.NewError(fmt.Errorf(errorResponse.InternalServerError)),
+		)
+	}
+
+	if err = c.timetablesUsecase.Delete(token); err != nil && err.Error() != timetablesUsecase.TimetablesNotFound {
+		return ctx.JSON(
+			http.StatusInternalServerError,
+			errorResponse.NewError(fmt.Errorf(errorResponse.InternalServerError)),
+		)
+	}
+
+	if err = c.credentialUsecase.Delete(l); err != nil {
+		return ctx.JSON(
+			http.StatusInternalServerError,
+			errorResponse.NewError(fmt.Errorf(errorResponse.InternalServerError)),
+		)
+	}
+
+	err = c.loginUsecase.Delete(l)
+	if err != nil && err.Error() == loginUsecase.UsernameNotFound {
+		return ctx.JSON(
+			http.StatusUnauthorized,
+			errorResponse.NewError(fmt.Errorf(InvalidUsernameOrPassword)),
 		)
 	}
 	if err != nil {

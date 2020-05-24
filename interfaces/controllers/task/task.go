@@ -27,10 +27,7 @@ func NewTaskController(
 	t taskRepository.ITaskRepository,
 ) *TaskController {
 	return &TaskController{
-		taskUsecase.NewTaskUsecase(
-			credentialUsecase.NewCredentialUsecase(c, l),
-			t,
-		),
+		taskUsecase.NewTaskUsecase(c, l, t),
 	}
 }
 
@@ -99,7 +96,7 @@ func (c TaskController) Add(ctx echo.Context) error {
 	}
 
 	err = c.taskUsecase.Add(token.NewToken(t), task)
-	if err.Error() == credentialUsecase.InvalidToken {
+	if err != nil && err.Error() == credentialUsecase.InvalidToken {
 		return ctx.JSON(
 			http.StatusUnauthorized,
 			errorResponse.NewError(err),
@@ -150,14 +147,14 @@ func (c TaskController) Delete(ctx echo.Context) error {
 	}
 
 	err = c.taskUsecase.Delete(token.NewToken(t), id)
-	if err.Error() == credentialUsecase.InvalidToken {
+	if err != nil && err.Error() == credentialUsecase.InvalidToken {
 		return ctx.JSON(
 			http.StatusUnauthorized,
 			errorResponse.NewError(fmt.Errorf(credentialUsecase.InvalidToken)),
 		)
 	}
-	if err.Error() == taskUsecase.IDIsNotZero ||
-		err.Error() == taskUsecase.InvalidID {
+	if err != nil && (err.Error() == taskUsecase.IDIsNotZero ||
+		err.Error() == taskUsecase.InvalidID) {
 		return ctx.JSON(
 			http.StatusBadRequest,
 			errorResponse.NewError(err),
@@ -200,7 +197,7 @@ func (c TaskController) GetAll(ctx echo.Context) error {
 	}
 
 	tasks, err := c.taskUsecase.GetAll(token.NewToken(t))
-	if err.Error() == credentialUsecase.InvalidToken {
+	if err != nil && err.Error() == credentialUsecase.InvalidToken {
 		return ctx.JSON(
 			http.StatusUnauthorized,
 			errorResponse.NewError(err),

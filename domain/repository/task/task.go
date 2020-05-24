@@ -9,4 +9,5 @@ type ITaskRepository interface {
 	Create(username.Username, task.Task) error
 	GetAll(username.Username) ([]task.Task, error)
 	Remove(username.Username, int) error
+	RemoveAll(username.Username) error
 }

@@ -23,7 +23,7 @@ func GenToken() (Token, error) {
 	token := make([]byte, Length)
 
 	for i := range token {
-		n, err := rand.Int(rand.Reader, big.NewInt(int64(Length)))
+		n, err := rand.Int(rand.Reader, big.NewInt(int64(len(str))))
 		if err != nil {
 			return Token{}, err
 		}

@@ -3,6 +3,7 @@ package timetables
 import (
 	"database/sql"
 
+	"github.com/jinzhu/gorm"
 	timetablesModel "github.com/team-gleam/kiwi-basket/domain/model/timetables"
 	"github.com/team-gleam/kiwi-basket/domain/model/user/username"
 	timetablesRepository "github.com/team-gleam/kiwi-basket/domain/repository/timetables"
@@ -14,16 +15,21 @@ type TimetablesRepository struct {
 }
 
 func NewTimetablesRepository(h *handler.DbHandler) timetablesRepository.ITimetablesRepository {
+	h.Db.AutoMigrate(
+		Timetables{},
+		Timetable{},
+		Class{},
+	)
 	return &TimetablesRepository{h}
 }
 
-type TimetablesDB struct {
+type Timetables struct {
 	Username                string `gorm:"primary_key"`
 	Mon, Tue, Wed, Thu, Fri uint
 }
 
-func NewTimetablesDB(u string, mon, tue, wed, thu, fri uint) TimetablesDB {
-	return TimetablesDB{
+func NewTimetables(u string, mon, tue, wed, thu, fri uint) Timetables {
+	return Timetables{
 		Username: u,
 		Mon:      mon,
 		Tue:      tue,
@@ -33,14 +39,14 @@ func NewTimetablesDB(u string, mon, tue, wed, thu, fri uint) TimetablesDB {
 	}
 }
 
-type TimetableDB struct {
+type Timetable struct {
 	ID                          uint `gorm:"primary_key;auto_increment"`
 	Day                         string
 	One, Two, Three, Four, Five *uint
 }
 
-func NewTimetableDB(d string, _1, _2, _3, _4, _5 *uint) TimetableDB {
-	return TimetableDB{
+func NewTimetable(d string, _1, _2, _3, _4, _5 *uint) Timetable {
+	return Timetable{
 		Day:   d,
 		One:   _1,
 		Two:   _2,
@@ -50,14 +56,14 @@ func NewTimetableDB(d string, _1, _2, _3, _4, _5 *uint) TimetableDB {
 	}
 }
 
-type ClassDB struct {
+type Class struct {
 	ID      uint `gorm:"primary_key;auto_increment"`
 	Subject string
 	Room    sql.NullString
 }
 
-func NewClassDB(s, r string) ClassDB {
-	return ClassDB{
+func NewClass(s, r string) Class {
+	return Class{
 		Subject: s,
 		Room: sql.NullString{
 			String: r,
@@ -66,8 +72,8 @@ func NewClassDB(s, r string) ClassDB {
 	}
 }
 
-func NewNoRoomClassDB(s string) ClassDB {
-	return ClassDB{
+func NewNoRoomClass(s string) Class {
+	return Class{
 		Subject: s,
 		Room: sql.NullString{
 			Valid: false,
@@ -106,7 +112,7 @@ func (r *TimetablesRepository) Create(u username.Username, t timetablesModel.Tim
 		return err
 	}
 
-	return r.dbHandler.Db.Create(NewTimetablesDB(u.Name(), mon, tue, wed, thu, fri)).Error
+	return r.dbHandler.Db.Create(NewTimetables(u.Name(), mon, tue, wed, thu, fri)).Error
 }
 
 func (r *TimetablesRepository) createTimetable(day string, timetable timetablesModel.Timetable) (uint, error) {
@@ -131,7 +137,7 @@ func (r *TimetablesRepository) createTimetable(day string, timetable timetablesM
 		return 0, err
 	}
 
-	t := NewTimetableDB(day, _1, _2, _3, _4, _5)
+	t := NewTimetable(day, _1, _2, _3, _4, _5)
 	err = r.dbHandler.Db.Create(&t).Error
 	return t.ID, err
 }
@@ -141,11 +147,11 @@ func (r *TimetablesRepository) createClass(class timetablesModel.Class) (*uint, 
 		return nil, nil
 	}
 
-	var c ClassDB
+	var c Class
 	if !class.IsNoRoom() {
-		c = NewClassDB(class.Subject(), class.Room())
+		c = NewClass(class.Subject(), class.Room())
 	} else {
-		c = NewNoRoomClassDB(class.Subject())
+		c = NewNoRoomClass(class.Subject())
 	}
 
 	err := r.dbHandler.Db.Create(&c).Error
@@ -153,73 +159,91 @@ func (r *TimetablesRepository) createClass(class timetablesModel.Class) (*uint, 
 }
 
 func (r *TimetablesRepository) Delete(u username.Username) error {
-	ts := new(TimetablesDB)
-	err := r.dbHandler.Db.Where("username = ?", u.Name).First(&ts).Error
+	ts := new(Timetables)
+	err := r.dbHandler.Db.Where("username = ?", u.Name()).Take(ts).Error
 	if err != nil {
 		return err
 	}
 
-	err = r.deleteTimetable(TimetableDB{ID: ts.Mon})
+	err = r.deleteTimetable(ts.Mon)
 	if err != nil {
 		return err
 	}
-	err = r.deleteTimetable(TimetableDB{ID: ts.Tue})
+	err = r.deleteTimetable(ts.Tue)
 	if err != nil {
 		return err
 	}
-	err = r.deleteTimetable(TimetableDB{ID: ts.Wed})
+	err = r.deleteTimetable(ts.Wed)
 	if err != nil {
 		return err
 	}
-	err = r.deleteTimetable(TimetableDB{ID: ts.Thu})
+	err = r.deleteTimetable(ts.Thu)
 	if err != nil {
 		return err
 	}
-	err = r.deleteTimetable(TimetableDB{ID: ts.Fri})
+	err = r.deleteTimetable(ts.Fri)
 	if err != nil {
 		return err
 	}
 
-	return r.dbHandler.Db.Delete(TimetablesDB{Username: u.Name()}).Error
+	return r.dbHandler.Db.Where("username = ?", u.Name()).Delete(Timetables{}).Error
 }
 
-func (r *TimetablesRepository) deleteTimetable(t TimetableDB) error {
-	err := r.deleteClass(ClassDB{ID: *t.One})
+func (r *TimetablesRepository) deleteTimetable(id uint) error {
+	td := new(Timetable)
+	err := r.dbHandler.Db.Where("id = ?", id).Take(td).Error
 	if err != nil {
 		return err
 	}
-	err = r.deleteClass(ClassDB{ID: *t.Two})
+
+	err = r.deleteClass(td.One)
 	if err != nil {
 		return err
 	}
-	err = r.deleteClass(ClassDB{ID: *t.Three})
+	err = r.deleteClass(td.Two)
 	if err != nil {
 		return err
 	}
-	err = r.deleteClass(ClassDB{ID: *t.Four})
+	err = r.deleteClass(td.Three)
 	if err != nil {
 		return err
 	}
-	return r.deleteClass(ClassDB{ID: *t.Five})
+	err = r.deleteClass(td.Four)
+	if err != nil {
+		return err
+	}
+	err = r.deleteClass(td.Five)
+	if err != nil {
+		return err
+	}
+
+	return r.dbHandler.Db.Where("id = ?", id).Delete(Timetable{}).Error
 }
 
-func (r *TimetablesRepository) deleteClass(c ClassDB) error {
-	return r.dbHandler.Db.Delete(c).Error
+func (r *TimetablesRepository) deleteClass(id *uint) error {
+	if id != nil {
+		return r.dbHandler.Db.Where("id = ?", *id).Delete(Class{}).Error
+	}
+
+	return nil
 }
 
 func (r *TimetablesRepository) Exists(u username.Username) (bool, error) {
-	t := TimetablesDB{}
-	err := r.dbHandler.Db.Where("username = ?", u.Name()).First(&t).Error
+	t := Timetables{}
+	err := r.dbHandler.Db.Where("username = ?", u.Name()).Take(&t).Error
+	if gorm.IsRecordNotFoundError(err) {
+		return false, nil
+	}
 	if err != nil {
 		return false, err
 	}
 
-	return t != TimetablesDB{}, nil
+	return t != Timetables{}, nil
 }
 
 func (r *TimetablesRepository) Get(u username.Username) (timetablesModel.Timetables, error) {
-	ts := TimetablesDB{}
-	err := r.dbHandler.Db.Where("username = ?", u.Name).First(&ts).Error
+	ts := Timetables{}
+	err := r.dbHandler.Db.Where("username = ?", u.Name()).Take(&ts).Error
 	if err != nil {
 		return timetablesModel.Timetables{}, err
 	}
@@ -249,8 +273,8 @@ func (r *TimetablesRepository) Get(u username.Username) (timetablesModel.Timetab
 }
 
 func (r *TimetablesRepository) getTimetable(id uint) (timetablesModel.Timetable, error) {
-	t := TimetableDB{}
-	err := r.dbHandler.Db.Where("id = ?", id).First(&t).Error
+	t := Timetable{}
+	err := r.dbHandler.Db.Where("id = ?", id).Take(&t).Error
 	if err != nil {
 		return timetablesModel.Timetable{}, err
 	}
@@ -284,8 +308,8 @@ func (r *TimetablesRepository) getClass(id *uint) (timetablesModel.Class, error)
 		return timetablesModel.NoClass(), nil
 	}
 
-	c := ClassDB{}
-	err := r.dbHandler.Db.Where("id = ?", id).First(&c).Error
+	c := Class{}
+	err := r.dbHandler.Db.Where("id = ?", id).Take(&c).Error
 	if err != nil {
 		return timetablesModel.Class{}, err
 	}

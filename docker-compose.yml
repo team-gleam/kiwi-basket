@@ -7,8 +7,8 @@ services:
     build: ./db
     image: mysql:5.7
     restart: always
+    env_file: .env
     environment:
-      MYSQL_ROOT_PASSWORD: mysql
       MYSQL_DATABASE: kiwi_basket
     ports:
       - "3306:3306"

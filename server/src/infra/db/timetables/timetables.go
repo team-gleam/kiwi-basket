@@ -39,6 +39,10 @@ func NewTimetables(u string, mon, tue, wed, thu, fri uint) Timetables {
 	}
 }
 
+func (t Timetables) TableName() string {
+	return "timetables"
+}
+
 type Timetable struct {
 	ID                          uint `gorm:"primary_key;auto_increment"`
 	Day                         string
@@ -54,6 +58,10 @@ func NewTimetable(d string, _1, _2, _3, _4, _5 *uint) Timetable {
 		Four:  _4,
 		Five:  _5,
 	}
+}
+
+func (t Timetable) TableName() string {
+	return "timetable"
 }
 
 type Class struct {

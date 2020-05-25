@@ -1,1 +1,14 @@
 version: '3'
+services:
+  db:
+    build: ./db
+    image: mysql:5.7
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: mysql
+      MYSQL_DATABASE: kiwi_basket
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./db/conf.d:/etc/mysql/conf.d
+      - ./db/data:/var/lib/mysql

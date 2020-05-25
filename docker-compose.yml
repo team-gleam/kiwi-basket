@@ -1,5 +1,8 @@
 version: '3'
 services:
+  server:
+    build: ./server
+    image: golang:1.14.3
   db:
     build: ./db
     image: mysql:5.7

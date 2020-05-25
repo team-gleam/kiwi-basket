@@ -1,16 +1,20 @@
 version: '3'
 services:
   server:
-    build: ./server
-    image: golang:1.14.3
+    build:
+      context: .
+      dockerfile: ./server/Dockerfile
+    depends_on: 
+      - db
+    ports: 
+      - "443:443"
   db:
     build: ./db
-    image: mysql:5.7
     restart: always
     env_file: .env
     environment:
       MYSQL_DATABASE: kiwi_basket
-    ports:
+    ports: 
       - "3306:3306"
     volumes:
       - ./db/conf.d:/etc/mysql/conf.d

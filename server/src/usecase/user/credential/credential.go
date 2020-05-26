@@ -36,6 +36,9 @@ const (
 func (u CredentialUsecase) Generate(login loginModel.Login) (token.Token, error) {
 	verified, err := u.loginUsecase.Verify(login)
 	if err != nil {
+		if err.Error() == loginUsecase.UsernameNotFound {
+			return token.NewToken(""), fmt.Errorf(InvalidUsernameOrPassword)
+		}
 		return token.NewToken(""), err
 	}
 	if !verified {

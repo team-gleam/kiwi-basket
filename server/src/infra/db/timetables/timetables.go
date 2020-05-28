@@ -68,24 +68,27 @@ type Class struct {
 	ID      uint `gorm:"primary_key;auto_increment"`
 	Subject string
 	Room    sql.NullString
+	Memo    string `gorm:"size:510"`
 }
 
-func NewClass(s, r string) Class {
+func NewClass(s, r, m string) Class {
 	return Class{
 		Subject: s,
 		Room: sql.NullString{
 			String: r,
 			Valid:  true,
 		},
+		Memo: m,
 	}
 }
 
-func NewNoRoomClass(s string) Class {
+func NewNoRoomClass(s, m string) Class {
 	return Class{
 		Subject: s,
 		Room: sql.NullString{
 			Valid: false,
 		},
+		Memo: m,
 	}
 }
 
@@ -157,9 +160,9 @@ func (r *TimetablesRepository) createClass(class timetablesModel.Class) (*uint, 
 
 	var c Class
 	if !class.IsNoRoom() {
-		c = NewClass(class.Subject(), class.Room())
+		c = NewClass(class.Subject(), class.Room(), class.Memo())
 	} else {
-		c = NewNoRoomClass(class.Subject())
+		c = NewNoRoomClass(class.Subject(), class.Memo())
 	}
 
 	err := r.dbHandler.Db.Create(&c).Error
@@ -323,8 +326,8 @@ func (r *TimetablesRepository) getClass(id *uint) (timetablesModel.Class, error)
 	}
 
 	if !c.Room.Valid {
-		return timetablesModel.NoRoom(c.Subject), nil
+		return timetablesModel.NoRoom(c.Subject, c.Memo), nil
 	}
 
-	return timetablesModel.NewClass(c.Subject, c.Room.String), nil
+	return timetablesModel.NewClass(c.Subject, c.Room.String, c.Memo), nil
 }

@@ -8,85 +8,93 @@ import (
 	timetablesModel "github.com/team-gleam/kiwi-basket/server/src/domain/model/timetables"
 )
 
-func newClassJSON(r, s string) *ClassJSON {
-	return &ClassJSON{r, &s}
+func newClassJSON(s, r, m string) *ClassJSON {
+	return &ClassJSON{s, &r, &m}
+}
+
+func newNoRoomClassJSON(s, m string) *ClassJSON {
+	return &ClassJSON{s, nil, &m}
+}
+
+func newNoMemoClassJSON(s, r string) *ClassJSON {
+	return &ClassJSON{s, &r, nil}
 }
 
 var noNullTimetablesResponse = TimetablesResponse{
 	Timetables: TimetablesJSON{
 		TimetableJSON{
-			One:   newClassJSON("A", "1"),
-			Two:   newClassJSON("B", "2"),
-			Three: newClassJSON("C", "3"),
-			Four:  newClassJSON("D", "4"),
-			Five:  newClassJSON("E", "5"),
+			One:   newClassJSON("A", "1", "memo1"),
+			Two:   newClassJSON("B", "2", "memo2"),
+			Three: newClassJSON("C", "3", "memo3"),
+			Four:  newClassJSON("D", "4", "memo4"),
+			Five:  newClassJSON("E", "5", "memo5"),
 		},
 		TimetableJSON{
-			One:   newClassJSON("F", "6"),
-			Two:   newClassJSON("G", "7"),
-			Three: newClassJSON("H", "8"),
-			Four:  newClassJSON("I", "9"),
-			Five:  newClassJSON("J", "10"),
+			One:   newClassJSON("F", "6", "memo6"),
+			Two:   newClassJSON("G", "7", "memo7"),
+			Three: newClassJSON("H", "8", "memo8"),
+			Four:  newClassJSON("I", "9", "memo9"),
+			Five:  newClassJSON("J", "10", "memo10"),
 		},
 		TimetableJSON{
-			One:   newClassJSON("K", "11"),
-			Two:   newClassJSON("L", "12"),
-			Three: newClassJSON("M", "13"),
-			Four:  newClassJSON("N", "14"),
-			Five:  newClassJSON("O", "15"),
+			One:   newClassJSON("K", "11", "memo11"),
+			Two:   newClassJSON("L", "12", "memo12"),
+			Three: newClassJSON("M", "13", "memo13"),
+			Four:  newClassJSON("N", "14", "memo14"),
+			Five:  newClassJSON("O", "15", "memo15"),
 		},
 		TimetableJSON{
-			One:   newClassJSON("P", "16"),
-			Two:   newClassJSON("Q", "17"),
-			Three: newClassJSON("R", "18"),
-			Four:  newClassJSON("S", "19"),
-			Five:  newClassJSON("T", "20"),
+			One:   newClassJSON("P", "16", "memo16"),
+			Two:   newClassJSON("Q", "17", "memo17"),
+			Three: newClassJSON("R", "18", "memo18"),
+			Four:  newClassJSON("S", "19", "memo19"),
+			Five:  newClassJSON("T", "20", "memo20"),
 		},
 		TimetableJSON{
-			One:   newClassJSON("U", "21"),
-			Two:   newClassJSON("V", "22"),
-			Three: newClassJSON("W", "23"),
-			Four:  newClassJSON("X", "24"),
-			Five:  newClassJSON("Y", "25"),
+			One:   newClassJSON("U", "21", "memo21"),
+			Two:   newClassJSON("V", "22", "memo22"),
+			Three: newClassJSON("W", "23", "memo23"),
+			Four:  newClassJSON("X", "24", "memo24"),
+			Five:  newClassJSON("Y", "25", "memo25"),
 		},
 	},
 }
 
 var noNullTimetables = timetablesModel.NewTimetables(
 	timetablesModel.NewTimetable(
-		timetablesModel.NewClass("A", "1"),
-		timetablesModel.NewClass("B", "2"),
-		timetablesModel.NewClass("C", "3"),
-		timetablesModel.NewClass("D", "4"),
-		timetablesModel.NewClass("E", "5"),
+		timetablesModel.NewClass("A", "1", "memo1"),
+		timetablesModel.NewClass("B", "2", "memo2"),
+		timetablesModel.NewClass("C", "3", "memo3"),
+		timetablesModel.NewClass("D", "4", "memo4"),
+		timetablesModel.NewClass("E", "5", "memo5"),
 	),
 	timetablesModel.NewTimetable(
-		timetablesModel.NewClass("F", "6"),
-		timetablesModel.NewClass("G", "7"),
-		timetablesModel.NewClass("H", "8"),
-		timetablesModel.NewClass("I", "9"),
-		timetablesModel.NewClass("J", "10"),
+		timetablesModel.NewClass("F", "6", "memo6"),
+		timetablesModel.NewClass("G", "7", "memo7"),
+		timetablesModel.NewClass("H", "8", "memo8"),
+		timetablesModel.NewClass("I", "9", "memo9"),
+		timetablesModel.NewClass("J", "10", "memo10"),
 	),
 	timetablesModel.NewTimetable(
-		timetablesModel.NewClass("K", "11"),
-		timetablesModel.NewClass("L", "12"),
-		timetablesModel.NewClass("M", "13"),
-		timetablesModel.NewClass("N", "14"),
-		timetablesModel.NewClass("O", "15"),
+		timetablesModel.NewClass("K", "11", "memo11"),
+		timetablesModel.NewClass("L", "12", "memo12"),
+		timetablesModel.NewClass("M", "13", "memo13"),
+		timetablesModel.NewClass("N", "14", "memo14"),
+		timetablesModel.NewClass("O", "15", "memo15"),
 	),
 	timetablesModel.NewTimetable(
-		timetablesModel.NewClass("P", "16"),
-		timetablesModel.NewClass("Q", "17"),
-		timetablesModel.NewClass("R", "18"),
-		timetablesModel.NewClass("S", "19"),
-		timetablesModel.NewClass("T", "20"),
+		timetablesModel.NewClass("P", "16", "memo16"),
+		timetablesModel.NewClass("Q", "17", "memo17"),
+		timetablesModel.NewClass("R", "18", "memo18"),
+		timetablesModel.NewClass("S", "19", "memo19"),
+		timetablesModel.NewClass("T", "20", "memo20"),
 	),
 	timetablesModel.NewTimetable(
-		timetablesModel.NewClass("U", "21"),
-		timetablesModel.NewClass("V", "22"),
-		timetablesModel.NewClass("W", "23"),
-		timetablesModel.NewClass("X", "24"),
-		timetablesModel.NewClass("Y", "25"),
+		timetablesModel.NewClass("U", "21", "memo21"),
+		timetablesModel.NewClass("V", "22", "memo22"),
+		timetablesModel.NewClass("W", "23", "memo23"),
+		timetablesModel.NewClass("X", "24", "memo24"),
+		timetablesModel.NewClass("Y", "25", "memo25"),
 	),
 )
 
@@ -94,37 +102,37 @@ var hasNullClassTimetablesResponse = TimetablesResponse{
 	Timetables: TimetablesJSON{
 		TimetableJSON{
 			One:   nil,
-			Two:   newClassJSON("B", "2"),
-			Three: newClassJSON("C", "3"),
-			Four:  newClassJSON("D", "4"),
-			Five:  newClassJSON("E", "5"),
+			Two:   newClassJSON("B", "2", "memo2"),
+			Three: newClassJSON("C", "3", "memo3"),
+			Four:  newClassJSON("D", "4", "memo4"),
+			Five:  newClassJSON("E", "5", "memo5"),
 		},
 		TimetableJSON{
-			One:   newClassJSON("F", "6"),
+			One:   newClassJSON("F", "6", "memo6"),
 			Two:   nil,
-			Three: newClassJSON("H", "8"),
-			Four:  newClassJSON("I", "9"),
-			Five:  newClassJSON("J", "10"),
+			Three: newClassJSON("H", "8", "memo8"),
+			Four:  newClassJSON("I", "9", "memo9"),
+			Five:  newClassJSON("J", "10", "memo10"),
 		},
 		TimetableJSON{
-			One:   newClassJSON("K", "11"),
-			Two:   newClassJSON("L", "12"),
+			One:   newClassJSON("K", "11", "memo11"),
+			Two:   newClassJSON("L", "12", "memo12"),
 			Three: nil,
-			Four:  newClassJSON("N", "14"),
-			Five:  newClassJSON("O", "15"),
+			Four:  newClassJSON("N", "14", "memo14"),
+			Five:  newClassJSON("O", "15", "memo15"),
 		},
 		TimetableJSON{
-			One:   newClassJSON("P", "16"),
-			Two:   newClassJSON("Q", "17"),
-			Three: newClassJSON("R", "18"),
+			One:   newClassJSON("P", "16", "memo16"),
+			Two:   newClassJSON("Q", "17", "memo17"),
+			Three: newClassJSON("R", "18", "memo18"),
 			Four:  nil,
-			Five:  newClassJSON("T", "20"),
+			Five:  newClassJSON("T", "20", "memo20"),
 		},
 		TimetableJSON{
-			One:   newClassJSON("U", "21"),
-			Two:   newClassJSON("V", "22"),
-			Three: newClassJSON("W", "23"),
-			Four:  newClassJSON("X", "24"),
+			One:   newClassJSON("U", "21", "memo21"),
+			Two:   newClassJSON("V", "22", "memo22"),
+			Three: newClassJSON("W", "23", "memo23"),
+			Four:  newClassJSON("X", "24", "memo24"),
 			Five:  nil,
 		},
 	},
@@ -133,37 +141,37 @@ var hasNullClassTimetablesResponse = TimetablesResponse{
 var hasNullClassTimetables = timetablesModel.NewTimetables(
 	timetablesModel.NewTimetable(
 		timetablesModel.NoClass(),
-		timetablesModel.NewClass("B", "2"),
-		timetablesModel.NewClass("C", "3"),
-		timetablesModel.NewClass("D", "4"),
-		timetablesModel.NewClass("E", "5"),
+		timetablesModel.NewClass("B", "2", "memo2"),
+		timetablesModel.NewClass("C", "3", "memo3"),
+		timetablesModel.NewClass("D", "4", "memo4"),
+		timetablesModel.NewClass("E", "5", "memo5"),
 	),
 	timetablesModel.NewTimetable(
-		timetablesModel.NewClass("F", "6"),
+		timetablesModel.NewClass("F", "6", "memo6"),
 		timetablesModel.NoClass(),
-		timetablesModel.NewClass("H", "8"),
-		timetablesModel.NewClass("I", "9"),
-		timetablesModel.NewClass("J", "10"),
+		timetablesModel.NewClass("H", "8", "memo8"),
+		timetablesModel.NewClass("I", "9", "memo9"),
+		timetablesModel.NewClass("J", "10", "memo10"),
 	),
 	timetablesModel.NewTimetable(
-		timetablesModel.NewClass("K", "11"),
-		timetablesModel.NewClass("L", "12"),
+		timetablesModel.NewClass("K", "11", "memo11"),
+		timetablesModel.NewClass("L", "12", "memo12"),
 		timetablesModel.NoClass(),
-		timetablesModel.NewClass("N", "14"),
-		timetablesModel.NewClass("O", "15"),
+		timetablesModel.NewClass("N", "14", "memo14"),
+		timetablesModel.NewClass("O", "15", "memo15"),
 	),
 	timetablesModel.NewTimetable(
-		timetablesModel.NewClass("P", "16"),
-		timetablesModel.NewClass("Q", "17"),
-		timetablesModel.NewClass("R", "18"),
+		timetablesModel.NewClass("P", "16", "memo16"),
+		timetablesModel.NewClass("Q", "17", "memo17"),
+		timetablesModel.NewClass("R", "18", "memo18"),
 		timetablesModel.NoClass(),
-		timetablesModel.NewClass("T", "20"),
+		timetablesModel.NewClass("T", "20", "memo20"),
 	),
 	timetablesModel.NewTimetable(
-		timetablesModel.NewClass("U", "21"),
-		timetablesModel.NewClass("V", "22"),
-		timetablesModel.NewClass("W", "23"),
-		timetablesModel.NewClass("X", "24"),
+		timetablesModel.NewClass("U", "21", "memo21"),
+		timetablesModel.NewClass("V", "22", "memo22"),
+		timetablesModel.NewClass("W", "23", "memo23"),
+		timetablesModel.NewClass("X", "24", "memo24"),
 		timetablesModel.NoClass(),
 	),
 )
@@ -171,78 +179,156 @@ var hasNullClassTimetables = timetablesModel.NewTimetables(
 var hasNullRoomTimetablesResponse = TimetablesResponse{
 	Timetables: TimetablesJSON{
 		TimetableJSON{
-			One:   &ClassJSON{"A", nil},
-			Two:   newClassJSON("B", "2"),
-			Three: newClassJSON("C", "3"),
-			Four:  newClassJSON("D", "4"),
-			Five:  newClassJSON("E", "5"),
+			One:   newNoRoomClassJSON("A", "memo1"),
+			Two:   newClassJSON("B", "2", "memo2"),
+			Three: newClassJSON("C", "3", "memo3"),
+			Four:  newClassJSON("D", "4", "memo4"),
+			Five:  newClassJSON("E", "5", "memo5"),
 		},
 		TimetableJSON{
-			One:   newClassJSON("F", "6"),
-			Two:   &ClassJSON{"G", nil},
-			Three: newClassJSON("H", "8"),
-			Four:  newClassJSON("I", "9"),
-			Five:  newClassJSON("J", "10"),
+			One:   newClassJSON("F", "6", "memo6"),
+			Two:   newNoRoomClassJSON("G", "memo7"),
+			Three: newClassJSON("H", "8", "memo8"),
+			Four:  newClassJSON("I", "9", "memo9"),
+			Five:  newClassJSON("J", "10", "memo10"),
 		},
 		TimetableJSON{
-			One:   newClassJSON("K", "11"),
-			Two:   newClassJSON("L", "12"),
-			Three: &ClassJSON{"M", nil},
-			Four:  newClassJSON("N", "14"),
-			Five:  newClassJSON("O", "15"),
+			One:   newClassJSON("K", "11", "memo11"),
+			Two:   newClassJSON("L", "12", "memo12"),
+			Three: newNoRoomClassJSON("M", "memo13"),
+			Four:  newClassJSON("N", "14", "memo14"),
+			Five:  newClassJSON("O", "15", "memo15"),
 		},
 		TimetableJSON{
-			One:   newClassJSON("P", "16"),
-			Two:   newClassJSON("Q", "17"),
-			Three: newClassJSON("R", "18"),
-			Four:  &ClassJSON{"S", nil},
-			Five:  newClassJSON("T", "20"),
+			One:   newClassJSON("P", "16", "memo16"),
+			Two:   newClassJSON("Q", "17", "memo17"),
+			Three: newClassJSON("R", "18", "memo18"),
+			Four:  newNoRoomClassJSON("S", "memo19"),
+			Five:  newClassJSON("T", "20", "memo20"),
 		},
 		TimetableJSON{
-			One:   newClassJSON("U", "21"),
-			Two:   newClassJSON("V", "22"),
-			Three: newClassJSON("W", "23"),
-			Four:  newClassJSON("X", "24"),
-			Five:  &ClassJSON{"Y", nil},
+			One:   newClassJSON("U", "21", "memo21"),
+			Two:   newClassJSON("V", "22", "memo22"),
+			Three: newClassJSON("W", "23", "memo23"),
+			Four:  newClassJSON("X", "24", "memo24"),
+			Five:  newNoRoomClassJSON("Y", "memo25"),
 		},
 	},
 }
 
 var hasNullRoomTimetables = timetablesModel.NewTimetables(
 	timetablesModel.NewTimetable(
-		timetablesModel.NoRoom("A"),
-		timetablesModel.NewClass("B", "2"),
-		timetablesModel.NewClass("C", "3"),
-		timetablesModel.NewClass("D", "4"),
-		timetablesModel.NewClass("E", "5"),
+		timetablesModel.NoRoom("A", "memo1"),
+		timetablesModel.NewClass("B", "2", "memo2"),
+		timetablesModel.NewClass("C", "3", "memo3"),
+		timetablesModel.NewClass("D", "4", "memo4"),
+		timetablesModel.NewClass("E", "5", "memo5"),
 	),
 	timetablesModel.NewTimetable(
-		timetablesModel.NewClass("F", "6"),
-		timetablesModel.NoRoom("G"),
-		timetablesModel.NewClass("H", "8"),
-		timetablesModel.NewClass("I", "9"),
-		timetablesModel.NewClass("J", "10"),
+		timetablesModel.NewClass("F", "6", "memo6"),
+		timetablesModel.NoRoom("G", "memo7"),
+		timetablesModel.NewClass("H", "8", "memo8"),
+		timetablesModel.NewClass("I", "9", "memo9"),
+		timetablesModel.NewClass("J", "10", "memo10"),
 	),
 	timetablesModel.NewTimetable(
-		timetablesModel.NewClass("K", "11"),
-		timetablesModel.NewClass("L", "12"),
-		timetablesModel.NoRoom("M"),
-		timetablesModel.NewClass("N", "14"),
-		timetablesModel.NewClass("O", "15"),
+		timetablesModel.NewClass("K", "11", "memo11"),
+		timetablesModel.NewClass("L", "12", "memo12"),
+		timetablesModel.NoRoom("M", "memo13"),
+		timetablesModel.NewClass("N", "14", "memo14"),
+		timetablesModel.NewClass("O", "15", "memo15"),
 	),
 	timetablesModel.NewTimetable(
-		timetablesModel.NewClass("P", "16"),
-		timetablesModel.NewClass("Q", "17"),
-		timetablesModel.NewClass("R", "18"),
-		timetablesModel.NoRoom("S"),
-		timetablesModel.NewClass("T", "20"),
+		timetablesModel.NewClass("P", "16", "memo16"),
+		timetablesModel.NewClass("Q", "17", "memo17"),
+		timetablesModel.NewClass("R", "18", "memo18"),
+		timetablesModel.NoRoom("S", "memo19"),
+		timetablesModel.NewClass("T", "20", "memo20"),
 	),
 	timetablesModel.NewTimetable(
-		timetablesModel.NewClass("U", "21"),
-		timetablesModel.NewClass("V", "22"),
-		timetablesModel.NewClass("W", "23"),
-		timetablesModel.NewClass("X", "24"),
-		timetablesModel.NoRoom("Y"),
+		timetablesModel.NewClass("U", "21", "memo21"),
+		timetablesModel.NewClass("V", "22", "memo22"),
+		timetablesModel.NewClass("W", "23", "memo23"),
+		timetablesModel.NewClass("X", "24", "memo24"),
+		timetablesModel.NoRoom("Y", "memo25"),
+	),
+)
+
+var hasNullMemoTimetablesResponse = TimetablesResponse{
+	Timetables: TimetablesJSON{
+		TimetableJSON{
+			One:   newNoMemoClassJSON("A", "1"),
+			Two:   newClassJSON("B", "2", "memo2"),
+			Three: newClassJSON("C", "3", "memo3"),
+			Four:  newClassJSON("D", "4", "memo4"),
+			Five:  newClassJSON("E", "5", "memo5"),
+		},
+		TimetableJSON{
+			One:   newClassJSON("F", "6", "memo6"),
+			Two:   newNoMemoClassJSON("G", "7"),
+			Three: newClassJSON("H", "8", "memo8"),
+			Four:  newClassJSON("I", "9", "memo9"),
+			Five:  newClassJSON("J", "10", "memo10"),
+		},
+		TimetableJSON{
+			One:   newClassJSON("K", "11", "memo11"),
+			Two:   newClassJSON("L", "12", "memo12"),
+			Three: newNoMemoClassJSON("M", "13"),
+			Four:  newClassJSON("N", "14", "memo14"),
+			Five:  newClassJSON("O", "15", "memo15"),
+		},
+		TimetableJSON{
+			One:   newClassJSON("P", "16", "memo16"),
+			Two:   newClassJSON("Q", "17", "memo17"),
+			Three: newClassJSON("R", "18", "memo18"),
+			Four:  newNoMemoClassJSON("S", "19"),
+			Five:  newClassJSON("T", "20", "memo20"),
+		},
+		TimetableJSON{
+			One:   newClassJSON("U", "21", "memo21"),
+			Two:   newClassJSON("V", "22", "memo22"),
+			Three: newClassJSON("W", "23", "memo23"),
+			Four:  newClassJSON("X", "24", "memo24"),
+			Five:  newNoMemoClassJSON("Y", "25"),
+		},
+	},
+}
+
+var hasNullMemoTimetables = timetablesModel.NewTimetables(
+	timetablesModel.NewTimetable(
+		timetablesModel.NewClass("A", "1", ""),
+		timetablesModel.NewClass("B", "2", "memo2"),
+		timetablesModel.NewClass("C", "3", "memo3"),
+		timetablesModel.NewClass("D", "4", "memo4"),
+		timetablesModel.NewClass("E", "5", "memo5"),
+	),
+	timetablesModel.NewTimetable(
+		timetablesModel.NewClass("F", "6", "memo6"),
+		timetablesModel.NewClass("G", "7", ""),
+		timetablesModel.NewClass("H", "8", "memo8"),
+		timetablesModel.NewClass("I", "9", "memo9"),
+		timetablesModel.NewClass("J", "10", "memo10"),
+	),
+	timetablesModel.NewTimetable(
+		timetablesModel.NewClass("K", "11", "memo11"),
+		timetablesModel.NewClass("L", "12", "memo12"),
+		timetablesModel.NewClass("M", "13", ""),
+		timetablesModel.NewClass("N", "14", "memo14"),
+		timetablesModel.NewClass("O", "15", "memo15"),
+	),
+	timetablesModel.NewTimetable(
+		timetablesModel.NewClass("P", "16", "memo16"),
+		timetablesModel.NewClass("Q", "17", "memo17"),
+		timetablesModel.NewClass("R", "18", "memo18"),
+		timetablesModel.NewClass("S", "19", ""),
+		timetablesModel.NewClass("T", "20", "memo20"),
+	),
+	timetablesModel.NewTimetable(
+		timetablesModel.NewClass("U", "21", "memo21"),
+		timetablesModel.NewClass("V", "22", "memo22"),
+		timetablesModel.NewClass("W", "23", "memo23"),
+		timetablesModel.NewClass("X", "24", "memo24"),
+		timetablesModel.NewClass("Y", "25", ""),
 	),
 )
 
@@ -270,11 +356,18 @@ var tr2t3 = TimetablesResponseToTimetables{
 	Expected: hasNullRoomTimetables,
 }
 
+var tr2t4 = TimetablesResponseToTimetables{
+	Name:     "has null memo",
+	Input:    hasNullMemoTimetablesResponse,
+	Expected: hasNullMemoTimetables,
+}
+
 func TestTimetablesResponseToTimetables(t *testing.T) {
 	tcs := []TimetablesResponseToTimetables{
 		tr2t1,
 		tr2t2,
 		tr2t3,
+		tr2t4,
 	}
 
 	for _, tc := range tcs {
@@ -311,11 +404,18 @@ var t2tr3 = TimetablesToTimetablesResponse{
 	Expected: hasNullRoomTimetablesResponse,
 }
 
+var t2tr4 = TimetablesToTimetablesResponse{
+	Name:     "has null memo",
+	Input:    hasNullMemoTimetables,
+	Expected: hasNullMemoTimetablesResponse,
+}
+
 func TestTimetablesToTimetablesResponse(t *testing.T) {
 	tcs := []TimetablesToTimetablesResponse{
 		t2tr1,
 		t2tr2,
 		t2tr3,
+		t2tr4,
 	}
 
 	for _, tc := range tcs {
@@ -444,13 +544,22 @@ func (t ClassJSON) copy() ClassJSON {
 	var (
 		s string
 		r string
+		m string
 	)
+	s = t.Subject
+
 	if t.Room != nil {
-		s = t.Subject
 		r = *t.Room
-		return ClassJSON{s, &r}
+		if t.Memo != nil {
+			m = *t.Memo
+			return ClassJSON{s, &r, &m}
+		}
+		return ClassJSON{s, &r, nil}
 	}
 
-	s = t.Subject
-	return ClassJSON{s, nil}
+	if t.Memo != nil {
+		m = *t.Memo
+		return ClassJSON{s, nil, &m}
+	}
+	return ClassJSON{s, nil, nil}
 }

@@ -55,11 +55,16 @@ type TimetableJSON struct {
 type ClassJSON struct {
 	Subject string  `json:"subject" validate:"max=85"`
 	Room    *string `json:"room" validate:"omitempty,max_85_ptr|isdefault"`
+	Memo    *string `json:"memo" validate:"omitempty,max_170|isdefault"`
 }
 
 func (t TimetablesResponse) Validates() (bool, error) {
 	v := validator.New()
 	err := v.RegisterValidation("max_85_ptr", Max85Ptr)
+	if err != nil {
+		return false, err
+	}
+	err = v.RegisterValidation("max_170", Max170)
 	if err != nil {
 		return false, err
 	}
@@ -69,6 +74,10 @@ func (t TimetablesResponse) Validates() (bool, error) {
 
 func Max85Ptr(validate validator.FieldLevel) bool {
 	return utf8.RuneCountInString(validate.Field().String()) < 86
+}
+
+func Max170(validate validator.FieldLevel) bool {
+	return utf8.RuneCountInString(validate.Field().String()) < 171
 }
 
 func (t TimetablesResponse) toTimetables() timetablesModel.Timetables {
@@ -97,10 +106,16 @@ func (t *ClassJSON) toClass() timetablesModel.Class {
 	}
 
 	if t.Room == nil {
-		return timetablesModel.NoRoom(t.Subject)
+		if t.Memo == nil {
+			return timetablesModel.NoRoom(t.Subject, "")
+		}
+		return timetablesModel.NoRoom(t.Subject, *t.Memo)
 	}
 
-	return timetablesModel.NewClass(t.Subject, *t.Room)
+	if t.Memo == nil {
+		return timetablesModel.NewClass(t.Subject, *t.Room, "")
+	}
+	return timetablesModel.NewClass(t.Subject, *t.Room, *t.Memo)
 }
 
 func toTimetablesResponse(t timetablesModel.Timetables) TimetablesResponse {
@@ -130,17 +145,35 @@ func toClassJSON(c timetablesModel.Class) *ClassJSON {
 		return nil
 	}
 
+	memo := c.Memo()
 	if c.IsNoRoom() {
+		if c.Memo() == "" {
+			return &ClassJSON{
+				Subject: c.Subject(),
+				Room:    nil,
+				Memo:    nil,
+			}
+		}
 		return &ClassJSON{
 			Subject: c.Subject(),
 			Room:    nil,
+			Memo:    &memo,
 		}
 	}
 
 	room := c.Room()
+	if c.Memo() == "" {
+		return &ClassJSON{
+			Subject: c.Subject(),
+			Room:    &room,
+			Memo:    nil,
+		}
+	}
+
 	return &ClassJSON{
 		Subject: c.Subject(),
 		Room:    &room,
+		Memo:    &memo,
 	}
 }
 
@@ -156,6 +189,19 @@ func (c TimetablesController) Register(ctx echo.Context) error {
 	res := new(TimetablesResponse)
 	err := ctx.Bind(res)
 	if err != nil || res.Timetables.Mon.One == new(ClassJSON) {
+		return ctx.JSON(
+			http.StatusBadRequest,
+			errorResponse.NewError(fmt.Errorf(loginController.InvalidJSONFormat)),
+		)
+	}
+	validates, err := res.Validates()
+	if err != nil {
+		return ctx.JSON(
+			http.StatusInternalServerError,
+			errorResponse.NewError(fmt.Errorf(errorResponse.InternalServerError)),
+		)
+	}
+	if !validates {
 		return ctx.JSON(
 			http.StatusBadRequest,
 			errorResponse.NewError(fmt.Errorf(loginController.InvalidJSONFormat)),

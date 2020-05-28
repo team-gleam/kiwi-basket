@@ -4,10 +4,10 @@ import (
 	"database/sql"
 
 	"github.com/jinzhu/gorm"
-	timetablesModel "github.com/team-gleam/kiwi-basket/domain/model/timetables"
-	"github.com/team-gleam/kiwi-basket/domain/model/user/username"
-	timetablesRepository "github.com/team-gleam/kiwi-basket/domain/repository/timetables"
-	"github.com/team-gleam/kiwi-basket/infra/db/handler"
+	timetablesModel "github.com/team-gleam/kiwi-basket/server/src/domain/model/timetables"
+	"github.com/team-gleam/kiwi-basket/server/src/domain/model/user/username"
+	timetablesRepository "github.com/team-gleam/kiwi-basket/server/src/domain/repository/timetables"
+	"github.com/team-gleam/kiwi-basket/server/src/infra/db/handler"
 )
 
 type TimetablesRepository struct {

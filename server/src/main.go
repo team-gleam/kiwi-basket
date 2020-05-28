@@ -4,8 +4,8 @@ import (
 	"io/ioutil"
 	"log"
 
-	"github.com/team-gleam/kiwi-basket/infra/db/handler"
-	"github.com/team-gleam/kiwi-basket/infra/router"
+	"github.com/team-gleam/kiwi-basket/server/src/infra/db/handler"
+	"github.com/team-gleam/kiwi-basket/server/src/infra/router"
 	"gopkg.in/yaml.v3"
 )
 

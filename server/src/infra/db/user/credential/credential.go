@@ -4,11 +4,11 @@ import (
 	"fmt"
 
 	"github.com/jinzhu/gorm"
-	credentialModel "github.com/team-gleam/kiwi-basket/domain/model/user/credential"
-	"github.com/team-gleam/kiwi-basket/domain/model/user/token"
-	"github.com/team-gleam/kiwi-basket/domain/model/user/username"
-	credentialRepository "github.com/team-gleam/kiwi-basket/domain/repository/user/credential"
-	"github.com/team-gleam/kiwi-basket/infra/db/handler"
+	credentialModel "github.com/team-gleam/kiwi-basket/server/src/domain/model/user/credential"
+	"github.com/team-gleam/kiwi-basket/server/src/domain/model/user/token"
+	"github.com/team-gleam/kiwi-basket/server/src/domain/model/user/username"
+	credentialRepository "github.com/team-gleam/kiwi-basket/server/src/domain/repository/user/credential"
+	"github.com/team-gleam/kiwi-basket/server/src/infra/db/handler"
 )
 
 type CredentialRepository struct {

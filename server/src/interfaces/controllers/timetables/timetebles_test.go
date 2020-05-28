@@ -5,7 +5,7 @@ import (
 	"strings"
 	"testing"
 
-	timetablesModel "github.com/team-gleam/kiwi-basket/domain/model/timetables"
+	timetablesModel "github.com/team-gleam/kiwi-basket/server/src/domain/model/timetables"
 )
 
 func newClassJSON(r, s string) *ClassJSON {

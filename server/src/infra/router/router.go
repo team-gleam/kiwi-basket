@@ -5,15 +5,15 @@ import (
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
-	"github.com/team-gleam/kiwi-basket/infra/db/handler"
-	taskRepository "github.com/team-gleam/kiwi-basket/infra/db/task"
-	timetablesRepository "github.com/team-gleam/kiwi-basket/infra/db/timetables"
-	credentialRepository "github.com/team-gleam/kiwi-basket/infra/db/user/credential"
-	loginRepository "github.com/team-gleam/kiwi-basket/infra/db/user/login"
-	taskController "github.com/team-gleam/kiwi-basket/interfaces/controllers/task"
-	timetablesController "github.com/team-gleam/kiwi-basket/interfaces/controllers/timetables"
-	credentialController "github.com/team-gleam/kiwi-basket/interfaces/controllers/user/credential"
-	loginController "github.com/team-gleam/kiwi-basket/interfaces/controllers/user/login"
+	"github.com/team-gleam/kiwi-basket/server/src/infra/db/handler"
+	taskRepository "github.com/team-gleam/kiwi-basket/server/src/infra/db/task"
+	timetablesRepository "github.com/team-gleam/kiwi-basket/server/src/infra/db/timetables"
+	credentialRepository "github.com/team-gleam/kiwi-basket/server/src/infra/db/user/credential"
+	loginRepository "github.com/team-gleam/kiwi-basket/server/src/infra/db/user/login"
+	taskController "github.com/team-gleam/kiwi-basket/server/src/interfaces/controllers/task"
+	timetablesController "github.com/team-gleam/kiwi-basket/server/src/interfaces/controllers/timetables"
+	credentialController "github.com/team-gleam/kiwi-basket/server/src/interfaces/controllers/user/credential"
+	loginController "github.com/team-gleam/kiwi-basket/server/src/interfaces/controllers/user/login"
 )
 
 func Run(c handler.Config) {

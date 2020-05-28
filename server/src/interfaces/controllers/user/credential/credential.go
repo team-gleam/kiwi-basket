@@ -5,12 +5,12 @@ import (
 	"net/http"
 
 	"github.com/labstack/echo/v4"
-	"github.com/team-gleam/kiwi-basket/domain/model/user/token"
-	credentialRepository "github.com/team-gleam/kiwi-basket/domain/repository/user/credential"
-	loginRepository "github.com/team-gleam/kiwi-basket/domain/repository/user/login"
-	errorResponse "github.com/team-gleam/kiwi-basket/interfaces/controllers/error"
-	loginController "github.com/team-gleam/kiwi-basket/interfaces/controllers/user/login"
-	credentialUsecase "github.com/team-gleam/kiwi-basket/usecase/user/credential"
+	"github.com/team-gleam/kiwi-basket/server/src/domain/model/user/token"
+	credentialRepository "github.com/team-gleam/kiwi-basket/server/src/domain/repository/user/credential"
+	loginRepository "github.com/team-gleam/kiwi-basket/server/src/domain/repository/user/login"
+	errorResponse "github.com/team-gleam/kiwi-basket/server/src/interfaces/controllers/error"
+	loginController "github.com/team-gleam/kiwi-basket/server/src/interfaces/controllers/user/login"
+	credentialUsecase "github.com/team-gleam/kiwi-basket/server/src/usecase/user/credential"
 )
 
 type CredentialController struct {

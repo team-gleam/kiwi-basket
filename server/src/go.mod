@@ -1,4 +1,4 @@
-module github.com/team-gleam/kiwi-basket
+module github.com/team-gleam/kiwi-basket/server/src
 
 go 1.13
 

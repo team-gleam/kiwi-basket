@@ -3,13 +3,13 @@ package credential
 import (
 	"fmt"
 
-	credentialModel "github.com/team-gleam/kiwi-basket/domain/model/user/credential"
-	loginModel "github.com/team-gleam/kiwi-basket/domain/model/user/login"
-	"github.com/team-gleam/kiwi-basket/domain/model/user/token"
-	"github.com/team-gleam/kiwi-basket/domain/model/user/username"
-	credentialRepository "github.com/team-gleam/kiwi-basket/domain/repository/user/credential"
-	loginRepository "github.com/team-gleam/kiwi-basket/domain/repository/user/login"
-	loginUsecase "github.com/team-gleam/kiwi-basket/usecase/user/login"
+	credentialModel "github.com/team-gleam/kiwi-basket/server/src/domain/model/user/credential"
+	loginModel "github.com/team-gleam/kiwi-basket/server/src/domain/model/user/login"
+	"github.com/team-gleam/kiwi-basket/server/src/domain/model/user/token"
+	"github.com/team-gleam/kiwi-basket/server/src/domain/model/user/username"
+	credentialRepository "github.com/team-gleam/kiwi-basket/server/src/domain/repository/user/credential"
+	loginRepository "github.com/team-gleam/kiwi-basket/server/src/domain/repository/user/login"
+	loginUsecase "github.com/team-gleam/kiwi-basket/server/src/usecase/user/login"
 )
 
 type CredentialUsecase struct {

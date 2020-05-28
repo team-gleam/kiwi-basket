@@ -3,13 +3,13 @@ package task
 import (
 	"fmt"
 
-	taskModel "github.com/team-gleam/kiwi-basket/domain/model/task"
-	tokenModel "github.com/team-gleam/kiwi-basket/domain/model/user/token"
-	"github.com/team-gleam/kiwi-basket/domain/model/user/username"
-	taskRepository "github.com/team-gleam/kiwi-basket/domain/repository/task"
-	credentialRepository "github.com/team-gleam/kiwi-basket/domain/repository/user/credential"
-	loginRepository "github.com/team-gleam/kiwi-basket/domain/repository/user/login"
-	credentialUsecase "github.com/team-gleam/kiwi-basket/usecase/user/credential"
+	taskModel "github.com/team-gleam/kiwi-basket/server/src/domain/model/task"
+	tokenModel "github.com/team-gleam/kiwi-basket/server/src/domain/model/user/token"
+	"github.com/team-gleam/kiwi-basket/server/src/domain/model/user/username"
+	taskRepository "github.com/team-gleam/kiwi-basket/server/src/domain/repository/task"
+	credentialRepository "github.com/team-gleam/kiwi-basket/server/src/domain/repository/user/credential"
+	loginRepository "github.com/team-gleam/kiwi-basket/server/src/domain/repository/user/login"
+	credentialUsecase "github.com/team-gleam/kiwi-basket/server/src/usecase/user/credential"
 )
 
 type TaskUsecase struct {

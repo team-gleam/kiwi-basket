@@ -7,14 +7,14 @@ import (
 
 	"github.com/go-playground/validator"
 	"github.com/labstack/echo/v4"
-	TaskModel "github.com/team-gleam/kiwi-basket/domain/model/task"
-	"github.com/team-gleam/kiwi-basket/domain/model/user/token"
-	taskRepository "github.com/team-gleam/kiwi-basket/domain/repository/task"
-	credentialRepository "github.com/team-gleam/kiwi-basket/domain/repository/user/credential"
-	loginRepository "github.com/team-gleam/kiwi-basket/domain/repository/user/login"
-	errorResponse "github.com/team-gleam/kiwi-basket/interfaces/controllers/error"
-	taskUsecase "github.com/team-gleam/kiwi-basket/usecase/task"
-	credentialUsecase "github.com/team-gleam/kiwi-basket/usecase/user/credential"
+	TaskModel "github.com/team-gleam/kiwi-basket/server/src/domain/model/task"
+	"github.com/team-gleam/kiwi-basket/server/src/domain/model/user/token"
+	taskRepository "github.com/team-gleam/kiwi-basket/server/src/domain/repository/task"
+	credentialRepository "github.com/team-gleam/kiwi-basket/server/src/domain/repository/user/credential"
+	loginRepository "github.com/team-gleam/kiwi-basket/server/src/domain/repository/user/login"
+	errorResponse "github.com/team-gleam/kiwi-basket/server/src/interfaces/controllers/error"
+	taskUsecase "github.com/team-gleam/kiwi-basket/server/src/usecase/task"
+	credentialUsecase "github.com/team-gleam/kiwi-basket/server/src/usecase/user/credential"
 )
 
 type TaskController struct {

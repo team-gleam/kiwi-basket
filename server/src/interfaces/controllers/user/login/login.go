@@ -8,17 +8,17 @@ import (
 
 	"github.com/go-playground/validator/v10"
 	"github.com/labstack/echo/v4"
-	loginModel "github.com/team-gleam/kiwi-basket/domain/model/user/login"
-	"github.com/team-gleam/kiwi-basket/domain/model/user/username"
-	taskRepository "github.com/team-gleam/kiwi-basket/domain/repository/task"
-	timetablesRepository "github.com/team-gleam/kiwi-basket/domain/repository/timetables"
-	credentialRepository "github.com/team-gleam/kiwi-basket/domain/repository/user/credential"
-	loginRepository "github.com/team-gleam/kiwi-basket/domain/repository/user/login"
-	errorResponse "github.com/team-gleam/kiwi-basket/interfaces/controllers/error"
-	taskUsecase "github.com/team-gleam/kiwi-basket/usecase/task"
-	timetablesUsecase "github.com/team-gleam/kiwi-basket/usecase/timetables"
-	credentialUsecase "github.com/team-gleam/kiwi-basket/usecase/user/credential"
-	loginUsecase "github.com/team-gleam/kiwi-basket/usecase/user/login"
+	loginModel "github.com/team-gleam/kiwi-basket/server/src/domain/model/user/login"
+	"github.com/team-gleam/kiwi-basket/server/src/domain/model/user/username"
+	taskRepository "github.com/team-gleam/kiwi-basket/server/src/domain/repository/task"
+	timetablesRepository "github.com/team-gleam/kiwi-basket/server/src/domain/repository/timetables"
+	credentialRepository "github.com/team-gleam/kiwi-basket/server/src/domain/repository/user/credential"
+	loginRepository "github.com/team-gleam/kiwi-basket/server/src/domain/repository/user/login"
+	errorResponse "github.com/team-gleam/kiwi-basket/server/src/interfaces/controllers/error"
+	taskUsecase "github.com/team-gleam/kiwi-basket/server/src/usecase/task"
+	timetablesUsecase "github.com/team-gleam/kiwi-basket/server/src/usecase/timetables"
+	credentialUsecase "github.com/team-gleam/kiwi-basket/server/src/usecase/user/credential"
+	loginUsecase "github.com/team-gleam/kiwi-basket/server/src/usecase/user/login"
 )
 
 type LoginController struct {

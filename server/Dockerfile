@@ -4,5 +4,5 @@ WORKDIR /kiwi-basket
 ADD ./server/src/ .
 ADD ./config.yaml .
 
-RUN go build .
+RUN go build -o kiwi-basket .
 CMD ["./kiwi-basket"]

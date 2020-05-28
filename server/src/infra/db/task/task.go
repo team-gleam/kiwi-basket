@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"time"
 
-	taskModel "github.com/team-gleam/kiwi-basket/domain/model/task"
-	"github.com/team-gleam/kiwi-basket/domain/model/user/username"
-	taskRepository "github.com/team-gleam/kiwi-basket/domain/repository/task"
-	"github.com/team-gleam/kiwi-basket/infra/db/handler"
+	taskModel "github.com/team-gleam/kiwi-basket/server/src/domain/model/task"
+	"github.com/team-gleam/kiwi-basket/server/src/domain/model/user/username"
+	taskRepository "github.com/team-gleam/kiwi-basket/server/src/domain/repository/task"
+	"github.com/team-gleam/kiwi-basket/server/src/infra/db/handler"
 )
 
 type TaskRepository struct {

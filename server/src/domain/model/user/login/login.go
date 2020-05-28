@@ -1,6 +1,6 @@
 package login
 
-import "github.com/team-gleam/kiwi-basket/domain/model/user/username"
+import "github.com/team-gleam/kiwi-basket/server/src/domain/model/user/username"
 
 type Login struct {
 	username       username.Username

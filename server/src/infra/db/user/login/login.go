@@ -4,10 +4,10 @@ import (
 	"fmt"
 
 	"github.com/jinzhu/gorm"
-	loginModel "github.com/team-gleam/kiwi-basket/domain/model/user/login"
-	"github.com/team-gleam/kiwi-basket/domain/model/user/username"
-	loginRepository "github.com/team-gleam/kiwi-basket/domain/repository/user/login"
-	"github.com/team-gleam/kiwi-basket/infra/db/handler"
+	loginModel "github.com/team-gleam/kiwi-basket/server/src/domain/model/user/login"
+	"github.com/team-gleam/kiwi-basket/server/src/domain/model/user/username"
+	loginRepository "github.com/team-gleam/kiwi-basket/server/src/domain/repository/user/login"
+	"github.com/team-gleam/kiwi-basket/server/src/infra/db/handler"
 )
 
 type LoginRepository struct {

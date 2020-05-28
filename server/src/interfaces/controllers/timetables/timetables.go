@@ -55,6 +55,7 @@ type TimetableJSON struct {
 type ClassJSON struct {
 	Subject string  `json:"subject" validate:"max=85"`
 	Room    *string `json:"room" validate:"omitempty,max_85_ptr|isdefault"`
+	Memo    *string `json:"memo" validate:"omitempty,max=170|isdefault"`
 }
 
 func (t TimetablesResponse) Validates() (bool, error) {
@@ -97,10 +98,16 @@ func (t *ClassJSON) toClass() timetablesModel.Class {
 	}
 
 	if t.Room == nil {
-		return timetablesModel.NoRoom(t.Subject)
+		if t.Memo == nil {
+			return timetablesModel.NoRoom(t.Subject, "")
+		}
+		return timetablesModel.NoRoom(t.Subject, *t.Memo)
 	}
 
-	return timetablesModel.NewClass(t.Subject, *t.Room)
+	if t.Memo == nil {
+		return timetablesModel.NewClass(t.Subject, *t.Room, "")
+	}
+	return timetablesModel.NewClass(t.Subject, *t.Room, *t.Memo)
 }
 
 func toTimetablesResponse(t timetablesModel.Timetables) TimetablesResponse {
@@ -130,17 +137,35 @@ func toClassJSON(c timetablesModel.Class) *ClassJSON {
 		return nil
 	}
 
+	memo := c.Memo()
 	if c.IsNoRoom() {
+		if c.Memo() == "" {
+			return &ClassJSON{
+				Subject: c.Subject(),
+				Room:    nil,
+				Memo:    nil,
+			}
+		}
 		return &ClassJSON{
 			Subject: c.Subject(),
 			Room:    nil,
+			Memo:    &memo,
 		}
 	}
 
 	room := c.Room()
+	if c.Memo() == "" {
+		return &ClassJSON{
+			Subject: c.Subject(),
+			Room:    &room,
+			Memo:    nil,
+		}
+	}
+
 	return &ClassJSON{
 		Subject: c.Subject(),
 		Room:    &room,
+		Memo:    &memo,
 	}
 }
 

@@ -37,10 +37,6 @@ const (
 )
 
 type TaskResponse struct {
-	Task TaskJSON `json:"task"`
-}
-
-type TaskJSON struct {
 	ID    string `json:"id" validate:"required,numeric,ne=0,min=-1"`
 	Date  string `json:"date" validate:"required"`
 	Title string `json:"title" validate:"required,max=85"`
@@ -51,7 +47,7 @@ func (t TaskResponse) Validates() bool {
 }
 
 func (t TaskResponse) toTask() (TaskModel.Task, error) {
-	id, err := strconv.Atoi(t.Task.ID)
+	id, err := strconv.Atoi(t.ID)
 	if err != nil {
 		return TaskModel.Task{}, err
 	}
@@ -59,7 +55,7 @@ func (t TaskResponse) toTask() (TaskModel.Task, error) {
 		return TaskModel.Task{}, fmt.Errorf(InvalidID)
 	}
 
-	return TaskModel.NewTask(id, t.Task.Date, t.Task.Title)
+	return TaskModel.NewTask(id, t.Date, t.Title)
 }
 
 func (c TaskController) Add(ctx echo.Context) error {
@@ -171,13 +167,13 @@ func (c TaskController) Delete(ctx echo.Context) error {
 }
 
 type TasksResponse struct {
-	Tasks []TaskJSON `json:"tasks"`
+	Tasks []TaskResponse `json:"tasks"`
 }
 
 func toTasksResponse(ts []TaskModel.Task) TasksResponse {
-	res := []TaskJSON{}
+	res := []TaskResponse{}
 	for _, t := range ts {
-		res = append(res, TaskJSON{
+		res = append(res, TaskResponse{
 			ID:    strconv.Itoa(t.ID()),
 			Date:  t.TextDate(),
 			Title: t.Title(),

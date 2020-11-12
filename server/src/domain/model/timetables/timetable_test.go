@@ -13,19 +13,19 @@ func TestTimetableGetters(t *testing.T) {
 		NoRoom("5", ""),
 	)
 
-	if timetable.First().subject != timetable._1.subject {
+	if timetable.First().subject != "1" {
 		t.Fatal("First() should return 1st class")
 	}
-	if timetable.Second().subject != timetable._2.subject {
+	if timetable.Second().subject != "2" {
 		t.Fatal("Second() should return 2nd class")
 	}
-	if timetable.Third().subject != timetable._3.subject {
+	if timetable.Third().subject != "3" {
 		t.Fatal("Third() should return 3rd class")
 	}
-	if timetable.Fourth().subject != timetable._4.subject {
+	if timetable.Fourth().subject != "4" {
 		t.Fatal("Fourth() should return 4th class")
 	}
-	if timetable.Fifth().subject != timetable._5.subject {
+	if timetable.Fifth().subject != "5" {
 		t.Fatal("Fifth() should return 5th class")
 	}
 }

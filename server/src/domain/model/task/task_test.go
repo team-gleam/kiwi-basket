@@ -29,7 +29,7 @@ func TestNewTask(t *testing.T) {
 			} else if test.shouldFail && e == nil {
 				t.Fatalf("expected error but got nil")
 			} else if test.expected != v.date {
-				t.Errorf("Failed# expected: %v; got: %v\n", test.expected, v)
+				t.Fatalf("Failed# expected: %v; got: %v\n", test.expected, v)
 			}
 		})
 	}
@@ -51,7 +51,7 @@ func TestTextDate(t *testing.T) {
 			v := test.task.TextDate()
 
 			if test.name != v {
-				t.Errorf("Failed# expected: %v; got: %v\n", test.name, v)
+				t.Fatalf("Failed# expected: %v; got: %v\n", test.name, v)
 			}
 		})
 	}

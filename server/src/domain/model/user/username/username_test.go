@@ -25,7 +25,7 @@ func TestNewUsername(t *testing.T) {
 			}
 
 			if tt.expected != v {
-				t.Errorf("Failed# expected: %v; got: %v\n", tt.expected, v)
+				t.Fatalf("Failed# expected: %v; got: %v\n", tt.expected, v)
 			}
 		})
 	}

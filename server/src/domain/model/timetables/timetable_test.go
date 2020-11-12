@@ -4,28 +4,72 @@ import (
 	"testing"
 )
 
-func TestTimetableGetters(t *testing.T) {
+var (
+	_1 = NoRoom("1", "")
+	_2 = NoRoom("2", "")
+	_3 = NoRoom("3", "")
+	_4 = NoRoom("4", "")
+	_5 = NoRoom("5", "")
+)
+
+func TestNewTimetable(t *testing.T) {
 	timetable := NewTimetable(
-		NoRoom("1", ""),
-		NoRoom("2", ""),
-		NoRoom("3", ""),
-		NoRoom("4", ""),
-		NoRoom("5", ""),
+		_1,
+		_2,
+		_3,
+		_4,
+		_5,
 	)
 
-	if timetable.First().subject != "1" {
-		t.Fatal("First() should return 1st class")
+	tests := []struct {
+		expected string
+		got      string
+	}{
+		{timetable._1.subject, _1.subject},
+		{timetable._2.subject, _2.subject},
+		{timetable._3.subject, _3.subject},
+		{timetable._4.subject, _4.subject},
+		{timetable._5.subject, _5.subject},
 	}
-	if timetable.Second().subject != "2" {
-		t.Fatal("Second() should return 2nd class")
+
+	for _, test := range tests {
+		if test.expected != test.got {
+			t.Fatalf(
+				"expected: %v; got: %v\n",
+				test.expected,
+				test.got,
+			)
+		}
 	}
-	if timetable.Third().subject != "3" {
-		t.Fatal("Third() should return 3rd class")
+}
+
+func TestTimetableGetters(t *testing.T) {
+	timetable := Timetable{
+		_1,
+		_2,
+		_3,
+		_4,
+		_5,
 	}
-	if timetable.Fourth().subject != "4" {
-		t.Fatal("Fourth() should return 4th class")
+
+	tests := []struct {
+		expected string
+		got      string
+	}{
+		{timetable.First().subject, _1.subject},
+		{timetable.Second().subject, _2.subject},
+		{timetable.Third().subject, _3.subject},
+		{timetable.Fourth().subject, _4.subject},
+		{timetable.Fifth().subject, _5.subject},
 	}
-	if timetable.Fifth().subject != "5" {
-		t.Fatal("Fifth() should return 5th class")
+
+	for _, test := range tests {
+		if test.expected != test.got {
+			t.Fatalf(
+				"expected: %v; got: %v\n",
+				test.expected,
+				test.got,
+			)
+		}
 	}
 }

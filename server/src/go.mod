@@ -6,6 +6,7 @@ require (
 	github.com/go-playground/validator v9.31.0+incompatible
 	github.com/go-playground/validator/v10 v10.2.0
 	github.com/go-sql-driver/mysql v1.5.0
+	github.com/golang/mock v1.4.4 // indirect
 	github.com/jinzhu/gorm v1.9.12
 	github.com/labstack/echo/v4 v4.1.16
 	gopkg.in/go-playground/assert.v1 v1.2.1 // indirect

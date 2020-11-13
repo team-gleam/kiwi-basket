@@ -22,8 +22,8 @@ func TestNewTimetable(t *testing.T) {
 	)
 
 	tests := []struct {
-		expected string
 		got      string
+		expected string
 	}{
 		{timetable._1.subject, _1.subject},
 		{timetable._2.subject, _2.subject},
@@ -53,8 +53,8 @@ func TestTimetableGetters(t *testing.T) {
 	}
 
 	tests := []struct {
-		expected string
 		got      string
+		expected string
 	}{
 		{timetable.First().subject, _1.subject},
 		{timetable.Second().subject, _2.subject},

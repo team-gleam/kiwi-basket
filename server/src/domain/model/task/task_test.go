@@ -56,3 +56,25 @@ func TestTextDate(t *testing.T) {
 		})
 	}
 }
+
+func TestTaskGetters(t *testing.T) {
+	task, _ := NewTask(1, "2020-01-01", "title")
+	tests := []struct {
+		expected interface{}
+		got      interface{}
+	}{
+		{task.id, task.ID()},
+		{task.date, task.Date()},
+		{task.title, task.Title()},
+	}
+
+	for _, test := range tests {
+		if test.expected != test.got {
+			t.Fatalf(
+				"expected: %v; got: %v\n",
+				test.expected,
+				test.got,
+			)
+		}
+	}
+}

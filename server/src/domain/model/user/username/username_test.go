@@ -30,3 +30,10 @@ func TestNewUsername(t *testing.T) {
 		})
 	}
 }
+
+func TestUsernameGetter(t *testing.T) {
+	username, _ := NewUsername("user")
+	if username.name != username.Name() {
+		t.Fatalf("expected: %v; got: %v\n", username.name, username.Name())
+	}
+}

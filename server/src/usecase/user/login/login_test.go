@@ -70,7 +70,7 @@ func TestDelete(t *testing.T) {
 		username, _ := username.NewUsername("user")
 		err := usecase.Delete(login.NewLogin(username, ""))
 		if err != nil {
-			t.Fatalf("expected error: %v\n", err)
+			t.Fatalf("unexpected error: %v\n", err)
 		}
 	})
 
@@ -121,7 +121,7 @@ func TestVerify(t *testing.T) {
 
 		v, err := usecase.Verify(login)
 		if err != nil {
-			t.Fatalf("expected error: %v\n", err)
+			t.Fatalf("unexpected error: %v\n", err)
 		}
 		if !v {
 			t.Fatalf("expected: %v; got: %v\n", true, err)
@@ -151,7 +151,7 @@ func TestVerify(t *testing.T) {
 
 		v, err := usecase.Verify(l)
 		if err != nil {
-			t.Fatalf("expected error: %v\n", err)
+			t.Fatalf("unexpected error: %v\n", err)
 		}
 		if v {
 			t.Fatalf("expected: %v; got: %v\n", false, err)

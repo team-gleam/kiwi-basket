@@ -10,7 +10,7 @@ func TestGenToken(t *testing.T) {
 		}
 
 		if l := len(token.Token()); l != Length {
-			t.Fatalf("Failed# expected: %v; got: %v\n", Length, l)
+			t.Fatalf("expected: %v; got: %v\n", Length, l)
 		}
 	})
 }

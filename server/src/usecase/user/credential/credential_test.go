@@ -35,23 +35,6 @@ func TestGenerate(t *testing.T) {
 		}
 	})
 
-	t.Run("success", func(t *testing.T) {
-		username, _ := username.NewUsername("user")
-		password := "password"
-		l := login.NewLogin(username, password)
-
-		loginRepository.EXPECT().Exists(gomock.Any()).Return(true, nil)
-		loginRepository.EXPECT().Get(gomock.Any()).Return(l, nil)
-
-		credentialRepository.EXPECT().Remove(gomock.Any()).Return(nil)
-		credentialRepository.EXPECT().Append(gomock.Any()).Return(nil)
-
-		_, err := usecase.Generate(l)
-		if err != nil {
-			t.Fatalf("unexpected error: %v\n", err)
-		}
-	})
-
 	t.Run("Verify return error", func(t *testing.T) {
 		username, _ := username.NewUsername("user")
 		password := "password"
@@ -65,12 +48,29 @@ func TestGenerate(t *testing.T) {
 		}
 	})
 
-	t.Run("not verified", func(t *testing.T) {
+	t.Run("user not found", func(t *testing.T) {
 		username, _ := username.NewUsername("user")
 		password := "password"
 		l := login.NewLogin(username, password)
 
 		loginRepository.EXPECT().Exists(gomock.Any()).Return(false, nil)
+
+		_, err := usecase.Generate(l)
+		if expected := InvalidUsernameOrPassword; err.Error() != expected {
+			t.Fatalf("expected: %v; got: %v\n", expected, err)
+		}
+	})
+
+	t.Run("not verified", func(t *testing.T) {
+		username, _ := username.NewUsername("user")
+		password := "password"
+		l := login.NewLogin(username, password)
+
+		loginRepository.EXPECT().Exists(gomock.Any()).Return(true, nil)
+		loginRepository.EXPECT().Get(gomock.Any()).Return(
+			login.NewLogin(username, ""),
+			nil,
+		)
 
 		_, err := usecase.Generate(l)
 		if expected := InvalidUsernameOrPassword; err.Error() != expected {
@@ -160,6 +160,23 @@ func TestDelete(t *testing.T) {
 		}
 	})
 
+	t.Run("not verified", func(t *testing.T) {
+		username, _ := username.NewUsername("user")
+		password := "password"
+		l := login.NewLogin(username, password)
+
+		loginRepository.EXPECT().Exists(gomock.Any()).Return(true, nil)
+		loginRepository.EXPECT().Get(gomock.Any()).Return(
+			login.NewLogin(username, ""),
+			nil,
+		)
+
+		err := usecase.Delete(l)
+		if expected := InvalidUsernameOrPassword; err.Error() != expected {
+			t.Fatalf("expected: %v; got: %v\n", expected, err)
+		}
+	})
+
 	t.Run("Remove return error", func(t *testing.T) {
 		username, _ := username.NewUsername("user")
 		password := "password"
@@ -226,6 +243,23 @@ func TestGet(t *testing.T) {
 
 		_, err := usecase.Get(l)
 		if expected := "username not found"; err.Error() != expected {
+			t.Fatalf("expected: %v; got: %v\n", expected, err)
+		}
+	})
+
+	t.Run("not verified", func(t *testing.T) {
+		username, _ := username.NewUsername("user")
+		password := "password"
+		l := login.NewLogin(username, password)
+
+		loginRepository.EXPECT().Exists(gomock.Any()).Return(true, nil)
+		loginRepository.EXPECT().Get(gomock.Any()).Return(
+			login.NewLogin(username, ""),
+			nil,
+		)
+
+		_, err := usecase.Get(l)
+		if expected := InvalidUsernameOrPassword; err.Error() != expected {
 			t.Fatalf("expected: %v; got: %v\n", expected, err)
 		}
 	})

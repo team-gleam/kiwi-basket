@@ -27,7 +27,7 @@ func TestHashPassword(t *testing.T) {
 			h2 := hashPassword(p)
 
 			if h1 != h2 {
-				t.Errorf("Failed# unexpected output\nraw: %s\n1: %s\n2: %s", p, h1, h2)
+				t.Errorf("unexpected output\nraw: %s\n1: %s\n2: %s", p, h1, h2)
 			}
 		})
 	}

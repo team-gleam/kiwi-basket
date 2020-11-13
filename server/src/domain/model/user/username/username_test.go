@@ -25,8 +25,15 @@ func TestNewUsername(t *testing.T) {
 			}
 
 			if tt.expected != v {
-				t.Errorf("Failed# expected: %v; got: %v\n", tt.expected, v)
+				t.Fatalf("expected: %v; got: %v\n", tt.expected, v)
 			}
 		})
+	}
+}
+
+func TestUsernameGetter(t *testing.T) {
+	username, _ := NewUsername("user")
+	if username.name != username.Name() {
+		t.Fatalf("expected: %v; got: %v\n", username.name, username.Name())
 	}
 }

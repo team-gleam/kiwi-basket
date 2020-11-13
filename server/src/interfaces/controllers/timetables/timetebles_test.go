@@ -374,7 +374,7 @@ func TestTimetablesResponseToTimetables(t *testing.T) {
 		t.Run(tc.Name, func(t *testing.T) {
 			tt := tc.Input.toTimetables()
 			if tt != tc.Expected {
-				t.Errorf("Failed# expected: %v; got: %v\n", tc.Expected, tt)
+				t.Fatalf("expected: %v; got: %v\n", tc.Expected, tt)
 			}
 		})
 	}
@@ -422,7 +422,7 @@ func TestTimetablesToTimetablesResponse(t *testing.T) {
 		t.Run(tc.Name, func(t *testing.T) {
 			tt := toTimetablesResponse(tc.Input)
 			if tt.toTimetables() != tc.Expected.toTimetables() {
-				t.Errorf("Failed# expected: %v; got: %v\n", tc.Expected, tt)
+				t.Fatalf("expected: %v; got: %v\n", tc.Expected, tt)
 			}
 		})
 	}
@@ -504,10 +504,10 @@ func TestValidates(t *testing.T) {
 			b, err := tc.Input.Validates()
 			if err != nil {
 				fmt.Println(tc.Input.Timetables.Mon.One.Subject)
-				t.Errorf("unexpected error occured: %v", err)
+				t.Fatalf("unexpected error occured: %v", err)
 			}
 			if b != tc.Expected {
-				t.Errorf("Failed# expected: %v; got: %v\n", tc.Expected, b)
+				t.Fatalf("expected: %v; got: %v\n", tc.Expected, b)
 			}
 		})
 	}

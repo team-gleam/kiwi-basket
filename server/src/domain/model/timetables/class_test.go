@@ -38,3 +38,25 @@ func TestIsNoRoom(t *testing.T) {
 		t.Error("should be true if noRoom is given")
 	}
 }
+
+func TestClassGetters(t *testing.T) {
+	class := NewClass("subject", "room", "memo")
+	tests := []struct {
+		expected string
+		got      string
+	}{
+		{class.subject, class.Subject()},
+		{class.room, class.Room()},
+		{class.memo, class.Memo()},
+	}
+
+	for _, test := range tests {
+		if test.expected != test.got {
+			t.Fatalf(
+				"expected: %v; got: %v\n",
+				test.expected,
+				test.got,
+			)
+		}
+	}
+}

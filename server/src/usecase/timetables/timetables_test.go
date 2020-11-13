@@ -9,44 +9,45 @@ import (
 	"github.com/team-gleam/kiwi-basket/server/src/domain/model/user/token"
 	"github.com/team-gleam/kiwi-basket/server/src/domain/model/user/username"
 	"github.com/team-gleam/kiwi-basket/server/src/domain/repository/mocks"
+	credentialUsecase "github.com/team-gleam/kiwi-basket/server/src/usecase/user/credential"
 )
 
 var (
 	ts = timetables.NewTimetables(
 		timetables.NewTimetable(
-			timetables.NoRoom("11", ""),
-			timetables.NoRoom("12", ""),
-			timetables.NoRoom("13", ""),
-			timetables.NoRoom("14", ""),
-			timetables.NoRoom("15", ""),
+			timetables.NoRoom("11", "a"),
+			timetables.NoRoom("12", "a"),
+			timetables.NoRoom("13", "a"),
+			timetables.NoRoom("14", "a"),
+			timetables.NoRoom("15", "a"),
 		),
 		timetables.NewTimetable(
-			timetables.NoRoom("21", ""),
-			timetables.NoRoom("22", ""),
-			timetables.NoRoom("23", ""),
-			timetables.NoRoom("24", ""),
-			timetables.NoRoom("25", ""),
+			timetables.NoRoom("21", "b"),
+			timetables.NoRoom("22", "b"),
+			timetables.NoRoom("23", "b"),
+			timetables.NoRoom("24", "b"),
+			timetables.NoRoom("25", "b"),
 		),
 		timetables.NewTimetable(
-			timetables.NoRoom("31", ""),
-			timetables.NoRoom("32", ""),
-			timetables.NoRoom("33", ""),
-			timetables.NoRoom("34", ""),
-			timetables.NoRoom("35", ""),
+			timetables.NoRoom("31", "c"),
+			timetables.NoRoom("32", "c"),
+			timetables.NoRoom("33", "c"),
+			timetables.NoRoom("34", "c"),
+			timetables.NoRoom("35", "c"),
 		),
 		timetables.NewTimetable(
-			timetables.NoRoom("41", ""),
-			timetables.NoRoom("42", ""),
-			timetables.NoRoom("43", ""),
-			timetables.NoRoom("44", ""),
-			timetables.NoRoom("45", ""),
+			timetables.NoRoom("41", "d"),
+			timetables.NoRoom("42", "d"),
+			timetables.NoRoom("43", "d"),
+			timetables.NoRoom("44", "d"),
+			timetables.NoRoom("45", "d"),
 		),
 		timetables.NewTimetable(
-			timetables.NoRoom("51", ""),
-			timetables.NoRoom("52", ""),
-			timetables.NoRoom("53", ""),
-			timetables.NoRoom("54", ""),
-			timetables.NoRoom("55", ""),
+			timetables.NoRoom("51", "e"),
+			timetables.NoRoom("52", "e"),
+			timetables.NoRoom("53", "e"),
+			timetables.NoRoom("54", "e"),
+			timetables.NoRoom("55", "e"),
 		),
 	)
 )
@@ -86,8 +87,8 @@ func TestAdd(t *testing.T) {
 		credentialRepository.EXPECT().Exists(gomock.Any()).Return(false, nil)
 
 		err := usecase.Add(token.NewToken(""), ts)
-		if err == nil {
-			t.Fatalf("expected error but got nil")
+		if expected := credentialUsecase.InvalidToken; err.Error() != expected {
+			t.Fatalf("expected: %v; got: %v\n", expected, err)
 		}
 	})
 }
@@ -126,9 +127,9 @@ func TestDelete(t *testing.T) {
 	t.Run("has no credential", func(t *testing.T) {
 		credentialRepository.EXPECT().Exists(gomock.Any()).Return(false, nil)
 
-		err := usecase.Add(token.NewToken(""), ts)
-		if err == nil {
-			t.Fatalf("expected error but got nil")
+		err := usecase.Delete(token.NewToken(""))
+		if expected := credentialUsecase.InvalidToken; err.Error() != expected {
+			t.Fatalf("expected: %v; got: %v\n", expected, err)
 		}
 	})
 }
@@ -167,9 +168,9 @@ func TestGet(t *testing.T) {
 	t.Run("has no credential", func(t *testing.T) {
 		credentialRepository.EXPECT().Exists(gomock.Any()).Return(false, nil)
 
-		err := usecase.Add(token.NewToken(""), ts)
-		if err == nil {
-			t.Fatalf("expected error but got nil")
+		_, err := usecase.Get(token.NewToken("a"))
+		if expected := credentialUsecase.InvalidToken; err.Error() != expected {
+			t.Fatalf("expected: %v; got: %v\n", expected, err)
 		}
 	})
 
